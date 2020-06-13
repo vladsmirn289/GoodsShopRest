@@ -30,6 +30,9 @@ public class Item {
     @Size(min = 10, max = 5000, message = "Description must be between 10 and 5000 symbols")
     private String description;
 
+    @Lob
+    private byte[] image;
+
     @NotBlank(message = "Code must be set")
     private String code;
 
@@ -134,6 +137,14 @@ public class Item {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public String getCode() {

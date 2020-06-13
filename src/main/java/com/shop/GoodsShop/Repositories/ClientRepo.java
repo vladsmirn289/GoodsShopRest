@@ -1,4 +1,4 @@
-package com.shop.GoodsShop.Dao;
+package com.shop.GoodsShop.Repositories;
 
 import com.shop.GoodsShop.Model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;

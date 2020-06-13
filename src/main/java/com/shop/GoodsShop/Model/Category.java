@@ -31,8 +31,8 @@ public class Category {
         this.name = name;
     }
 
-    public Category(Category parent,
-                    String name) {
+    public Category(String name,
+                    Category parent) {
         this.parent = parent;
         this.name = name;
     }

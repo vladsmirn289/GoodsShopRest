@@ -4,6 +4,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Date;
@@ -17,6 +18,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @NotEmpty(message = "Ordered items cannot be empty")
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     private Set<Item> orderedItems = new HashSet<>();

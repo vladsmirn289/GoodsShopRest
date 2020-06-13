@@ -13,18 +13,15 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @NotBlank(message = "First name cannot be empty")
     @Size(min = 3, message = "First name must be minimum 3 symbols")
     private String firstName;
 
-    @NotBlank(message = "Last name cannot be empty")
     @Size(min = 3, message = "Last name must be minimum 3 symbols")
     private String lastName;
 
     @NotBlank(message = "Login cannot be empty")
     private String login;
 
-    @NotBlank(message = "Password cannot be empty")
     @Size(min = 5, message = "Password must be minimum 5 symbols")
     private String password;
 

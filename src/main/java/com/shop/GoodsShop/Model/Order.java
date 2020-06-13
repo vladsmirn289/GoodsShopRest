@@ -3,6 +3,7 @@ package com.shop.GoodsShop.Model;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Date;
@@ -26,6 +27,14 @@ public class Order {
     @NotNull(message = "Contacts must be set")
     private Contacts contacts;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @NotBlank(message = "Payment method cannot be empty")
+    private String paymentMethod;
+
+    private String trackNumber;
+
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     private Date createdOn;
@@ -35,10 +44,12 @@ public class Order {
 
     public Order(Set<Item> orderedItems,
                  Long orderedCount,
-                 Contacts contacts) {
+                 Contacts contacts,
+                 String paymentMethod) {
         this.orderedItems = orderedItems;
         this.orderedCount = orderedCount;
         this.contacts = contacts;
+        this.paymentMethod = paymentMethod;
     }
 
 
@@ -74,6 +85,30 @@ public class Order {
         this.contacts = contacts;
     }
 
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getTrackNumber() {
+        return trackNumber;
+    }
+
+    public void setTrackNumber(String trackNumber) {
+        this.trackNumber = trackNumber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,11 +116,12 @@ public class Order {
         Order order = (Order) o;
         return orderedItems.equals(order.orderedItems) &&
                 orderedCount.equals(order.orderedCount) &&
-                contacts.equals(order.contacts);
+                contacts.equals(order.contacts) &&
+                paymentMethod.equals(order.paymentMethod);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderedItems, orderedCount, contacts);
+        return Objects.hash(orderedItems, orderedCount, contacts, paymentMethod);
     }
 }

@@ -13,21 +13,24 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Email(message = "Wrong email")
-    @NotBlank(message = "Email doesn't be empty")
-    private String email;
-
-    @NotBlank(message = "Password doesn't be empty")
-    @Size(min = 5, message = "Password must be minimum 5 symbols")
-    private String password;
-
-    @NotBlank(message = "First name doesn't be empty")
+    @NotBlank(message = "First name cannot be empty")
     @Size(min = 3, message = "First name must be minimum 3 symbols")
     private String firstName;
 
-    @NotBlank(message = "Last name doesn't be empty")
+    @NotBlank(message = "Last name cannot be empty")
     @Size(min = 3, message = "Last name must be minimum 3 symbols")
     private String lastName;
+
+    @NotBlank(message = "Login cannot be empty")
+    private String login;
+
+    @NotBlank(message = "Password cannot be empty")
+    @Size(min = 5, message = "Password must be minimum 5 symbols")
+    private String password;
+
+    @Email(message = "Wrong email")
+    @NotBlank(message = "Email cannot be empty")
+    private String email;
 
     private String patronymic;
 
@@ -46,22 +49,26 @@ public class Client {
     public Client(String email,
                   String password,
                   String firstName,
-                  String lastName) {
+                  String lastName,
+                  String login) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.login = login;
     }
 
     public Client(String email,
                   String password,
                   String firstName,
                   String lastName,
+                  String login,
                   String patronymic) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.login = login;
         this.patronymic = patronymic;
     }
 
@@ -72,22 +79,6 @@ public class Client {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getFirstName() {
@@ -104,6 +95,30 @@ public class Client {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPatronymic() {

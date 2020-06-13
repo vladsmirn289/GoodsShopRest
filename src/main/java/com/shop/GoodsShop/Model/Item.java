@@ -4,6 +4,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -15,7 +16,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @NotBlank(message = "Name doesn't be empty")
+    @NotBlank(message = "Name cannot be empty")
     private String name;
 
     @PositiveOrZero(message = "Count must be positive or zero")
@@ -24,15 +25,22 @@ public class Item {
     @PositiveOrZero(message = "Weight must be positive or zero")
     private Double weight;
 
+    private String color;
+
     @PositiveOrZero(message = "Price must be positive or zero")
     private Double price;
 
-    @NotBlank(message = "Description doesn't be empty")
+    @NotBlank(message = "Description cannot be empty")
     @Size(min = 10, max = 5000, message = "Description must be between 10 and 5000 symbols")
     private String description;
 
     @NotBlank(message = "Code must be set")
     private String code;
+
+    @NotNull(message = "Category cannot be null")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Temporal(TemporalType.DATE)
     @CreationTimestamp
@@ -46,13 +54,15 @@ public class Item {
                 Double weight,
                 Double price,
                 String description,
-                String code) {
+                String code,
+                Category category) {
         this.name = name;
         this.count = count;
         this.weight = weight;
         this.price = price;
         this.description = description;
         this.code = code;
+        this.category = category;
     }
 
 
@@ -88,6 +98,14 @@ public class Item {
         this.weight = weight;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     public Double getPrice() {
         return price;
     }
@@ -112,6 +130,14 @@ public class Item {
         this.code = code;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -122,7 +148,8 @@ public class Item {
                 weight.equals(item.weight) &&
                 price.equals(item.price) &&
                 description.equals(item.description) &&
-                code.equals(item.code);
+                code.equals(item.code) &&
+                category.equals(item.category);
     }
 
     @Override

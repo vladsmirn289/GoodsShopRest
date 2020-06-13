@@ -3,10 +3,7 @@ package com.shop.GoodsShop.Model;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.Objects;
 
@@ -22,15 +19,14 @@ public class Item {
     @PositiveOrZero(message = "Count must be positive or zero")
     private Long count;
 
-    @PositiveOrZero(message = "Weight must be positive or zero")
+    @Positive(message = "Weight must be positive")
     private Double weight;
 
     private String color;
 
-    @PositiveOrZero(message = "Price must be positive or zero")
+    @Positive(message = "Price must be positive")
     private Double price;
 
-    @NotBlank(message = "Description cannot be empty")
     @Size(min = 10, max = 5000, message = "Description must be between 10 and 5000 symbols")
     private String description;
 
@@ -59,6 +55,24 @@ public class Item {
         this.name = name;
         this.count = count;
         this.weight = weight;
+        this.price = price;
+        this.description = description;
+        this.code = code;
+        this.category = category;
+    }
+
+    public Item(String name,
+                Long count,
+                Double weight,
+                String color,
+                Double price,
+                String description,
+                String code,
+                Category category) {
+        this.name = name;
+        this.count = count;
+        this.weight = weight;
+        this.color = color;
         this.price = price;
         this.description = description;
         this.code = code;

@@ -6,8 +6,7 @@ import javax.validation.constraints.Size;
 
 @Embeddable
 public class Contacts {
-    @NotBlank(message = "Zip code cannot be empty")
-    @Size(min = 5, max = 9, message = "Zip code must be between 5 and 9 digits")
+    @Size(min = 4, max = 9, message = "Zip code must be between 4 and 9 digits")
     private String zipCode;
 
     @NotBlank(message = "Country cannot be empty")

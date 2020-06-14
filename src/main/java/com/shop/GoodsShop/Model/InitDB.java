@@ -4,10 +4,13 @@ import com.shop.GoodsShop.Service.CategoryService;
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.ItemService;
 import com.shop.GoodsShop.Service.OrderService;
+import com.shop.GoodsShop.Utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/* TODO: add images to items*/
+import java.io.File;
+import java.util.UUID;
+
 @Component
 public class InitDB {
     private CategoryService categoryService;
@@ -43,11 +46,11 @@ public class InitDB {
 
         Category fiction = new Category("Художественная литература", books);
         Category scienceBooks = new Category("Научная литература", books);
-        Category computerBooks = new Category("Компьютерная литература", books);
+        Category programmingBooks = new Category("Программирование", books);
 
         categoryService.save(fiction);
         categoryService.save(scienceBooks);
-        categoryService.save(computerBooks);
+        categoryService.save(programmingBooks);
 
         /* --- --- */
 
@@ -92,10 +95,11 @@ public class InitDB {
 
         /* --- --- */
 
+        FileUtil fileUtil = new FileUtil();
 
         /* --- Book Items --- */
 
-        /*String description = "Говард Филлипс Лавкрафт, не опубликовавший при жизни ни одной книги, " +
+        String description = "Говард Филлипс Лавкрафт, не опубликовавший при жизни ни одной книги, " +
                 "стал маяком и ориентиром жанра литературы ужасов, кумиром как широких читательских масс, " +
                 "так и рафинированных интеллектуалов. Влияние его признавали такие мастера, как Борхес, " +
                 "и такие кумиры миллионов, как Стивен Кинг, его рассказы неоднократно экранизировались, " +
@@ -104,7 +108,11 @@ public class InitDB {
                 "и вот наконец мечта сбылась: вашему вниманию предлагается классическая повесть «Зов Ктулху» с " +
                 "иллюстрациями французского мастера. Наконец вы воочию увидите, что может быть, если Ктулху проснется…";
         String code = UUID.randomUUID().toString().substring(0, 8);
-        Item callOfCthulhu = new Item("Зов Ктулху", 3000L, 0.57D, 800D, description, code, fiction);
+        Book callOfCthulhu = new Book("Зов Ктулху", 3000L, 0.57D, 800D, description, code, fiction,
+                "Лавкрафт Г.Ф.", "Азбука", 64, "978-5-389-17639-3");
+        callOfCthulhu.setBinding("Твёрдый");
+        File image = new File("static/images/InitBooks/callOfCthulhu.jpg");
+        callOfCthulhu.setImage(fileUtil.fileToBytes(image));
 
         description = "Жизнь Алисии Беренсон кажется идеальной. Известная художница вышла замуж за востребованного " +
                 "модного фотографа. Она живет в одном из самых привлекательных и дорогих районов Лондона в роскошном " +
@@ -117,12 +125,20 @@ public class InitDB {
                 "Но что скрывается за его одержимостью безумной мужеубийцей, и к чему приведут все эти психологические эксперименты? " +
                 "Возможно, к истине, которая угрожает поглотить и его самого...";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Item silentPatient = new Item("Безмолвный пациент", 1500L, 0.294D, 390D, description, code, fiction);
+        Book silentPatient = new Book("Безмолвный пациент", 1500L, 0.294D, 390D, description, code, fiction,
+                "Михаэлидес Алекс", "Эксмо", 352, "978-5-04-105311-6");
+        silentPatient.setBinding("Мягкий");
+        image = new File("static/images/InitBooks/silentPatient.jpg");
+        silentPatient.setImage(fileUtil.fileToBytes(image));
 
         description = "Книга знакомит читателя с творчеством известного английского писателя Артура Конан Дойла. " +
                 "На страницах книги вы встретитесь со знакомыми персонажами и сможете проследить за раскрытием таинственных преступлений.";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Item sherlockHolmesTales = new Item("Рассказы о Шерлоке Холмсе", 1500L, 0.246D, 150D, description, code, fiction);
+        Book sherlockHolmesTales = new Book("Рассказы о Шерлоке Холмсе", 1500L, 0.246D, 150D, description, code, fiction,
+                "Конан Дойл Артур", "Самовар", 175, "978-5-9781-0119-5");
+        sherlockHolmesTales.setBinding("Твёрдый");
+        image = new File("static/images/InitBooks/sherlockHolmesTales.jpg");
+        sherlockHolmesTales.setImage(fileUtil.fileToBytes(image));
 
         description = "Юрий Никулин, великий артист, замечательный клоун и чрезвычайно остроумный собеседник, " +
                 "очень трепетно относился к читателям своих книжек. Он к ним обращался только на «вы» и просил принять " +
@@ -132,7 +148,11 @@ public class InitDB {
                 "Юрий Никулин, просто улыбнется, то и это будет очень хорошо и просто прекрасно. Итогом же прочтения этой книги " +
                 "будет самый лучший и самый остроумный анекдот Юрия Никулина.";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Item jokesFromNikulin = new Item("Анекдоты от Никулина", 3000L, 0.449D, 500D, description, code, fiction);
+        Book jokesFromNikulin = new Book("Анекдоты от Никулина", 3000L, 0.449D, 500D, description, code, fiction,
+                "Никулин Юрий Владимирович", "Зебра Е", 416, "978-5-907164-32-1");
+        jokesFromNikulin.setBinding("Твёрдый");
+        image = new File("static/images/InitBooks/jokesFromNikulin.jpg");
+        jokesFromNikulin.setImage(fileUtil.fileToBytes(image));
 
         description = "Старший лейтенант Ибрагим Крушинин командует ротой спецназа на Северном Кавказе. " +
                 "Он смел и беспощаден в бою. Ядовит – как шутят сослуживцы. Не случайно за старлеем закрепился " +
@@ -141,7 +161,11 @@ public class InitDB {
                 "старшего брата, которого потерял в раннем детстве. Что делать – уничтожить бандитского эмира, " +
                 "захватить его в плен или… Времени на размышления у Анчара не остается: на помощь своему командиру уже спешат бойцы спецназа…";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Item likeTwoDropsOfBlood = new Item("Как две капли крови", 2400L, 0.262D, 400D, description, code, fiction);
+        Book likeTwoDropsOfBlood = new Book("Как две капли крови", 2400L, 0.262D, 400D, description, code, fiction,
+                "Самаров Сергей Васильевич", "Эксмо", 352, "978-5-04-109399-0");
+        likeTwoDropsOfBlood.setBinding("Твёрдый");
+        image = new File("static/images/InitBooks/likeTwoDropsOfBlood.jpg");
+        likeTwoDropsOfBlood.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(callOfCthulhu);
         itemService.save(silentPatient);
@@ -161,7 +185,11 @@ public class InitDB {
                 "\n" +
                 "Издание предназначено для старшеклассников, студентов вузов и всех любителей математики.";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Item derivativesAndIntegrals = new Item("Производные и интегралы", 5000L, 0.15D, 850D, description, code, scienceBooks);
+        Book derivativesAndIntegrals = new Book("Производные и интегралы", 5000L, 0.15D, 850D, description, code, scienceBooks,
+                "Огами Т.", "ДМК Пресс", 130, "978-5-97060-814-2");
+        derivativesAndIntegrals.setBinding("Мягкий");
+        image = new File("static/images/InitBooks/derivativesAndIntegrals.jpg");
+        derivativesAndIntegrals.setImage(fileUtil.fileToBytes(image));
 
         description = "Книга представляет собой учебник по функциональному анализу. " +
                 "Этот учебник годится для первоначального изучения линейного функционального анализа, " +
@@ -171,16 +199,26 @@ public class InitDB {
                 "демонстрируются на модельных примерах. Книга будет полезна студентам и аспирантам, а " +
                 "также всем желающим познакомиться с современной абстрактной математикой.\n";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Item functionalAnalysisFromZeroToUnits = new Item("Функциональный анализ от нуля до единиц", 4000L, 0.29D, 520D, description, code, scienceBooks);
+        Book functionalAnalysisFromZeroToUnits = new Book("Функциональный анализ от нуля до единиц", 4000L, 0.29D, 520D, description, code, scienceBooks,
+                "Шамин Р.В.", "URSS", 272, "978-5-9710-7813-5");
+        functionalAnalysisFromZeroToUnits.setBinding("Мягкий");
+        image = new File("static/images/InitBooks/functionalAnalysisFromZeroToUnits.jpg");
+        functionalAnalysisFromZeroToUnits.setImage(fileUtil.fileToBytes(image));
 
-        description = "Энциклопедия Анатомия 4D от Devar - это не просто книга, она представляет собой " +
-                "полноценный научный справочник по анатомии человека. С помощью бесплатного приложения " +
-                "DEVAR books в дополненной реальности читатель увидит в мельчайших подробностях строение " +
-                "кровеносной системы, легкие, мышцы… Он увидит, как бьется самый главный орган - сердце " +
-                "человека и даже сможет подержать его в руках. При этом все изображения книги адаптированы " +
-                "для детского восприятия. Никогда изучение анатомии не было столь увлекающим и натуралистичным!";
+        description = "Практическое руководство по хирургии содержит современную и актуальную " +
+                "информацию о диагностике, лечении и профилактике основных заболеваний и " +
+                "синдромов, наиболее часто встречающихся в практике врача-хирурга амбулаторного звена.\n" +
+                "Предназначено врачам-хирургам, врачам общей практики, клиническим ординаторам " +
+                "и студентам старших курсов медицинских вузов.\n" +
+                "Книга имеет электронную версию, активировав доступ к которой можно получить " +
+                "дополнительные информационные материалы (уточняющие рекомендации, развернутые " +
+                "речевые модули, нюансы взаимодействия лекарственных препаратов).\n";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Item encyclopedia4DAnatomy = new Item("Энциклопедия. Анатомия 4D", 500L, 0.59D, 450D, description, code, scienceBooks);
+        Book surgeonTactics = new Book("Тактика врача-хирурга", 800L, 0.65D, 1780D, description, code, scienceBooks,
+                "Шабунин А.В., Маер Р.Ю.", "ГЭОТАР-Медиа", 296, "978-5-9704-5523-4");
+        surgeonTactics.setBinding("Мягкий");
+        image = new File("static/images/InitBooks/surgeonTactics.jpg");
+        surgeonTactics.setImage(fileUtil.fileToBytes(image));
 
         description = "Новые открытия в астрономии совершаются ежегодно, и новостные издания пестрят " +
                 "сообщениями об очередных космических разработках. Но, хотя прошли времена, когда " +
@@ -194,7 +232,11 @@ public class InitDB {
                 "Издание предназначено для всех, кто интересуется астрономией, космологией и с" +
                 "овременными научными изысканиями в этих областях.";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Item universeInQuestionsAndAnswers = new Item("Вселенная в вопросах и ответах", 800L, 0.14D, 852D, description, code, scienceBooks);
+        Book universeInQuestionsAndAnswers = new Book("Вселенная в вопросах и ответах", 800L, 0.14D, 852D, description, code, scienceBooks,
+                "Ватанабэ Д.", "ДМК Пресс", 128, "978-5-97060-816-6");
+        universeInQuestionsAndAnswers.setBinding("Мягкий");
+        image = new File("static/images/InitBooks/universeInQuestionsAndAnswers.jpg");
+        universeInQuestionsAndAnswers.setImage(fileUtil.fileToBytes(image));
 
         description = "\"Книга о пути жизни\" Лао-цзы, называемая по-китайски \"Дао-Дэ цзин\", занимает " +
                 "после Библии второе место в мире по числу иностранных переводов. Происхождение этой " +
@@ -205,13 +247,128 @@ public class InitDB {
                 "Секрет чтения Лао-цзы в том, чтобы постичь ту внутреннюю глубину смысла, которую внушает " +
                 "мудрость, открывая в каждом суждении иной и противоположный смысл.\n";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Item bookAboutTheWayOfLife = new Item("Книга о пути жизни", 600L, 0.28D, 370D, description, code, scienceBooks);
+        Book bookAboutTheWayOfLife = new Book("Книга о пути жизни", 600L, 0.28D, 370D, description, code, scienceBooks,
+                "Лао-цзы", "АСТ", 288, "978-5-17-122669-5");
+        bookAboutTheWayOfLife.setBinding("Твёрдый");
+        image = new File("static/images/InitBooks/bookAboutTheWayOfLife.jpg");
+        bookAboutTheWayOfLife.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(derivativesAndIntegrals);
         itemService.save(functionalAnalysisFromZeroToUnits);
-        itemService.save(encyclopedia4DAnatomy);
+        itemService.save(surgeonTactics);
         itemService.save(universeInQuestionsAndAnswers);
-        itemService.save(bookAboutTheWayOfLife);*/
+        itemService.save(bookAboutTheWayOfLife);
+
+        description = "Учебно-практическое пособие охватывает первую, базовую, часть " +
+                "учебного курса по языку SQL, созданного при участии российской компании " +
+                "Postgres Professional. Учебный материал излагается в расчете на использование " +
+                "системы управления базами данных PostgreSQL. Рассмотрено создание рабочей " +
+                "среды, описан язык определения данных и основные операции выборки и изменения " +
+                "данных. Показаны примеры использования транзакций, уделено внимание методам " +
+                "оптимизации запросов. Материал сопровождается многочисленными практическими " +
+                "примерами. Пособие может использоваться как для самостоятельного обучения, " +
+                "так и проведения занятий под руководством преподавателя.";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Book postgreSQL = new Book("PostgreSQL. Основы языка SQL",900L, 0.35D, 690D, description, code, programmingBooks,
+                "Моргунов Е.П.", "БХВ-Петербург", 336, "978-5-9775-4022-3");
+        postgreSQL.setBinding("Мягкий");
+        image = new File("static/images/InitBooks/postgreSQL.jpg");
+        postgreSQL.setImage(fileUtil.fileToBytes(image));
+
+        description = "Эта книга воплощает знания и опыт работы авторов с каркасом Spring " +
+                "Framework и сопутствующими технологиями удаленного взаимодействия, " +
+                "Hibernate, EJB и пр. Она дает возможность читателю не только усвоить " +
+                "основные понятия и принципы работы с Spring Framework, но и научиться " +
+                "рационально пользоваться этим каркасом для построения различных уровней и частей корпоративных приложений на языке Java, включая обработку транзакций, представление веб-содержимого и прочего содержимого, развертывание и многое другое. Полноценные примеры подобных приложений, представленные в этой книге, наглядно демонстрируют особенности совместного применения различных технологий и методик разработки приложений в Spring.\n" +
+                "Пятое издание этой книги, давно уже пользующейся успехом у читателей, " +
+                "обновлено по новой версии Spring Framework 5 и является самым " +
+                "исчерпывающим и полным руководством по применению Spring среди всех " +
+                "имеющихся. В нем представлен новый функциональный каркас веб-приложений, " +
+                "микрослужбы, совместимость с версией Java 9 и прочие функциональные " +
+                "возможности Spring. Прочитав эту обстоятельную книгу, вы сможете включить в " +
+                "арсенал своих средств весь потенциал Spring для основательного построения " +
+                "сложных приложений. Гибкий, легковесный каркас Spring Framework с открытым " +
+                "кодом продолжает оставаться фактически ведущим в области разработки корпоративных " +
+                "приложений на языке Java и самым востребованным среди разработчиков и " +
+                "программирующих на Java. Он превосходно взаимодействует с другими гибкими, " +
+                "легковесными технологиями Java с открытым кодом, включая Hibernate, Groovy, " +
+                "MyBatis и прочие, а также с платформами Java ЕЕ и JPA 2.\n" +
+                "Эта книга поможет вам:\n" +
+                "• Выявить новые функциональные возможности в версии Spring Framework 5\n" +
+                "• Научиться пользоваться Spring Framework вместе с Java 9\n" +
+                "• Овладеть механизмом доступа к данным и обработки транзакций\n" +
+                "• Освоить новый функциональный каркас веб-приложений\n" +
+                "• Научиться создавать микрослужбы и другие веб-службы";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Book spring5ForProfessionals = new Book("Spring 5 для профессионалов", 300L, 1.592D, 4000D, description, code, programmingBooks,
+                "Харроп Роб, Шефер Крис, Козмина Юлиана", "Диалектика / Вильямс", 1120, "978-5-907114-07-4, 978-1-4842-2807-4");
+        spring5ForProfessionals.setBinding("Твёрдый");
+        image = new File("static/images/InitBooks/spring5ForProfessionals.jpg");
+        spring5ForProfessionals.setImage(fileUtil.fileToBytes(image));
+
+        description = "Эта книга представляет собой обновленное руководство по использованию Git в " +
+                "современных условиях. С тех пор как проект Git — распределенная система " +
+                "управления версиями — был создан Линусом Торвальдсом, прошло много лет, и " +
+                "система Git превратилась в доминирующую систему контроля версий, как для " +
+                "коммерческих целей, так и для проектов с открытым исходным кодом. Эффективный и " +
+                "хорошо реализованный контроль версий необходим для любого успешного веб-проекта. " +
+                "Постепенно эту систему приняли на вооружение практически все сообщества разработчиков " +
+                "ПО с открытым исходным кодом. Появление огромного числа графических интерфейсов для всех " +
+                "платформ и поддержка IDE позволили внедрить Git в операционные системы семейства Windows. " +
+                "Второе издание книги было обновлено для Git-версии 2.0 и уделяет большое внимание GitHub.";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Book proGit = new Book("Git для профессионального программиста", 700L, 0.51D, 1075D, description, code, programmingBooks,
+                "Чакон Скотт, Штрауб Бен", "Питер", 496, "978-5-496-01763-3, 978-5-4461-1131-2");
+        proGit.setBinding("Мягкий");
+        image = new File("static/images/InitBooks/proGit.jpg");
+        proGit.setImage(fileUtil.fileToBytes(image));
+
+        description = "Более 10 лет первое издание этой книги считалось одним из " +
+                "лучших практических руководств по программированию. Сейчас эта книга " +
+                "полностью обновлена с учетом современных тенденций и технологий и " +
+                "дополнена сотнями новых примеров, иллюстрирующих искусство и науку " +
+                "программирования. Опираясь на академические исследования, с одной " +
+                "стороны, и практический опыт коммерческих разработок ПО — с другой, " +
+                "автор синтезировал из самых эффективных методик и наиболее эффективных " +
+                "принципов ясное прагматичное руководство. Каков бы ни был ваш " +
+                "профессиональный уровень, с какими бы средствами разработками вы ни " +
+                "работали, какова бы ни была сложность вашего проекта, в этой книге " +
+                "вы найдете нужную информацию, она заставит вас размышлять и поможет создать совершенный код.";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Book perfectCode = new Book("Совершенный код", 900L, 1.201D, 1275D, description, code, programmingBooks,
+                "Макконнелл Стив", "Русская Редакция", 896, "978-5-7502-0064-1, 978-5-9909805-1-8");
+        perfectCode.setBinding("Твёрдый");
+        image = new File("static/images/InitBooks/perfectCode.jpg");
+        perfectCode.setImage(fileUtil.fileToBytes(image));
+
+        description = "Потоки являются фундаментальной частью платформы Java. " +
+                "Многоядерные процессоры — это обыденная реальность, а эффективное " +
+                "использование параллелизма стало необходимым для создания любого " +
+                "высокопроизводительного приложения. Улучшенная виртуальная машина " +
+                "Java, поддержка высокопроизводительных классов и богатый набор строительных " +
+                "блоков для задач распараллеливания стали в свое время прорывом в разработке " +
+                "параллельных приложений. В «Java Concurrency на практике» сами создатели " +
+                "прорывной технологии объясняют не только принципы работы, но и рассказывают о паттернах проектирования.\n" +
+                "Легко создать конкурентную программу, которая вроде бы будет работать. " +
+                "Однако разработка, тестирование и отладка многопоточных программ " +
+                "доставляют много проблем. Код перестает работать именно тогда, как это " +
+                "важнее всего: при большой нагрузке. В «Java Concurrency на практике» вы " +
+                "найдете как теорию, так и конкретные методы создания надежных, масштабируемых " +
+                "и поддерживаемых параллельных приложений. Авторы не предлагают перечень API и " +
+                "механизмов параллелизма, они знакомят с правилами проектирования, паттернами и " +
+                "моделями, которые не зависят от версии Java и на протяжении многих лет остаются актуальными и эффективными.";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Book javaConcurrencyInPractice = new Book("Java Concurrency на практике", 1500L, 0.48D, 1430D, description, code, programmingBooks,
+                "Гетц Б.", "Питер", 464, "978-5-4461-1314-9");
+        javaConcurrencyInPractice.setBinding("Мягкий");
+        image = new File("static/images/InitBooks/javaConcurrencyInPractice.jpg");
+        javaConcurrencyInPractice.setImage(fileUtil.fileToBytes(image));
+
+        itemService.save(postgreSQL);
+        itemService.save(spring5ForProfessionals);
+        itemService.save(proGit);
+        itemService.save(perfectCode);
+        itemService.save(javaConcurrencyInPractice);
 
         /* --- --- */
     }

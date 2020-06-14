@@ -8,6 +8,9 @@ import com.shop.GoodsShop.Utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.util.UUID;
+
 @Component
 public class InitDB {
     private CategoryService categoryService;
@@ -96,7 +99,7 @@ public class InitDB {
 
         /* --- Book Items --- */
 
-        /*String description = "Говард Филлипс Лавкрафт, не опубликовавший при жизни ни одной книги, " +
+        String description = "Говард Филлипс Лавкрафт, не опубликовавший при жизни ни одной книги, " +
                 "стал маяком и ориентиром жанра литературы ужасов, кумиром как широких читательских масс, " +
                 "так и рафинированных интеллектуалов. Влияние его признавали такие мастера, как Борхес, " +
                 "и такие кумиры миллионов, как Стивен Кинг, его рассказы неоднократно экранизировались, " +
@@ -104,10 +107,13 @@ public class InitDB {
                 "компьютерных игр, концептуалист и футурист. Мечту оформить Лавкрафта он вынашивал много лет — " +
                 "и вот наконец мечта сбылась: вашему вниманию предлагается классическая повесть «Зов Ктулху» с " +
                 "иллюстрациями французского мастера. Наконец вы воочию увидите, что может быть, если Ктулху проснется…";
+        String characteristics = "Автор....................Лавкрафт Г.Ф.\n" +
+                "Издательство.............Азбука\n" +
+                "Страниц..................64\n" +
+                "Переплёт.................Твёрдый\n" +
+                "ISBN.....................978-5-389-17639-3";
         String code = UUID.randomUUID().toString().substring(0, 8);
-        Book callOfCthulhu = new Book("Зов Ктулху", 3000L, 0.57D, 800D, description, code, fiction,
-                "Лавкрафт Г.Ф.", "Азбука", 64, "978-5-389-17639-3");
-        callOfCthulhu.setBinding("Твёрдый");
+        Item callOfCthulhu = new Item("Зов Ктулху", 3000L, 0.57D, 800D, description, characteristics, code, fiction);
         File image = new File("static/images/InitBooks/callOfCthulhu.jpg");
         callOfCthulhu.setImage(fileUtil.fileToBytes(image));
 
@@ -121,19 +127,25 @@ public class InitDB {
                 "Тео Фабер – криминальный психотерапевт. Он долго ждал возможности поработать с Алисией, заставить ее говорить. " +
                 "Но что скрывается за его одержимостью безумной мужеубийцей, и к чему приведут все эти психологические эксперименты? " +
                 "Возможно, к истине, которая угрожает поглотить и его самого...";
+        characteristics = "Автор....................Михаэлидес Алекс\n" +
+                "Издательство.............Эксмо\n" +
+                "Страниц..................352\n" +
+                "Переплёт.................Мягкий\n" +
+                "ISBN.....................978-5-04-105311-6";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book silentPatient = new Book("Безмолвный пациент", 1500L, 0.294D, 390D, description, code, fiction,
-                "Михаэлидес Алекс", "Эксмо", 352, "978-5-04-105311-6");
-        silentPatient.setBinding("Мягкий");
+        Item silentPatient = new Item("Безмолвный пациент", 1500L, 0.294D, 390D, description, characteristics, code, fiction);
         image = new File("static/images/InitBooks/silentPatient.jpg");
         silentPatient.setImage(fileUtil.fileToBytes(image));
 
         description = "Книга знакомит читателя с творчеством известного английского писателя Артура Конан Дойла. " +
                 "На страницах книги вы встретитесь со знакомыми персонажами и сможете проследить за раскрытием таинственных преступлений.";
+        characteristics = "Автор....................Конан Дойл Артур\n" +
+                "Издательство.............Самовар\n" +
+                "Страниц..................175\n" +
+                "Переплёт.................Твёрдый\n" +
+                "ISBN.....................978-5-9781-0119-5";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book sherlockHolmesTales = new Book("Рассказы о Шерлоке Холмсе", 1500L, 0.246D, 150D, description, code, fiction,
-                "Конан Дойл Артур", "Самовар", 175, "978-5-9781-0119-5");
-        sherlockHolmesTales.setBinding("Твёрдый");
+        Item sherlockHolmesTales = new Item("Рассказы о Шерлоке Холмсе", 1500L, 0.246D, 150D, description, characteristics, code, fiction);
         image = new File("static/images/InitBooks/sherlockHolmesTales.jpg");
         sherlockHolmesTales.setImage(fileUtil.fileToBytes(image));
 
@@ -144,10 +156,13 @@ public class InitDB {
                 "рассказывать всем везде и всюду, но хорошо бы «к месту»: от этого анекдот только выиграет. А если кто-то, утверждал " +
                 "Юрий Никулин, просто улыбнется, то и это будет очень хорошо и просто прекрасно. Итогом же прочтения этой книги " +
                 "будет самый лучший и самый остроумный анекдот Юрия Никулина.";
+        characteristics = "Автор....................Никулин Юрий Владимирович\n" +
+                "Издательство.............Зебра Е\n" +
+                "Страниц..................416\n" +
+                "Переплёт.................Твёрдый\n" +
+                "ISBN.....................978-5-907164-32-1";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book jokesFromNikulin = new Book("Анекдоты от Никулина", 3000L, 0.449D, 500D, description, code, fiction,
-                "Никулин Юрий Владимирович", "Зебра Е", 416, "978-5-907164-32-1");
-        jokesFromNikulin.setBinding("Твёрдый");
+        Item jokesFromNikulin = new Item("Анекдоты от Никулина", 3000L, 0.449D, 500D, description, characteristics, code, fiction);
         image = new File("static/images/InitBooks/jokesFromNikulin.jpg");
         jokesFromNikulin.setImage(fileUtil.fileToBytes(image));
 
@@ -157,10 +172,13 @@ public class InitDB {
                 "на мине и, раненный, оказывается в плену у бандитов. Неожиданно в главаре моджахедов он узнает своего " +
                 "старшего брата, которого потерял в раннем детстве. Что делать – уничтожить бандитского эмира, " +
                 "захватить его в плен или… Времени на размышления у Анчара не остается: на помощь своему командиру уже спешат бойцы спецназа…";
+        characteristics = "Автор....................Самаров Сергей Васильевич\n" +
+                "Издательство.............Эксмо\n" +
+                "Страниц..................352\n" +
+                "Переплёт.................Твёрдый\n" +
+                "ISBN.....................978-5-04-109399-0";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book likeTwoDropsOfBlood = new Book("Как две капли крови", 2400L, 0.262D, 400D, description, code, fiction,
-                "Самаров Сергей Васильевич", "Эксмо", 352, "978-5-04-109399-0");
-        likeTwoDropsOfBlood.setBinding("Твёрдый");
+        Item likeTwoDropsOfBlood = new Item("Как две капли крови", 2400L, 0.262D, 400D, description, characteristics, code, fiction);
         image = new File("static/images/InitBooks/likeTwoDropsOfBlood.jpg");
         likeTwoDropsOfBlood.setImage(fileUtil.fileToBytes(image));
 
@@ -181,10 +199,13 @@ public class InitDB {
                 "ученых удачно дополняют изложение теории.\n" +
                 "\n" +
                 "Издание предназначено для старшеклассников, студентов вузов и всех любителей математики.";
+        characteristics = "Автор....................Огами Т.\n" +
+                "Издательство.............ДМК Пресс\n" +
+                "Страниц..................130\n" +
+                "Переплёт.................Мягкий\n" +
+                "ISBN.....................978-5-97060-814-2";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book derivativesAndIntegrals = new Book("Производные и интегралы", 5000L, 0.15D, 850D, description, code, scienceBooks,
-                "Огами Т.", "ДМК Пресс", 130, "978-5-97060-814-2");
-        derivativesAndIntegrals.setBinding("Мягкий");
+        Item derivativesAndIntegrals = new Item("Производные и интегралы", 5000L, 0.15D, 850D, description, characteristics, code, scienceBooks);
         image = new File("static/images/InitBooks/derivativesAndIntegrals.jpg");
         derivativesAndIntegrals.setImage(fileUtil.fileToBytes(image));
 
@@ -195,10 +216,13 @@ public class InitDB {
                 "в учебнике все теоремы приведены с полными доказательствами. Многие понятия и утверждения " +
                 "демонстрируются на модельных примерах. Книга будет полезна студентам и аспирантам, а " +
                 "также всем желающим познакомиться с современной абстрактной математикой.\n";
+        characteristics = "Автор....................Шамин Р.В.\n" +
+                "Издательство.............URSS\n" +
+                "Страниц..................272\n" +
+                "Переплёт.................Мягкий\n" +
+                "ISBN.....................978-5-9710-7813-5";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book functionalAnalysisFromZeroToUnits = new Book("Функциональный анализ от нуля до единиц", 4000L, 0.29D, 520D, description, code, scienceBooks,
-                "Шамин Р.В.", "URSS", 272, "978-5-9710-7813-5");
-        functionalAnalysisFromZeroToUnits.setBinding("Мягкий");
+        Item functionalAnalysisFromZeroToUnits = new Item("Функциональный анализ от нуля до единиц", 4000L, 0.29D, 520D, description, characteristics, code, scienceBooks);
         image = new File("static/images/InitBooks/functionalAnalysisFromZeroToUnits.jpg");
         functionalAnalysisFromZeroToUnits.setImage(fileUtil.fileToBytes(image));
 
@@ -210,10 +234,13 @@ public class InitDB {
                 "Книга имеет электронную версию, активировав доступ к которой можно получить " +
                 "дополнительные информационные материалы (уточняющие рекомендации, развернутые " +
                 "речевые модули, нюансы взаимодействия лекарственных препаратов).\n";
+        characteristics = "Автор....................Шабунин А.В., Маер Р.Ю.\n" +
+                "Издательство.............ГЭОТАР-Медиа\n" +
+                "Страниц..................296\n" +
+                "Переплёт.................Мягкий\n" +
+                "ISBN.....................978-5-9704-5523-4";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book surgeonTactics = new Book("Тактика врача-хирурга", 800L, 0.65D, 1780D, description, code, scienceBooks,
-                "Шабунин А.В., Маер Р.Ю.", "ГЭОТАР-Медиа", 296, "978-5-9704-5523-4");
-        surgeonTactics.setBinding("Мягкий");
+        Item surgeonTactics = new Item("Тактика врача-хирурга", 800L, 0.65D, 1780D, description, characteristics, code, scienceBooks);
         image = new File("static/images/InitBooks/surgeonTactics.jpg");
         surgeonTactics.setImage(fileUtil.fileToBytes(image));
 
@@ -228,10 +255,13 @@ public class InitDB {
                 "наглядности текст сопровождается многочисленными иллюстрациями.\n" +
                 "Издание предназначено для всех, кто интересуется астрономией, космологией и с" +
                 "овременными научными изысканиями в этих областях.";
+        characteristics = "Автор....................Ватанабэ Д.\n" +
+                "Издательство.............ДМК Пресс\n" +
+                "Страниц..................128\n" +
+                "Переплёт.................Мягкий\n" +
+                "ISBN.....................978-5-97060-816-6";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book universeInQuestionsAndAnswers = new Book("Вселенная в вопросах и ответах", 800L, 0.14D, 852D, description, code, scienceBooks,
-                "Ватанабэ Д.", "ДМК Пресс", 128, "978-5-97060-816-6");
-        universeInQuestionsAndAnswers.setBinding("Мягкий");
+        Item universeInQuestionsAndAnswers = new Item("Вселенная в вопросах и ответах", 800L, 0.14D, 852D, description, characteristics, code, scienceBooks);
         image = new File("static/images/InitBooks/universeInQuestionsAndAnswers.jpg");
         universeInQuestionsAndAnswers.setImage(fileUtil.fileToBytes(image));
 
@@ -243,10 +273,13 @@ public class InitDB {
                 "А \"дэ\" – это внутренняя полнота жизни, незримо, но прочно связывающая все живое. " +
                 "Секрет чтения Лао-цзы в том, чтобы постичь ту внутреннюю глубину смысла, которую внушает " +
                 "мудрость, открывая в каждом суждении иной и противоположный смысл.\n";
+        characteristics = "Автор....................Лао-цзы\n" +
+                "Издательство.............АСТ\n" +
+                "Страниц..................288\n" +
+                "Переплёт.................Твёрдый\n" +
+                "ISBN.....................978-5-17-122669-5";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book bookAboutTheWayOfLife = new Book("Книга о пути жизни", 600L, 0.28D, 370D, description, code, scienceBooks,
-                "Лао-цзы", "АСТ", 288, "978-5-17-122669-5");
-        bookAboutTheWayOfLife.setBinding("Твёрдый");
+        Item bookAboutTheWayOfLife = new Item("Книга о пути жизни", 600L, 0.28D, 370D, description, characteristics, code, scienceBooks);
         image = new File("static/images/InitBooks/bookAboutTheWayOfLife.jpg");
         bookAboutTheWayOfLife.setImage(fileUtil.fileToBytes(image));
 
@@ -265,10 +298,13 @@ public class InitDB {
                 "оптимизации запросов. Материал сопровождается многочисленными практическими " +
                 "примерами. Пособие может использоваться как для самостоятельного обучения, " +
                 "так и проведения занятий под руководством преподавателя.";
+        characteristics = "Автор....................Моргунов Е.П.\n" +
+                "Издательство.............БХВ-Петербург\n" +
+                "Страниц..................336\n" +
+                "Переплёт.................Мягкий\n" +
+                "ISBN.....................978-5-9775-4022-3";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book postgreSQL = new Book("PostgreSQL. Основы языка SQL",900L, 0.35D, 690D, description, code, programmingBooks,
-                "Моргунов Е.П.", "БХВ-Петербург", 336, "978-5-9775-4022-3");
-        postgreSQL.setBinding("Мягкий");
+        Item postgreSQL = new Item("PostgreSQL. Основы языка SQL",900L, 0.35D, 690D, description, characteristics, code, programmingBooks);
         image = new File("static/images/InitBooks/postgreSQL.jpg");
         postgreSQL.setImage(fileUtil.fileToBytes(image));
 
@@ -296,10 +332,13 @@ public class InitDB {
                 "• Овладеть механизмом доступа к данным и обработки транзакций\n" +
                 "• Освоить новый функциональный каркас веб-приложений\n" +
                 "• Научиться создавать микрослужбы и другие веб-службы";
+        characteristics = "Автор....................Харроп Роб, Шефер Крис, Козмина Юлиана\n" +
+                "Издательство.............Диалектика / Вильямс\n" +
+                "Страниц..................1120\n" +
+                "Переплёт.................Твёрдый\n" +
+                "ISBN.....................978-5-907114-07-4, 978-1-4842-2807-4";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book spring5ForProfessionals = new Book("Spring 5 для профессионалов", 300L, 1.592D, 4000D, description, code, programmingBooks,
-                "Харроп Роб, Шефер Крис, Козмина Юлиана", "Диалектика / Вильямс", 1120, "978-5-907114-07-4, 978-1-4842-2807-4");
-        spring5ForProfessionals.setBinding("Твёрдый");
+        Item spring5ForProfessionals = new Item("Spring 5 для профессионалов", 300L, 1.592D, 4000D, description, characteristics, code, programmingBooks);
         image = new File("static/images/InitBooks/spring5ForProfessionals.jpg");
         spring5ForProfessionals.setImage(fileUtil.fileToBytes(image));
 
@@ -313,10 +352,13 @@ public class InitDB {
                 "ПО с открытым исходным кодом. Появление огромного числа графических интерфейсов для всех " +
                 "платформ и поддержка IDE позволили внедрить Git в операционные системы семейства Windows. " +
                 "Второе издание книги было обновлено для Git-версии 2.0 и уделяет большое внимание GitHub.";
+        characteristics = "Автор....................Чакон Скотт, Штрауб Бен\n" +
+                "Издательство.............Питер\n" +
+                "Страниц..................496\n" +
+                "Переплёт.................Мягкий\n" +
+                "ISBN.....................978-5-496-01763-3, 978-5-4461-1131-2";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book proGit = new Book("Git для профессионального программиста", 700L, 0.51D, 1075D, description, code, programmingBooks,
-                "Чакон Скотт, Штрауб Бен", "Питер", 496, "978-5-496-01763-3, 978-5-4461-1131-2");
-        proGit.setBinding("Мягкий");
+        Item proGit = new Item("Git для профессионального программиста", 700L, 0.51D, 1075D, description, characteristics, code, programmingBooks);
         image = new File("static/images/InitBooks/proGit.jpg");
         proGit.setImage(fileUtil.fileToBytes(image));
 
@@ -331,10 +373,13 @@ public class InitDB {
                 "профессиональный уровень, с какими бы средствами разработками вы ни " +
                 "работали, какова бы ни была сложность вашего проекта, в этой книге " +
                 "вы найдете нужную информацию, она заставит вас размышлять и поможет создать совершенный код.";
+        characteristics = "Автор....................Макконнелл Стив\n" +
+                "Издательство.............Русская Редакция\n" +
+                "Страниц..................896\n" +
+                "Переплёт.................Твёрдый\n" +
+                "ISBN.....................978-5-7502-0064-1, 978-5-9909805-1-8";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book perfectCode = new Book("Совершенный код", 900L, 1.201D, 1275D, description, code, programmingBooks,
-                "Макконнелл Стив", "Русская Редакция", 896, "978-5-7502-0064-1, 978-5-9909805-1-8");
-        perfectCode.setBinding("Твёрдый");
+        Item perfectCode = new Item("Совершенный код", 900L, 1.201D, 1275D, description, characteristics, code, programmingBooks);
         image = new File("static/images/InitBooks/perfectCode.jpg");
         perfectCode.setImage(fileUtil.fileToBytes(image));
 
@@ -354,10 +399,13 @@ public class InitDB {
                 "и поддерживаемых параллельных приложений. Авторы не предлагают перечень API и " +
                 "механизмов параллелизма, они знакомят с правилами проектирования, паттернами и " +
                 "моделями, которые не зависят от версии Java и на протяжении многих лет остаются актуальными и эффективными.";
+        characteristics = "Автор....................Гетц Б.\n" +
+                "Издательство.............Питер\n" +
+                "Страниц..................464\n" +
+                "Переплёт.................Мягкий\n" +
+                "ISBN.....................978-5-4461-1314-9";
         code = UUID.randomUUID().toString().substring(0, 8);
-        Book javaConcurrencyInPractice = new Book("Java Concurrency на практике", 1500L, 0.48D, 1430D, description, code, programmingBooks,
-                "Гетц Б.", "Питер", 464, "978-5-4461-1314-9");
-        javaConcurrencyInPractice.setBinding("Мягкий");
+        Item javaConcurrencyInPractice = new Item("Java Concurrency на практике", 1500L, 0.48D, 1430D, description, characteristics, code, programmingBooks);
         image = new File("static/images/InitBooks/javaConcurrencyInPractice.jpg");
         javaConcurrencyInPractice.setImage(fileUtil.fileToBytes(image));
 
@@ -365,7 +413,7 @@ public class InitDB {
         itemService.save(spring5ForProfessionals);
         itemService.save(proGit);
         itemService.save(perfectCode);
-        itemService.save(javaConcurrencyInPractice);*/
+        itemService.save(javaConcurrencyInPractice);
 
         /* --- --- */
     }

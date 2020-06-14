@@ -8,8 +8,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Item {
+public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -28,6 +27,9 @@ public abstract class Item {
 
     @Size(min = 10, max = 5000, message = "Description must be between 10 and 5000 symbols")
     private String description;
+
+    @NotBlank(message = "Characteristics cannot be empty")
+    private String characteristics;
 
     @Lob
     private byte[] image;
@@ -52,6 +54,7 @@ public abstract class Item {
                 Double weight,
                 Double price,
                 String description,
+                String characteristics,
                 String code,
                 Category category) {
         this.name = name;
@@ -59,6 +62,7 @@ public abstract class Item {
         this.weight = weight;
         this.price = price;
         this.description = description;
+        this.characteristics = characteristics;
         this.code = code;
         this.category = category;
     }
@@ -112,6 +116,14 @@ public abstract class Item {
         this.description = description;
     }
 
+    public String getCharacteristics() {
+        return characteristics;
+    }
+
+    public void setCharacteristics(String characteristics) {
+        this.characteristics = characteristics;
+    }
+
     public byte[] getImage() {
         return image;
     }
@@ -146,12 +158,13 @@ public abstract class Item {
                 weight.equals(item.weight) &&
                 price.equals(item.price) &&
                 description.equals(item.description) &&
+                characteristics.equals(item.characteristics) &&
                 code.equals(item.code) &&
                 category.equals(item.category);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, count, weight, price, description, code);
+        return Objects.hash(name, count, weight, price, description, characteristics, code);
     }
 }

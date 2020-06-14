@@ -8,9 +8,6 @@ import com.shop.GoodsShop.Utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.util.UUID;
-
 @Component
 public class InitDB {
     private CategoryService categoryService;
@@ -99,7 +96,7 @@ public class InitDB {
 
         /* --- Book Items --- */
 
-        String description = "Говард Филлипс Лавкрафт, не опубликовавший при жизни ни одной книги, " +
+        /*String description = "Говард Филлипс Лавкрафт, не опубликовавший при жизни ни одной книги, " +
                 "стал маяком и ориентиром жанра литературы ужасов, кумиром как широких читательских масс, " +
                 "так и рафинированных интеллектуалов. Влияние его признавали такие мастера, как Борхес, " +
                 "и такие кумиры миллионов, как Стивен Кинг, его рассказы неоднократно экранизировались, " +
@@ -368,7 +365,7 @@ public class InitDB {
         itemService.save(spring5ForProfessionals);
         itemService.save(proGit);
         itemService.save(perfectCode);
-        itemService.save(javaConcurrencyInPractice);
+        itemService.save(javaConcurrencyInPractice);*/
 
         /* --- --- */
     }

@@ -23,8 +23,8 @@ public class OrderValidation {
         this.validator = localValidatorFactoryBean;
 
         Category books = new Category("Books");
-        Item item = new Book("Spring 5", 50L, 1.592D, 3300D,
-                "..........", UUID.randomUUID().toString(), books, "James", "K", 150, "123");
+        Item item = new Item("Spring 5", 50L, 1.592D, 3300D,
+                "..........", "...", UUID.randomUUID().toString(), books);
         Set<Item> orderedItems = new HashSet<>();
         orderedItems.add(item);
 

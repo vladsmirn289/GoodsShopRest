@@ -22,8 +22,8 @@ public class ItemValidation {
         this.validator = localValidatorFactoryBean;
 
         Category books = new Category("Books");
-        this.item = new Book("Spring 5", 50L, 1.592D, 3300D,
-                "..........", UUID.randomUUID().toString(), books, "James", "K", 150, "123");
+        this.item = new Item("Spring 5", 50L, 1.592D, 3300D,
+                "..........", "....", UUID.randomUUID().toString(), books);
     }
 
     @Test
@@ -52,6 +52,17 @@ public class ItemValidation {
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
         assertThat(violation.getMessage()).isEqualTo("Description must be between 10 and 5000 symbols");
+    }
+
+    @Test
+    void shouldNotValidateWithBlankCharacteristics() {
+        item.setCharacteristics("   ");
+        Set<ConstraintViolation<Item>> constraintViolations = validator.validate(item);
+        assertThat(constraintViolations).hasSize(1);
+
+        ConstraintViolation<Item> violation = constraintViolations.iterator().next();
+        assertThat(violation.getPropertyPath().toString()).isEqualTo("characteristics");
+        assertThat(violation.getMessage()).isEqualTo("Characteristics cannot be empty");
     }
 
     @Test

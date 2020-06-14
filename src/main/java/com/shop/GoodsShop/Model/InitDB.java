@@ -416,5 +416,151 @@ public class InitDB {
         itemService.save(javaConcurrencyInPractice);
 
         /* --- --- */
+
+        /* --- Stationery Items --- */
+
+        description = "18 листов.\n" +
+                "Формат: А6.";
+        characteristics = "Издательство....................Шанс" +
+                "Цвет............................Серый" +
+                "Разметка........................Без линковки" +
+                "Количество листов...............18" +
+                "Формат..........................А6" +
+                "Внутренний блок.................Белый" +
+                "ISBN............................978-5-907173-81-1";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Item notebookLandscape = new Item("Блокнот \"Пейзаж\"", 700L, 0.07D, 50D, description, characteristics, code, notebooks);
+        image = new File("static/images/InitStationery/notebookLandscape.jpg");
+        notebookLandscape.setImage(fileUtil.fileToBytes(image));
+
+        description = "Блокнот на картонной подложке.\n" +
+                "28 листов.\n" +
+                "Формат: 115х165 мм.";
+        characteristics = "Издательство....................Шанс" +
+                "Цвет............................Мультиколор" +
+                "Разметка........................Без линковки" +
+                "Крепление.......................Скрепка" +
+                "Количество листов...............28" +
+                "Формат..........................А6" +
+                "Внутренний блок.................Белый";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Item notebookDragonfly = new Item("Блокнот \"Стрекоза\"", 700L, 0.07D, 100D, description, characteristics, code, notebooks);
+        image = new File("static/images/InitStationery/notebookDragonfly.jpg");
+        notebookDragonfly.setImage(fileUtil.fileToBytes(image));
+
+        description = "18 листов.\n" +
+                "Формат: А6.";
+        characteristics = "Издательство....................Шанс" +
+                "Цвет............................Красный" +
+                "Разметка........................Без линковки" +
+                "Крепление.......................Скрепка" +
+                "Количество листов...............18" +
+                "Формат..........................А6" +
+                "Внутренний блок.................Белый" +
+                "ISBN............................978-5-907173-77-4";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Item notebookMillenniumFlowers = new Item("Блокнот \"Тысячелетние цветы\"", 700L, 0.07D, 50D, description, characteristics, code, notebooks);
+        image = new File("static/images/InitStationery/notebookMillenniumFlowers.jpg");
+        notebookMillenniumFlowers.setImage(fileUtil.fileToBytes(image));
+
+        description = "Тетрадь школьная ученическая формата А5 с обложкой из высококачественного " +
+                "мелованного картона плотностью 170 г/м2. В блоке 12 листов в клетку с полями. " +
+                "Бумага офсетная плотностью 60 г/м2, белая. Цвет линовки - синий. Скругленные " +
+                "уголки обложки и блока. Тип скрепления - скоба. Качественная тетрадь - залог успешной учёбы ребенка!\n" +
+                "Размер тетради: 170х203 мм.";
+        characteristics = "Производитель...................ErichKrause" +
+                "Крепление.......................Скрепка" +
+                "Количество листов...............12" +
+                "Формат..........................А5" +
+                "Разметка........................Клетка" +
+                "Особенности.....................С полями";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Item notebookSchoolCage = new Item("Тетрадь школьная, 12 листов, клетка, зеленая", 5000L, 0.038D, 20D, description, characteristics, code, notebooks);
+        image = new File("static/images/InitStationery/notebookSchoolCage.png");
+        notebookSchoolCage.setImage(fileUtil.fileToBytes(image));
+
+        description = "Формат: А5.\n" +
+                "Количество листов: 12, в частую косую линейку.\n" +
+                "Материал обложки: бумага.\n" +
+                "Скрепление: на скобе.\n" +
+                "Офсет.";
+        characteristics = "Производитель...................Hatber" +
+                "Крепление.......................Скрепка" +
+                "Количество листов...............12" +
+                "Формат..........................А5" +
+                "Разметка........................Косая линейка" +
+                "Особенности.....................С полями";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Item notebookSchoolSlantingRuler = new Item("Тетрадь школьная, 12 листов, клетка, зеленая", 5000L, 0.035D, 20D, description, characteristics, code, notebooks);
+        image = new File("static/images/InitStationery/notebookSchoolSlantingRuler.png");
+        notebookSchoolSlantingRuler.setImage(fileUtil.fileToBytes(image));
+
+        description = "Серия стильных альбомов с повышенной плотностью бумаги станет " +
+                "помощником в развитии творческих способностей! 25 листов плотной белой " +
+                "бумаги позволят рисовать всем, чем хотите: от карандаша и маркера до " +
+                "акварели! Выбирайте лучшее!\n" +
+                "Формат А4, офсет 160 гр., 50 страниц, евроспираль.";
+        characteristics = "Производитель...................Бомбора (Эксмо)" +
+                "Редактор........................Сабанова Залина Олеговна" +
+                "Крепление.......................Спираль, гребень" +
+                "Количество листов...............25" +
+                "Формат..........................А4" +
+                "Цвет............................Мульти" +
+                "Тип бумаги......................Офсетная" +
+                "Плотность бумаги, г/м2..........160" +
+                "ISBN............................978-5-04-095366-0";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Item designArtSketchbook = new Item("Design Art. Альбом для рисования", 2000L, 0.298D, 250D, description, characteristics, code, notebooks);
+        image = new File("static/images/InitStationery/designArtSketchbook.jpg");
+        designArtSketchbook.setImage(fileUtil.fileToBytes(image));
+
+        itemService.save(notebookLandscape);
+        itemService.save(notebookDragonfly);
+        itemService.save(notebookMillenniumFlowers);
+        itemService.save(notebookSchoolCage);
+        itemService.save(notebookSchoolSlantingRuler);
+        itemService.save(designArtSketchbook);
+
+        description = "Материал корпуса: цветной пластик.\n" +
+                "Пишущий узел: 0,7 мм.\n" +
+                "Сменный стержень.\n" +
+                "Цвет чернил: синий.\n";
+        characteristics = "Производитель...................Erichkrause" +
+                "Цвет............................Оранжевый" +
+                "Диаметр пишущего узла, мм.......0.7" +
+                "Цвет чернил.....................Синий" +
+                "Тип.............................Шариковые" +
+                "Форма корпуса...................Шестигранная";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Item ballpointPenR301OrangeStick = new Item("Ручка шариковая \"R-301 Orange Stick\", 0,7 мм, синие чернила", 5000L, 0.006D, 15D, description, characteristics, code, writing);
+        image = new File("static/images/InitStationery/ballpointPenR301OrangeStick.jpg");
+        ballpointPenR301OrangeStick.setImage(fileUtil.fileToBytes(image));
+
+        description = "Шариковая ручка \"Pilot BPS\" одна из самых известных моделей. " +
+                "Удобный прорезиненный трехгранный уплотнитель позволяет не выскальзывать " +
+                "ручке при интенсивном письме. Чернила на масляной основе подаются к " +
+                "пишущему узлу непрерывным слоем. Благодаря прозрачному корпусу можно " +
+                "проследить уровень количества чернил и заменить при необходимости " +
+                "стержень. Плотно закрывающийся колпачок защитит от высыхания и " +
+                "протекания чернил. Шариковая ручка \"Pilot BPS\" обеспечит качественное " +
+                "и ровное письмо, и станет незаменимым помощником в учёбе, офисе или дома.\n" +
+                "Пишущий узел: 0,7 мм.\n" +
+                "Толщина линии: 0,32 мм.\n" +
+                "Диаметр корпуса: 9,2 мм.";
+        characteristics = "Производитель...................Pilot" +
+                "Цвет............................Прозрачный" +
+                "Диаметр пишущего узла, мм.......0.7" +
+                "Цвет чернил.....................Синий" +
+                "Тип.............................Шариковые" +
+                "Форма корпуса...................Круглая";
+        code = UUID.randomUUID().toString().substring(0, 8);
+        Item ballpointPenPilotBPS = new Item("Ручка шариковая \"Pilot BPS\", синяя", 5000L, 0.025D, 50D, description, characteristics, code, writing);
+        image = new File("static/images/InitStationery/ballpointPenPilotBPS.jpg");
+        ballpointPenPilotBPS.setImage(fileUtil.fileToBytes(image));
+
+        itemService.save(ballpointPenR301OrangeStick);
+        itemService.save(ballpointPenPilotBPS);
+
+        /* --- --- */
     }
 }

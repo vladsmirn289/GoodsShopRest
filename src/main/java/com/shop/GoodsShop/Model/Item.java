@@ -8,7 +8,8 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-public class Item {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -21,8 +22,6 @@ public class Item {
 
     @Positive(message = "Weight must be positive")
     private Double weight;
-
-    private String color;
 
     @Positive(message = "Price must be positive")
     private Double price;
@@ -64,24 +63,6 @@ public class Item {
         this.category = category;
     }
 
-    public Item(String name,
-                Long count,
-                Double weight,
-                String color,
-                Double price,
-                String description,
-                String code,
-                Category category) {
-        this.name = name;
-        this.count = count;
-        this.weight = weight;
-        this.color = color;
-        this.price = price;
-        this.description = description;
-        this.code = code;
-        this.category = category;
-    }
-
 
     public Long getId() {
         return id;
@@ -113,14 +94,6 @@ public class Item {
 
     public void setWeight(Double weight) {
         this.weight = weight;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public Double getPrice() {

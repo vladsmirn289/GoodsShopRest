@@ -7,8 +7,6 @@ import com.shop.GoodsShop.Service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 /* TODO: add images to items*/
 @Component
 public class InitDB {
@@ -97,7 +95,7 @@ public class InitDB {
 
         /* --- Book Items --- */
 
-        String description = "Говард Филлипс Лавкрафт, не опубликовавший при жизни ни одной книги, " +
+        /*String description = "Говард Филлипс Лавкрафт, не опубликовавший при жизни ни одной книги, " +
                 "стал маяком и ориентиром жанра литературы ужасов, кумиром как широких читательских масс, " +
                 "так и рафинированных интеллектуалов. Влияние его признавали такие мастера, как Борхес, " +
                 "и такие кумиры миллионов, как Стивен Кинг, его рассказы неоднократно экранизировались, " +
@@ -213,7 +211,7 @@ public class InitDB {
         itemService.save(functionalAnalysisFromZeroToUnits);
         itemService.save(encyclopedia4DAnatomy);
         itemService.save(universeInQuestionsAndAnswers);
-        itemService.save(bookAboutTheWayOfLife);
+        itemService.save(bookAboutTheWayOfLife);*/
 
         /* --- --- */
     }

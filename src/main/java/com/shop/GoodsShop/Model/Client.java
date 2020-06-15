@@ -37,7 +37,7 @@ public class Client {
                inverseJoinColumns = @JoinColumn(name = "item_id"))
     private Set<Item> basket = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "client", cascade = CascadeType.REMOVE)
     private Set<Order> orders = new HashSet<>();
 
 
@@ -59,14 +59,14 @@ public class Client {
                   String password,
                   String firstName,
                   String lastName,
-                  String login,
-                  String patronymic) {
+                  String patronymic,
+                  String login) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.login = login;
         this.patronymic = patronymic;
+        this.login = login;
     }
 
 

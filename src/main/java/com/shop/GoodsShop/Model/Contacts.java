@@ -3,6 +3,7 @@ package com.shop.GoodsShop.Model;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Embeddable
 public class Contacts {
@@ -75,5 +76,22 @@ public class Contacts {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contacts contacts = (Contacts) o;
+        return zipCode.equals(contacts.zipCode) &&
+                country.equals(contacts.country) &&
+                city.equals(contacts.city) &&
+                street.equals(contacts.street) &&
+                phoneNumber.equals(contacts.phoneNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(zipCode, country, city, street, phoneNumber);
     }
 }

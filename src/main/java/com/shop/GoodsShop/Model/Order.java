@@ -20,9 +20,8 @@ public class Order {
     private Long id;
 
     @NotEmpty(message = "Ordered items cannot be empty")
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "item_id")
-    private Set<Item> orderedItems = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
+    private Set<OrderedItem> orderedItems = new HashSet<>();
 
     @Positive(message = "Order count must be greater than 0")
     private Long orderedCount;
@@ -38,6 +37,10 @@ public class Order {
 
     private String trackNumber;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    private Client client;
+
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     private Date createdOn;
@@ -45,7 +48,7 @@ public class Order {
 
     protected Order() {}
 
-    public Order(Set<Item> orderedItems,
+    public Order(Set<OrderedItem> orderedItems,
                  Long orderedCount,
                  Contacts contacts,
                  String paymentMethod) {
@@ -64,11 +67,11 @@ public class Order {
         this.id = id;
     }
 
-    public Set<Item> getOrderedItems() {
+    public Set<OrderedItem> getOrderedItems() {
         return orderedItems;
     }
 
-    public void setOrderedItems(Set<Item> orderedItems) {
+    public void setOrderedItems(Set<OrderedItem> orderedItems) {
         this.orderedItems = orderedItems;
     }
 
@@ -111,6 +114,8 @@ public class Order {
     public void setTrackNumber(String trackNumber) {
         this.trackNumber = trackNumber;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

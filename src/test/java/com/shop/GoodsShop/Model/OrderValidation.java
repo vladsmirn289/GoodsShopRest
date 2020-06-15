@@ -25,8 +25,9 @@ public class OrderValidation {
         Category books = new Category("Books");
         Item item = new Item("Spring 5", 50L, 1.592D, 3300D,
                 "..........", "...", UUID.randomUUID().toString(), books);
-        Set<Item> orderedItems = new HashSet<>();
-        orderedItems.add(item);
+        OrderedItem orderedItem = new OrderedItem(item, 1);
+        Set<OrderedItem> orderedItems = new HashSet<>();
+        orderedItems.add(orderedItem);
 
         Contacts contacts = new Contacts("123456", "Russia",
                 "Moscow", "Bolotnaya street", "+7-499-123-45-67");

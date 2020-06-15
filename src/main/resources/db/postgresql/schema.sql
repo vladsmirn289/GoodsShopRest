@@ -5,14 +5,14 @@ create table basket_items (
     item_id int8 not null,
     primary key (user_id, item_id)
 )
-    
+
 create table category (
    id int8 not null,
     name varchar(255),
     parent_id int8,
     primary key (id)
 )
-    
+
 create table client (
    id int8 not null,
     email varchar(255),
@@ -23,21 +23,15 @@ create table client (
     patronymic varchar(255),
     primary key (id)
 )
-    
-create table client_orders (
-   client_id int8 not null,
-    orders_id int8 not null,
-    primary key (client_id, orders_id)
-)
-    
+
 create table item (
    id int8 not null,
+    characteristics varchar(255),
     code varchar(255),
-    color varchar(255),
     count int8,
     created_on date,
     description varchar(5000),
-    image oid not null,
+    image oid,
     name varchar(255),
     price float8,
     weight float8,
@@ -45,7 +39,7 @@ create table item (
     item_id int8,
     primary key (id)
 )
-    
+
 create table orders (
    id int8 not null,
     city varchar(255),
@@ -58,43 +52,36 @@ create table orders (
     ordered_count int8,
     payment_method varchar(255),
     track_number varchar(255),
+    client_id int8,
     primary key (id)
 )
-    
-alter table if exists client_orders 
-   add constraint UK_h6x1ubqvgqnj82atuvlpeiijc unique (orders_id)
-    
-alter table if exists basket_items 
-   add constraint FKpl11cw0c9nrsuet0xa7vcc7xr 
-   foreign key (item_id) 
+
+alter table if exists basket_items
+   add constraint FKpl11cw0c9nrsuet0xa7vcc7xr
+   foreign key (item_id)
    references item
-    
-alter table if exists basket_items 
-   add constraint FKsek92n2afst4jvv8xihigqv5d 
-   foreign key (user_id) 
+
+alter table if exists basket_items
+   add constraint FKsek92n2afst4jvv8xihigqv5d
+   foreign key (user_id)
    references client
-    
-alter table if exists category 
-   add constraint FK2y94svpmqttx80mshyny85wqr 
-   foreign key (parent_id) 
+
+alter table if exists category
+   add constraint FK2y94svpmqttx80mshyny85wqr
+   foreign key (parent_id)
    references category
-    
-alter table if exists client_orders 
-   add constraint FKgylcpdber6tdw9hbry7m2sb9a 
-   foreign key (orders_id) 
+
+alter table if exists item
+   add constraint FK2n9w8d0dp4bsfra9dcg0046l4
+   foreign key (category_id)
+   references category
+
+alter table if exists item
+   add constraint FKrid3br8h0y448syw9ec5rjdy0
+   foreign key (item_id)
    references orders
-    
-alter table if exists client_orders 
-   add constraint FKjwct7foag4dx0nrmipr5w5prx 
-   foreign key (client_id) 
+
+alter table if exists orders
+   add constraint FK17yo6gry2nuwg2erwhbaxqbs9
+   foreign key (client_id)
    references client
-    
-alter table if exists item 
-   add constraint FK2n9w8d0dp4bsfra9dcg0046l4 
-   foreign key (category_id) 
-   references category
-    
-alter table if exists item 
-   add constraint FKrid3br8h0y448syw9ec5rjdy0 
-   foreign key (item_id) 
-   references orders

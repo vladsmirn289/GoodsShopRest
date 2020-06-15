@@ -1,14 +1,15 @@
 package com.shop.GoodsShop.Model;
 
-import com.shop.GoodsShop.Service.CategoryService;
-import com.shop.GoodsShop.Service.ClientService;
-import com.shop.GoodsShop.Service.ItemService;
-import com.shop.GoodsShop.Service.OrderService;
+import com.shop.GoodsShop.Service.*;
 import com.shop.GoodsShop.Utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Component
@@ -17,6 +18,7 @@ public class InitDB {
     private ItemService itemService;
     private ClientService clientService;
     private OrderService orderService;
+    private OrderedItemService orderedItemService;
 
     @Autowired
     public void setCategoryService(CategoryService categoryService) {
@@ -38,6 +40,12 @@ public class InitDB {
         this.orderService = orderService;
     }
 
+    @Autowired
+    public void setOrderedItemService(OrderedItemService orderedItemService) {
+        this.orderedItemService = orderedItemService;
+    }
+
+    @Transactional
     public void init() {
         Category books = new Category("Книги");
         categoryService.save(books);
@@ -945,6 +953,72 @@ public class InitDB {
         Item coolerMasterHeadset = new Item("Гарнитура Cooler Master CH-321", 600L, 0.5D, 3811D, description, characteristics, code, peripherals);
         image = new File("static/images/InitElectronics/coolerMasterHeadset.jpg");
         coolerMasterHeadset.setImage(fileUtil.fileToBytes(image));
+
+        /* --- --- */
+
+        /* --- Users init --- */
+
+        //Without items
+        Client yakovMaurov = new Client("condricka@hotmail.com", "25oMTtm3", "Яков", "Маюров", "YakovMaurov");
+        Client prokofiyKravchuk = new Client("hane.ayla@yahoo.com", "1Rhm47zO", "Прокофий", "Кравчук", "ProkofiyKravchuk");
+        Client timofeyBarshev = new Client("norene04@yahoo.com", "Yn865FbJ", "Тимофей", "Барышев", "TimofeyBarshev");
+
+        //With items in backet
+        Client egorSolomonov = new Client("tianna94@gmail.com", "92zoKcG5", "Егор", "Соломонов", "EgorSolomonov");
+        Client vladislavPutilin = new Client("hassan66@yahoo.com", "2s1L8lPC", "Владислав", "Путилин", "VladislavPutilin");
+        Client borislavPotemkin = new Client("dylan80@yahoo.com", "UBq9H13C", "Борислав", "Потёмкин", "BorislavPotemkin");
+
+        Set<Item> basket1 = new HashSet<>(Arrays.asList(callOfCthulhu, bookAboutTheWayOfLife, jokesFromNikulin));
+        Set<Item> basket2 = new HashSet<>(Arrays.asList(proGit, javaConcurrencyInPractice, ballpointPenPilotBPS, notebookLandscape));
+        Set<Item> basket3 = new HashSet<>(Arrays.asList(computerMicrophoneSvenMK490, dedragonThemisGamingHeadset, keyboardGamingLogitech, wiredGamingMouseRedragonVampire));
+
+        egorSolomonov.setBasket(basket1);
+        vladislavPutilin.setBasket(basket2);
+        borislavPotemkin.setBasket(basket3);
+
+        //With orders
+        Client lianaKraevska = new Client("electa54@lowe.biz", "Z1BY5O6c", "Лиана", "Краевская", "LianaKraevska");
+        Client albinaBudanova = new Client("nickolas49@ohara.org", "v7gIe11t", "Альбина", "Буданова", "AlbinaBudanova");
+        Client yaroslavaNaumova = new Client("koby19@nitzsche.com", "52Jof9OZ", "Ярослава", "Наумова", "YaroslavaNaumova");
+
+        OrderedItem orderedItem1 = new OrderedItem(spring5ForProfessionals, 1);
+        OrderedItem orderedItem2 = new OrderedItem(spring5ForProfessionals, 1);
+
+        //With items in backet and orders
+        Client mayaLimarova = new Client("upredovic@hotmail.com", "Al6pka00", "Майя", "Лимарова", "MayaLimarova");
+        Client mariyaSilaeva = new Client("rondricka@jacobs.com", "tPK9B11t", "Мария", "Силаева", "MariyaSilaeva");
+        Client svetlanaMantorova = new Client("odie40@hayes.org", "Dyi63u9s", "Светлана", "Манторова", "SvetlanaMantorova");
+
+
+
+        //Test user
+        Client vladislavSmirnov = new Client("vladsmirn289@gmail.com", "12345", "Владислав", "Смирнов", "VladislavSmirnov");
+
+
+        //Manager, who manage orders and create items
+        Client manager1 = new Client("bonnie99@grimes.com", "25oMTtm3", "Роман", "Гусев", "RomanGusev");
+        Client manager2 = new Client("kyle67@grady.com", "25oMTtm3", "Регина", "Рудова", "ReginaRudova");
+        Client manager3 = new Client("xwitting@powlowski.com", "25oMTtm3", "Вячеслав", "Юнкин", "VyacheslavYunkin");
+
+        Client admin = new Client("goconnell@bernhard.com", "25oMTtm3", "Семён", "Буков", "CemenBukov");
+
+        clientService.save(yakovMaurov);
+        clientService.save(prokofiyKravchuk);
+        clientService.save(timofeyBarshev);
+        clientService.save(egorSolomonov);
+        clientService.save(vladislavPutilin);
+        clientService.save(borislavPotemkin);
+        clientService.save(lianaKraevska);
+        clientService.save(albinaBudanova);
+        clientService.save(yaroslavaNaumova);
+        clientService.save(mayaLimarova);
+        clientService.save(mariyaSilaeva);
+        clientService.save(svetlanaMantorova);
+        clientService.save(vladislavSmirnov);
+        clientService.save(manager1);
+        clientService.save(manager2);
+        clientService.save(manager3);
+        clientService.save(admin);
 
         /* --- --- */
     }

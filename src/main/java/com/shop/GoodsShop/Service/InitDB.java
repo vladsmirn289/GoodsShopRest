@@ -1,16 +1,21 @@
-package com.shop.GoodsShop.Model;
+package com.shop.GoodsShop.Service;
 
-import com.shop.GoodsShop.Service.*;
+import com.shop.GoodsShop.Model.*;
 import com.shop.GoodsShop.Utils.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.*;
 
-@Component
+@Service
+@Transactional
 public class InitDB {
+    Logger logger = LoggerFactory.getLogger(InitDB.class);
+
     private CategoryService categoryService;
     private ItemService itemService;
     private ClientService clientService;
@@ -42,8 +47,10 @@ public class InitDB {
         this.orderedItemService = orderedItemService;
     }
 
-    @Transactional
     public void init() {
+        logger.info("Initializing database...");
+
+        logger.debug("Initialize categories");
         Category books = new Category("Книги");
         categoryService.save(books);
 
@@ -87,6 +94,7 @@ public class InitDB {
 
         FileUtil fileUtil = new FileUtil();
 
+        logger.debug("Initialize books");
         /* --- Book Items --- */
 
         String description = "Говард Филлипс Лавкрафт, не опубликовавший при жизни ни одной книги, " +
@@ -104,7 +112,7 @@ public class InitDB {
                 "ISBN.....................978-5-389-17639-3";
         String code = UUID.randomUUID().toString().substring(0, 8);
         Item callOfCthulhu = new Item("Зов Ктулху", 3000L, 0.57D, 800D, description, characteristics, code, fiction);
-        File image = new File("static/images/InitBooks/callOfCthulhu.jpg");
+        File image = new File("src/main/resources/static/images/InitBooks/callOfCthulhu.jpg");
         callOfCthulhu.setImage(fileUtil.fileToBytes(image));
 
         description = "Жизнь Алисии Беренсон кажется идеальной. Известная художница вышла замуж за востребованного " +
@@ -124,7 +132,7 @@ public class InitDB {
                 "ISBN.....................978-5-04-105311-6";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item silentPatient = new Item("Безмолвный пациент", 1500L, 0.294D, 390D, description, characteristics, code, fiction);
-        image = new File("static/images/InitBooks/silentPatient.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/silentPatient.jpg");
         silentPatient.setImage(fileUtil.fileToBytes(image));
 
         description = "Книга знакомит читателя с творчеством известного английского писателя Артура Конан Дойла. " +
@@ -136,7 +144,7 @@ public class InitDB {
                 "ISBN.....................978-5-9781-0119-5";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item sherlockHolmesTales = new Item("Рассказы о Шерлоке Холмсе", 1500L, 0.246D, 150D, description, characteristics, code, fiction);
-        image = new File("static/images/InitBooks/sherlockHolmesTales.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/sherlockHolmesTales.jpg");
         sherlockHolmesTales.setImage(fileUtil.fileToBytes(image));
 
         description = "Юрий Никулин, великий артист, замечательный клоун и чрезвычайно остроумный собеседник, " +
@@ -153,7 +161,7 @@ public class InitDB {
                 "ISBN.....................978-5-907164-32-1";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item jokesFromNikulin = new Item("Анекдоты от Никулина", 3000L, 0.449D, 500D, description, characteristics, code, fiction);
-        image = new File("static/images/InitBooks/jokesFromNikulin.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/jokesFromNikulin.jpg");
         jokesFromNikulin.setImage(fileUtil.fileToBytes(image));
 
         description = "Старший лейтенант Ибрагим Крушинин командует ротой спецназа на Северном Кавказе. " +
@@ -169,7 +177,7 @@ public class InitDB {
                 "ISBN.....................978-5-04-109399-0";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item likeTwoDropsOfBlood = new Item("Как две капли крови", 2400L, 0.262D, 400D, description, characteristics, code, fiction);
-        image = new File("static/images/InitBooks/likeTwoDropsOfBlood.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/likeTwoDropsOfBlood.jpg");
         likeTwoDropsOfBlood.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(callOfCthulhu);
@@ -196,7 +204,7 @@ public class InitDB {
                 "ISBN.....................978-5-97060-814-2";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item derivativesAndIntegrals = new Item("Производные и интегралы", 5000L, 0.15D, 850D, description, characteristics, code, scienceBooks);
-        image = new File("static/images/InitBooks/derivativesAndIntegrals.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/derivativesAndIntegrals.jpg");
         derivativesAndIntegrals.setImage(fileUtil.fileToBytes(image));
 
         description = "Книга представляет собой учебник по функциональному анализу. " +
@@ -213,7 +221,7 @@ public class InitDB {
                 "ISBN.....................978-5-9710-7813-5";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item functionalAnalysisFromZeroToUnits = new Item("Функциональный анализ от нуля до единиц", 4000L, 0.29D, 520D, description, characteristics, code, scienceBooks);
-        image = new File("static/images/InitBooks/functionalAnalysisFromZeroToUnits.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/functionalAnalysisFromZeroToUnits.jpg");
         functionalAnalysisFromZeroToUnits.setImage(fileUtil.fileToBytes(image));
 
         description = "Практическое руководство по хирургии содержит современную и актуальную " +
@@ -231,7 +239,7 @@ public class InitDB {
                 "ISBN.....................978-5-9704-5523-4";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item surgeonTactics = new Item("Тактика врача-хирурга", 800L, 0.65D, 1780D, description, characteristics, code, scienceBooks);
-        image = new File("static/images/InitBooks/surgeonTactics.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/surgeonTactics.jpg");
         surgeonTactics.setImage(fileUtil.fileToBytes(image));
 
         description = "Новые открытия в астрономии совершаются ежегодно, и новостные издания пестрят " +
@@ -252,7 +260,7 @@ public class InitDB {
                 "ISBN.....................978-5-97060-816-6";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item universeInQuestionsAndAnswers = new Item("Вселенная в вопросах и ответах", 800L, 0.14D, 852D, description, characteristics, code, scienceBooks);
-        image = new File("static/images/InitBooks/universeInQuestionsAndAnswers.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/universeInQuestionsAndAnswers.jpg");
         universeInQuestionsAndAnswers.setImage(fileUtil.fileToBytes(image));
 
         description = "\"Книга о пути жизни\" Лао-цзы, называемая по-китайски \"Дао-Дэ цзин\", занимает " +
@@ -270,7 +278,7 @@ public class InitDB {
                 "ISBN.....................978-5-17-122669-5";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item bookAboutTheWayOfLife = new Item("Книга о пути жизни", 600L, 0.28D, 370D, description, characteristics, code, scienceBooks);
-        image = new File("static/images/InitBooks/bookAboutTheWayOfLife.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/bookAboutTheWayOfLife.jpg");
         bookAboutTheWayOfLife.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(derivativesAndIntegrals);
@@ -295,7 +303,7 @@ public class InitDB {
                 "ISBN.....................978-5-9775-4022-3";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item postgreSQL = new Item("PostgreSQL. Основы языка SQL",900L, 0.35D, 690D, description, characteristics, code, programmingBooks);
-        image = new File("static/images/InitBooks/postgreSQL.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/postgreSQL.jpg");
         postgreSQL.setImage(fileUtil.fileToBytes(image));
 
         description = "Эта книга воплощает знания и опыт работы авторов с каркасом Spring " +
@@ -329,7 +337,7 @@ public class InitDB {
                 "ISBN.....................978-5-907114-07-4, 978-1-4842-2807-4";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item spring5ForProfessionals = new Item("Spring 5 для профессионалов", 300L, 1.592D, 4000D, description, characteristics, code, programmingBooks);
-        image = new File("static/images/InitBooks/spring5ForProfessionals.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/spring5ForProfessionals.jpg");
         spring5ForProfessionals.setImage(fileUtil.fileToBytes(image));
 
         description = "Эта книга представляет собой обновленное руководство по использованию Git в " +
@@ -349,7 +357,7 @@ public class InitDB {
                 "ISBN.....................978-5-496-01763-3, 978-5-4461-1131-2";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item proGit = new Item("Git для профессионального программиста", 700L, 0.51D, 1075D, description, characteristics, code, programmingBooks);
-        image = new File("static/images/InitBooks/proGit.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/proGit.jpg");
         proGit.setImage(fileUtil.fileToBytes(image));
 
         description = "Более 10 лет первое издание этой книги считалось одним из " +
@@ -370,7 +378,7 @@ public class InitDB {
                 "ISBN.....................978-5-7502-0064-1, 978-5-9909805-1-8";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item perfectCode = new Item("Совершенный код", 900L, 1.201D, 1275D, description, characteristics, code, programmingBooks);
-        image = new File("static/images/InitBooks/perfectCode.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/perfectCode.jpg");
         perfectCode.setImage(fileUtil.fileToBytes(image));
 
         description = "Потоки являются фундаментальной частью платформы Java. " +
@@ -396,7 +404,7 @@ public class InitDB {
                 "ISBN.....................978-5-4461-1314-9";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item javaConcurrencyInPractice = new Item("Java Concurrency на практике", 1500L, 0.48D, 1430D, description, characteristics, code, programmingBooks);
-        image = new File("static/images/InitBooks/javaConcurrencyInPractice.jpg");
+        image = new File("src/main/resources/static/images/InitBooks/javaConcurrencyInPractice.jpg");
         javaConcurrencyInPractice.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(postgreSQL);
@@ -407,6 +415,7 @@ public class InitDB {
 
         /* --- --- */
 
+        logger.debug("Initialize stationery items");
         /* --- Stationery Items --- */
 
         description = "18 листов.\n" +
@@ -420,7 +429,7 @@ public class InitDB {
                 "ISBN............................978-5-907173-81-1";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item notebookLandscape = new Item("Блокнот \"Пейзаж\"", 700L, 0.07D, 50D, description, characteristics, code, notebooks);
-        image = new File("static/images/InitStationery/notebookLandscape.jpg");
+        image = new File("src/main/resources/static/images/InitStationery/notebookLandscape.jpg");
         notebookLandscape.setImage(fileUtil.fileToBytes(image));
 
         description = "Блокнот на картонной подложке.\n" +
@@ -435,7 +444,7 @@ public class InitDB {
                 "Внутренний блок.................Белый";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item notebookDragonfly = new Item("Блокнот \"Стрекоза\"", 700L, 0.07D, 100D, description, characteristics, code, notebooks);
-        image = new File("static/images/InitStationery/notebookDragonfly.jpg");
+        image = new File("src/main/resources/static/images/InitStationery/notebookDragonfly.jpg");
         notebookDragonfly.setImage(fileUtil.fileToBytes(image));
 
         description = "18 листов.\n" +
@@ -450,7 +459,7 @@ public class InitDB {
                 "ISBN............................978-5-907173-77-4";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item notebookMillenniumFlowers = new Item("Блокнот \"Тысячелетние цветы\"", 700L, 0.07D, 50D, description, characteristics, code, notebooks);
-        image = new File("static/images/InitStationery/notebookMillenniumFlowers.jpg");
+        image = new File("src/main/resources/static/images/InitStationery/notebookMillenniumFlowers.jpg");
         notebookMillenniumFlowers.setImage(fileUtil.fileToBytes(image));
 
         description = "Тетрадь школьная ученическая формата А5 с обложкой из высококачественного " +
@@ -466,7 +475,7 @@ public class InitDB {
                 "Особенности.....................С полями";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item notebookSchoolCage = new Item("Тетрадь школьная, 12 листов, клетка, зеленая", 5000L, 0.038D, 20D, description, characteristics, code, notebooks);
-        image = new File("static/images/InitStationery/notebookSchoolCage.png");
+        image = new File("src/main/resources/static/images/InitStationery/notebookSchoolCage.png");
         notebookSchoolCage.setImage(fileUtil.fileToBytes(image));
 
         description = "Формат: А5.\n" +
@@ -482,7 +491,7 @@ public class InitDB {
                 "Особенности.....................С полями";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item notebookSchoolSlantingRuler = new Item("Тетрадь школьная, 12 листов, клетка, зеленая", 5000L, 0.035D, 20D, description, characteristics, code, notebooks);
-        image = new File("static/images/InitStationery/notebookSchoolSlantingRuler.png");
+        image = new File("src/main/resources/static/images/InitStationery/notebookSchoolSlantingRuler.png");
         notebookSchoolSlantingRuler.setImage(fileUtil.fileToBytes(image));
 
         description = "Серия стильных альбомов с повышенной плотностью бумаги станет " +
@@ -501,7 +510,7 @@ public class InitDB {
                 "ISBN............................978-5-04-095366-0";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item designArtSketchbook = new Item("Design Art. Альбом для рисования", 2000L, 0.298D, 250D, description, characteristics, code, notebooks);
-        image = new File("static/images/InitStationery/designArtSketchbook.jpg");
+        image = new File("src/main/resources/static/images/InitStationery/designArtSketchbook.jpg");
         designArtSketchbook.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(notebookLandscape);
@@ -523,7 +532,7 @@ public class InitDB {
                 "Форма корпуса...................Шестигранная";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item ballpointPenR301OrangeStick = new Item("Ручка шариковая \"R-301 Orange Stick\", 0,7 мм, синие чернила", 5000L, 0.006D, 15D, description, characteristics, code, writing);
-        image = new File("static/images/InitStationery/ballpointPenR301OrangeStick.jpg");
+        image = new File("src/main/resources/static/images/InitStationery/ballpointPenR301OrangeStick.jpg");
         ballpointPenR301OrangeStick.setImage(fileUtil.fileToBytes(image));
 
         description = "Шариковая ручка \"Pilot BPS\" одна из самых известных моделей. " +
@@ -545,7 +554,7 @@ public class InitDB {
                 "Форма корпуса...................Круглая";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item ballpointPenPilotBPS = new Item("Ручка шариковая \"Pilot BPS\", синяя", 5000L, 0.025D, 50D, description, characteristics, code, writing);
-        image = new File("static/images/InitStationery/ballpointPenPilotBPS.jpg");
+        image = new File("src/main/resources/static/images/InitStationery/ballpointPenPilotBPS.jpg");
         ballpointPenPilotBPS.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(ballpointPenR301OrangeStick);
@@ -553,7 +562,8 @@ public class InitDB {
 
         /* --- --- */
 
-        /* --- Electronics Items --- */
+        logger.debug("Initialize electronic items");
+        /* --- Electronic Items --- */
 
         description = "Тонкий дисплей с диагональю 35,56 см (14\"), FHD (1920x1080), IPS, eDP, антибликовое покрытие.\n" +
                 "Процессор Intel Core i3-10110U (базовая частота 2,1 ГГц, до 4,1 ГГц при " +
@@ -585,7 +595,7 @@ public class InitDB {
                 "Гарантийный срок................12 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item laptopHPProBook = new Item("Ноутбук HP ProBook 440 G7, 14\", Intel Core i3 10110U, 8192 Мб, Windows 10 Pro, арт. 9VZ38EA#ACB", 200L, 2.9D, 59320D, description, characteristics, code, computers);
-        image = new File("static/images/InitElectronics/laptopHPProBook.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/laptopHPProBook.jpg");
         laptopHPProBook.setImage(fileUtil.fileToBytes(image));
 
         description = "Ноутбук Lenovo ThinkBook 14 разработан для тех, кому " +
@@ -613,7 +623,7 @@ public class InitDB {
                 "Гарантийный срок................12 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item laptopLenovoThinkBook = new Item("Ноутбук Lenovo ThinkBook 14-IIL, 14.0\", Intel Core i5 1035G4, 8 Гб, DOS, арт. 20SL004BRU", 200L, 2.7D, 54220D, description, characteristics, code, computers);
-        image = new File("static/images/InitElectronics/laptopLenovoThinkBook.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/laptopLenovoThinkBook.jpg");
         laptopLenovoThinkBook.setImage(fileUtil.fileToBytes(image));
 
         description = "Экран 39.6 см (15.6\"), HD (1366x768), светодиодная подсветка, технология ComfyView.\n" +
@@ -635,7 +645,7 @@ public class InitDB {
                 "Гарантийный срок................12 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item laptopAcerExtensa = new Item("Ноутбук Acer Extensa EX215-51K-55C5, 15.6\", Intel Core i5-6300U, 8 Гб, Windows 10 Home, арт. NX.EFPER.00Y", 200L, 3.3D, 52609D, description, characteristics, code, computers);
-        image = new File("static/images/InitElectronics/laptopAcerExtensa.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/laptopAcerExtensa.jpg");
         laptopAcerExtensa.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(laptopHPProBook);
@@ -658,7 +668,7 @@ public class InitDB {
                 "Гарантийный срок................18 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item dedragonSuraraMechanicalKeyboard = new Item("Механическая клавиатура Redragon Surara", 500L, 1.31D, 5000D, description, characteristics, code, peripherals);
-        image = new File("static/images/InitElectronics/dedragonSuraraMechanicalKeyboard.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/dedragonSuraraMechanicalKeyboard.jpg");
         dedragonSuraraMechanicalKeyboard.setImage(fileUtil.fileToBytes(image));
 
         description = "Проводная клавиатура: да.\n" +
@@ -682,7 +692,7 @@ public class InitDB {
                 "Материал........................Пластик, металл";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item keyboardGamingLogitech = new Item("Клавиатура игровая Logitech G815 Linear, арт. 920-009007", 500L, 1.2D, 16124D, description, characteristics, code, peripherals);
-        image = new File("static/images/InitElectronics/keyboardGamingLogitech.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/keyboardGamingLogitech.jpg");
         keyboardGamingLogitech.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(dedragonSuraraMechanicalKeyboard);
@@ -709,7 +719,7 @@ public class InitDB {
                 "Гарантийный срок................18 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item wiredGamingMouseRedragonVampire = new Item("Мышь проводная игровая Redragon Vampire", 500L, 0.35D, 2150D, description, characteristics, code, peripherals);
-        image = new File("static/images/InitElectronics/wiredGamingMouseRedragonVampire.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/wiredGamingMouseRedragonVampire.jpg");
         wiredGamingMouseRedragonVampire.setImage(fileUtil.fileToBytes(image));
 
         description = "Тип соединения: беспроводное.\n" +
@@ -730,7 +740,7 @@ public class InitDB {
                 "Принцип работы..................Светодиодная";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item hpWirelessMouse = new Item("Компьютерная мышь HP Wireless Mouse 220 Blue, арт. 7KX11AA#ABB", 500L, 0.22D, 1462D, description, characteristics, code, peripherals);
-        image = new File("static/images/InitElectronics/hpWirelessMouse.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/hpWirelessMouse.jpg");
         hpWirelessMouse.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(wiredGamingMouseRedragonVampire);
@@ -756,7 +766,7 @@ public class InitDB {
                           "Страна изготовителя.............Китай";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item computerMicrophoneSvenMK150 = new Item("Микрофон компьютерный \"Sven MK-150\", цвет черный", 400L, 0.04D, 1500D, description, characteristics, code, peripherals);
-        image = new File("static/images/InitElectronics/computerMicrophoneSvenMK150.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/computerMicrophoneSvenMK150.jpg");
         computerMicrophoneSvenMK150.setImage(fileUtil.fileToBytes(image));
 
         description = "Эта модель станет незаменимым помощником на Вашем рабочем " +
@@ -782,7 +792,7 @@ public class InitDB {
                 "Страна изготовителя.............Китай";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item computerMicrophoneSvenMK490 = new Item("Микрофон компьютерный \"Sven MK-490\", цвет черный", 400L, 0.22D, 730D, description, characteristics, code, peripherals);
-        image = new File("static/images/InitElectronics/computerMicrophoneSvenMK490.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/computerMicrophoneSvenMK490.jpg");
         computerMicrophoneSvenMK490.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(computerMicrophoneSvenMK150);
@@ -842,7 +852,7 @@ public class InitDB {
                 "Микрофон........................Встроенный";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item tendaC50SWirelessHDSwivelCamera = new Item("Беспроводная поворотная HD камера Tenda C50S", 300L, 0.5D, 3000D, description, characteristics, code, peripherals);
-        image = new File("static/images/InitElectronics/tendaC50SWirelessHDSwivelCamera.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/tendaC50SWirelessHDSwivelCamera.jpg");
         tendaC50SWirelessHDSwivelCamera.setImage(fileUtil.fileToBytes(image));
 
         description = "Формат 4k hd: не упустите ни одной детали\n" +
@@ -898,7 +908,7 @@ public class InitDB {
                 "Микрофон........................Встроенный";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item webLogitechCamera = new Item("Камера Web Logitech Webcam BRIO 960-001106", 300L, 0.35D, 18963D, description, characteristics, code, peripherals);
-        image = new File("static/images/InitElectronics/webLogitechCamera.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/webLogitechCamera.jpg");
         webLogitechCamera.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(tendaC50SWirelessHDSwivelCamera);
@@ -925,7 +935,7 @@ public class InitDB {
                 "Гарантийный срок................18 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item dedragonThemisGamingHeadset = new Item("Игровая гарнитура Redragon Themis, красный + черный", 600L, 0.46D, 1650D, description, characteristics, code, peripherals);
-        image = new File("static/images/InitElectronics/dedragonThemisGamingHeadset.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/dedragonThemisGamingHeadset.jpg");
         dedragonThemisGamingHeadset.setImage(fileUtil.fileToBytes(image));
 
         description = "Тип: гарнитура.\n" +
@@ -948,7 +958,7 @@ public class InitDB {
                 "Цвет............................Чёрный, красный";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item coolerMasterHeadset = new Item("Гарнитура Cooler Master CH-321", 600L, 0.5D, 3811D, description, characteristics, code, peripherals);
-        image = new File("static/images/InitElectronics/coolerMasterHeadset.jpg");
+        image = new File("src/main/resources/static/images/InitElectronics/coolerMasterHeadset.jpg");
         coolerMasterHeadset.setImage(fileUtil.fileToBytes(image));
 
         itemService.save(dedragonThemisGamingHeadset);
@@ -956,6 +966,7 @@ public class InitDB {
 
         /* --- --- */
 
+        logger.debug("Initialize clients");
         /* --- Users init --- */
 
         //Without items

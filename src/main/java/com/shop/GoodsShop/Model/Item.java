@@ -29,6 +29,7 @@ public class Item {
     private String description;
 
     @NotBlank(message = "Characteristics cannot be empty")
+    @Size(max = 5000, message = "Characteristics must be less than 5000 symbols")
     private String characteristics;
 
     @Lob

@@ -21,7 +21,7 @@ public class FileUtil {
             return new byte[0];
         }
 
-        byte[] bytes = null;
+        byte[] bytes;
         logger.debug("File name: " + file.getName());
         try {
 
@@ -29,7 +29,8 @@ public class FileUtil {
             bytes = IOUtils.toByteArray(fileStream);
 
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error("Fail converting: " + e.toString());
+            return new byte[0];
         }
 
         logger.info("Converting successful");

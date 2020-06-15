@@ -982,7 +982,8 @@ public class InitDB {
         Client yaroslavaNaumova = new Client("koby19@nitzsche.com", "52Jof9OZ", "Ярослава", "Наумова", "YaroslavaNaumova");
 
         OrderedItem orderedItem1 = new OrderedItem(spring5ForProfessionals, 1);
-        OrderedItem orderedItem2 = new OrderedItem(spring5ForProfessionals, 1);
+        OrderedItem orderedItem2 = new OrderedItem(perfectCode, 2);
+        //Order order1 = new Order(new HashSet<>(Arrays.asList(orderedItem1, orderedItem2)),
 
         //With items in backet and orders
         Client mayaLimarova = new Client("upredovic@hotmail.com", "Al6pka00", "Майя", "Лимарова", "MayaLimarova");

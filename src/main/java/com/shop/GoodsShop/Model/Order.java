@@ -6,7 +6,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -22,9 +21,6 @@ public class Order {
     @NotEmpty(message = "Ordered items cannot be empty")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
     private Set<OrderedItem> orderedItems = new HashSet<>();
-
-    @Positive(message = "Order count must be greater than 0")
-    private Long orderedCount;
 
     @NotNull(message = "Contacts must be set")
     private Contacts contacts;
@@ -49,11 +45,9 @@ public class Order {
     protected Order() {}
 
     public Order(Set<OrderedItem> orderedItems,
-                 Long orderedCount,
                  Contacts contacts,
                  String paymentMethod) {
         this.orderedItems = orderedItems;
-        this.orderedCount = orderedCount;
         this.contacts = contacts;
         this.paymentMethod = paymentMethod;
     }
@@ -73,14 +67,6 @@ public class Order {
 
     public void setOrderedItems(Set<OrderedItem> orderedItems) {
         this.orderedItems = orderedItems;
-    }
-
-    public Long getOrderedCount() {
-        return orderedCount;
-    }
-
-    public void setOrderedCount(Long orderedCount) {
-        this.orderedCount = orderedCount;
     }
 
     public Contacts getContacts() {
@@ -123,13 +109,12 @@ public class Order {
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
         return orderedItems.equals(order.orderedItems) &&
-                orderedCount.equals(order.orderedCount) &&
                 contacts.equals(order.contacts) &&
                 paymentMethod.equals(order.paymentMethod);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderedItems, orderedCount, contacts, paymentMethod);
+        return Objects.hash(orderedItems, contacts, paymentMethod);
     }
 }

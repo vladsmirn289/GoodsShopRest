@@ -32,7 +32,7 @@ public class OrderValidation {
         Contacts contacts = new Contacts("123456", "Russia",
                 "Moscow", "Bolotnaya street", "+7-499-123-45-67");
 
-        this.order = new Order(orderedItems, 2L, contacts, "C.O.D");
+        this.order = new Order(orderedItems, contacts, "C.O.D");
     }
 
     @Test
@@ -51,30 +51,6 @@ public class OrderValidation {
         ConstraintViolation<Order> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("orderedItems");
         assertThat(violation.getMessage()).isEqualTo("Ordered items cannot be empty");
-    }
-
-    @Test
-    void ShouldNotValidateWithNegativeOrderedCount() {
-        order.setOrderedCount(-1L);
-
-        Set<ConstraintViolation<Order>> constraintViolations = validator.validate(order);
-        assertThat(constraintViolations).hasSize(1);
-
-        ConstraintViolation<Order> violation = constraintViolations.iterator().next();
-        assertThat(violation.getPropertyPath().toString()).isEqualTo("orderedCount");
-        assertThat(violation.getMessage()).isEqualTo("Order count must be greater than 0");
-    }
-
-    @Test
-    void ShouldNotValidateWithZeroOrderedCount() {
-        order.setOrderedCount(0L);
-
-        Set<ConstraintViolation<Order>> constraintViolations = validator.validate(order);
-        assertThat(constraintViolations).hasSize(1);
-
-        ConstraintViolation<Order> violation = constraintViolations.iterator().next();
-        assertThat(violation.getPropertyPath().toString()).isEqualTo("orderedCount");
-        assertThat(violation.getMessage()).isEqualTo("Order count must be greater than 0");
     }
 
     @Test

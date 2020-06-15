@@ -7,10 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class InitDB {
@@ -954,6 +951,9 @@ public class InitDB {
         image = new File("static/images/InitElectronics/coolerMasterHeadset.jpg");
         coolerMasterHeadset.setImage(fileUtil.fileToBytes(image));
 
+        itemService.save(dedragonThemisGamingHeadset);
+        itemService.save(coolerMasterHeadset);
+
         /* --- --- */
 
         /* --- Users init --- */
@@ -963,7 +963,11 @@ public class InitDB {
         Client prokofiyKravchuk = new Client("hane.ayla@yahoo.com", "1Rhm47zO", "Прокофий", "Кравчук", "ProkofiyKravchuk");
         Client timofeyBarshev = new Client("norene04@yahoo.com", "Yn865FbJ", "Тимофей", "Барышев", "TimofeyBarshev");
 
-        //With items in backet
+        clientService.save(yakovMaurov);
+        clientService.save(prokofiyKravchuk);
+        clientService.save(timofeyBarshev);
+
+        //With items in basket
         Client egorSolomonov = new Client("tianna94@gmail.com", "92zoKcG5", "Егор", "Соломонов", "EgorSolomonov");
         Client vladislavPutilin = new Client("hassan66@yahoo.com", "2s1L8lPC", "Владислав", "Путилин", "VladislavPutilin");
         Client borislavPotemkin = new Client("dylan80@yahoo.com", "UBq9H13C", "Борислав", "Потёмкин", "BorislavPotemkin");
@@ -976,25 +980,50 @@ public class InitDB {
         vladislavPutilin.setBasket(basket2);
         borislavPotemkin.setBasket(basket3);
 
+        clientService.save(egorSolomonov);
+        clientService.save(vladislavPutilin);
+        clientService.save(borislavPotemkin);
+
         //With orders
         Client lianaKraevska = new Client("electa54@lowe.biz", "Z1BY5O6c", "Лиана", "Краевская", "LianaKraevska");
         Client albinaBudanova = new Client("nickolas49@ohara.org", "v7gIe11t", "Альбина", "Буданова", "AlbinaBudanova");
-        Client yaroslavaNaumova = new Client("koby19@nitzsche.com", "52Jof9OZ", "Ярослава", "Наумова", "YaroslavaNaumova");
 
+        //first
         OrderedItem orderedItem1 = new OrderedItem(spring5ForProfessionals, 1);
         OrderedItem orderedItem2 = new OrderedItem(perfectCode, 2);
-        //Order order1 = new Order(new HashSet<>(Arrays.asList(orderedItem1, orderedItem2)),
+        orderedItemService.save(orderedItem1);
+        orderedItemService.save(orderedItem2);
 
-        //With items in backet and orders
-        Client mayaLimarova = new Client("upredovic@hotmail.com", "Al6pka00", "Майя", "Лимарова", "MayaLimarova");
-        Client mariyaSilaeva = new Client("rondricka@jacobs.com", "tPK9B11t", "Мария", "Силаева", "MariyaSilaeva");
-        Client svetlanaMantorova = new Client("odie40@hayes.org", "Dyi63u9s", "Светлана", "Манторова", "SvetlanaMantorova");
+        Contacts contactsLiana = new Contacts("457043", "Россия", "Южноуральск", "Зелёная д5 к64", "8 (632) 452-72-98");
+        Order order1 = new Order(new HashSet<>(Arrays.asList(orderedItem1, orderedItem2)), contactsLiana, "C.O.D");
+        orderService.save(order1);
 
+        lianaKraevska.setOrders(new HashSet<>(Collections.singletonList(order1)));
+        clientService.save(lianaKraevska);
 
+        //second
+        OrderedItem orderedItem3 = new OrderedItem(notebookDragonfly, 3);
+        OrderedItem orderedItem4 = new OrderedItem(designArtSketchbook, 5);
+        OrderedItem orderedItem5 = new OrderedItem(ballpointPenR301OrangeStick, 10);
+        orderedItemService.save(orderedItem3);
+        orderedItemService.save(orderedItem4);
+        orderedItemService.save(orderedItem5);
+
+        Contacts contactsAlbina = new Contacts("115569", "Россия", "Москва", "Баженова д4А", "8 (499) 387-62-54");
+        Order order2 = new Order(new HashSet<>(Collections.singletonList(orderedItem3)), contactsAlbina, "C.O.D");
+        Order order3 = new Order(new HashSet<>(Collections.singletonList(orderedItem4)), contactsAlbina, "C.O.D");
+        Order order4 = new Order(new HashSet<>(Collections.singletonList(orderedItem5)), contactsAlbina, "C.O.D");
+        orderService.save(order2);
+        orderService.save(order3);
+        orderService.save(order4);
+
+        albinaBudanova.setOrders(new HashSet<>(Arrays.asList(order2, order3, order4)));
+        clientService.save(albinaBudanova);
 
         //Test user
         Client vladislavSmirnov = new Client("vladsmirn289@gmail.com", "12345", "Владислав", "Смирнов", "VladislavSmirnov");
 
+        clientService.save(vladislavSmirnov);
 
         //Manager, who manage orders and create items
         Client manager1 = new Client("bonnie99@grimes.com", "25oMTtm3", "Роман", "Гусев", "RomanGusev");
@@ -1003,19 +1032,6 @@ public class InitDB {
 
         Client admin = new Client("goconnell@bernhard.com", "25oMTtm3", "Семён", "Буков", "CemenBukov");
 
-        clientService.save(yakovMaurov);
-        clientService.save(prokofiyKravchuk);
-        clientService.save(timofeyBarshev);
-        clientService.save(egorSolomonov);
-        clientService.save(vladislavPutilin);
-        clientService.save(borislavPotemkin);
-        clientService.save(lianaKraevska);
-        clientService.save(albinaBudanova);
-        clientService.save(yaroslavaNaumova);
-        clientService.save(mayaLimarova);
-        clientService.save(mariyaSilaeva);
-        clientService.save(svetlanaMantorova);
-        clientService.save(vladislavSmirnov);
         clientService.save(manager1);
         clientService.save(manager2);
         clientService.save(manager3);

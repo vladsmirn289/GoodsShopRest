@@ -1,87 +1,82 @@
-create sequence hibernate_sequence start 1 increment 1
+--
+-- Name: basket_items; Type: TABLE; Schema: public
+--
 
-create table basket_items (
-   user_id int8 not null,
-    item_id int8 not null,
-    primary key (user_id, item_id)
-)
+CREATE TABLE public.basket_items (
+    user_id bigint NOT NULL,
+    item_id bigint NOT NULL
+);
 
-create table category (
-   id int8 not null,
-    name varchar(255),
-    parent_id int8,
-    primary key (id)
-)
+--
+-- Name: category; Type: TABLE; Schema: public
+--
 
-create table client (
-   id int8 not null,
-    email varchar(255),
-    first_name varchar(255),
-    last_name varchar(255),
-    login varchar(255),
-    password varchar(255),
-    patronymic varchar(255),
-    primary key (id)
-)
+CREATE TABLE public.category (
+    id bigint NOT NULL,
+    name character varying(255),
+    parent_id bigint
+);
 
-create table item (
-   id int8 not null,
-    characteristics varchar(255),
-    code varchar(255),
-    count int8,
-    created_on date,
-    description varchar(5000),
+--
+-- Name: client; Type: TABLE; Schema: public
+--
+
+CREATE TABLE public.client (
+    id bigint NOT NULL,
+    email character varying(255),
+    first_name character varying(255),
+    last_name character varying(255),
+    login character varying(255),
+    password character varying(255),
+    patronymic character varying(255)
+);
+
+--
+-- Name: item; Type: TABLE; Schema: public
+--
+
+CREATE TABLE public.item (
+    id bigint NOT NULL,
+    characteristics character varying(5000),
+    code character varying(255),
+    count bigint,
+    created_on timestamp without time zone,
+    description character varying(5000),
     image oid,
-    name varchar(255),
-    price float8,
-    weight float8,
-    category_id int8 not null,
-    item_id int8,
-    primary key (id)
-)
+    name character varying(255),
+    price double precision,
+    weight double precision,
+    category_id bigint NOT NULL
+);
 
-create table orders (
-   id int8 not null,
-    city varchar(255),
-    country varchar(255),
-    phone_number varchar(255),
-    street varchar(255),
-    zip_code varchar(255),
-    created_on timestamp,
-    order_status varchar(255),
-    ordered_count int8,
-    payment_method varchar(255),
-    track_number varchar(255),
-    client_id int8,
-    primary key (id)
-)
+--
+-- Name: ordered_item; Type: TABLE; Schema: public
+--
 
-alter table if exists basket_items
-   add constraint FKpl11cw0c9nrsuet0xa7vcc7xr
-   foreign key (item_id)
-   references item
+CREATE TABLE public.ordered_item (
+    id bigint NOT NULL,
+    quantity integer NOT NULL,
+    item_id bigint NOT NULL,
+    order_id bigint
+);
 
-alter table if exists basket_items
-   add constraint FKsek92n2afst4jvv8xihigqv5d
-   foreign key (user_id)
-   references client
+--
+-- Name: orders; Type: TABLE; Schema: public
+--
 
-alter table if exists category
-   add constraint FK2y94svpmqttx80mshyny85wqr
-   foreign key (parent_id)
-   references category
+CREATE TABLE public.orders (
+    id bigint NOT NULL,
+    city character varying(255),
+    country character varying(255),
+    phone_number character varying(255),
+    street character varying(255),
+    zip_code character varying(255),
+    created_on timestamp without time zone,
+    last_update timestamp without time zone,
+    order_status character varying(255),
+    payment_method character varying(255),
+    track_number character varying(255),
+    client_id bigint
+);
 
-alter table if exists item
-   add constraint FK2n9w8d0dp4bsfra9dcg0046l4
-   foreign key (category_id)
-   references category
-
-alter table if exists item
-   add constraint FKrid3br8h0y448syw9ec5rjdy0
-   foreign key (item_id)
-   references orders
-
-alter table if exists orders
-   add constraint FK17yo6gry2nuwg2erwhbaxqbs9
-   foreign key (client_id)
-   references client
+create sequence hibernate_sequence start 69 increment 1

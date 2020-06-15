@@ -54,6 +54,14 @@ public class OrderedItem {
         return quantity;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }

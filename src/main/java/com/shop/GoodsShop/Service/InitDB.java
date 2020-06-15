@@ -420,12 +420,12 @@ public class InitDB {
 
         description = "18 листов.\n" +
                 "Формат: А6.";
-        characteristics = "Издательство....................Шанс" +
-                "Цвет............................Серый" +
-                "Разметка........................Без линковки" +
-                "Количество листов...............18" +
-                "Формат..........................А6" +
-                "Внутренний блок.................Белый" +
+        characteristics = "Издательство....................Шанс\n" +
+                "Цвет............................Серый\n" +
+                "Разметка........................Без линковки\n" +
+                "Количество листов...............18\n" +
+                "Формат..........................А6\n" +
+                "Внутренний блок.................Белый\n" +
                 "ISBN............................978-5-907173-81-1";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item notebookLandscape = new Item("Блокнот \"Пейзаж\"", 700L, 0.07D, 50D, description, characteristics, code, notebooks);
@@ -435,12 +435,12 @@ public class InitDB {
         description = "Блокнот на картонной подложке.\n" +
                 "28 листов.\n" +
                 "Формат: 115х165 мм.";
-        characteristics = "Издательство....................Шанс" +
-                "Цвет............................Мультиколор" +
-                "Разметка........................Без линковки" +
-                "Крепление.......................Скрепка" +
-                "Количество листов...............28" +
-                "Формат..........................А6" +
+        characteristics = "Издательство....................Шанс\n" +
+                "Цвет............................Мультиколор\n" +
+                "Разметка........................Без линковки\n" +
+                "Крепление.......................Скрепка\n" +
+                "Количество листов...............28\n" +
+                "Формат..........................А6\n" +
                 "Внутренний блок.................Белый";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item notebookDragonfly = new Item("Блокнот \"Стрекоза\"", 700L, 0.07D, 100D, description, characteristics, code, notebooks);
@@ -449,13 +449,13 @@ public class InitDB {
 
         description = "18 листов.\n" +
                 "Формат: А6.";
-        characteristics = "Издательство....................Шанс" +
-                "Цвет............................Красный" +
-                "Разметка........................Без линковки" +
-                "Крепление.......................Скрепка" +
-                "Количество листов...............18" +
-                "Формат..........................А6" +
-                "Внутренний блок.................Белый" +
+        characteristics = "Издательство....................Шанс\n" +
+                "Цвет............................Красный\n" +
+                "Разметка........................Без линковки\n" +
+                "Крепление.......................Скрепка\n" +
+                "Количество листов...............18\n" +
+                "Формат..........................А6\n" +
+                "Внутренний блок.................Белый\n" +
                 "ISBN............................978-5-907173-77-4";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item notebookMillenniumFlowers = new Item("Блокнот \"Тысячелетние цветы\"", 700L, 0.07D, 50D, description, characteristics, code, notebooks);
@@ -467,11 +467,11 @@ public class InitDB {
                 "Бумага офсетная плотностью 60 г/м2, белая. Цвет линовки - синий. Скругленные " +
                 "уголки обложки и блока. Тип скрепления - скоба. Качественная тетрадь - залог успешной учёбы ребенка!\n" +
                 "Размер тетради: 170х203 мм.";
-        characteristics = "Производитель...................ErichKrause" +
-                "Крепление.......................Скрепка" +
-                "Количество листов...............12" +
-                "Формат..........................А5" +
-                "Разметка........................Клетка" +
+        characteristics = "Производитель...................ErichKrause\n" +
+                "Крепление.......................Скрепка\n" +
+                "Количество листов...............12\n" +
+                "Формат..........................А5\n" +
+                "Разметка........................Клетка\n" +
                 "Особенности.....................С полями";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item notebookSchoolCage = new Item("Тетрадь школьная, 12 листов, клетка, зеленая", 5000L, 0.038D, 20D, description, characteristics, code, notebooks);
@@ -483,11 +483,11 @@ public class InitDB {
                 "Материал обложки: бумага.\n" +
                 "Скрепление: на скобе.\n" +
                 "Офсет.";
-        characteristics = "Производитель...................Hatber" +
-                "Крепление.......................Скрепка" +
-                "Количество листов...............12" +
-                "Формат..........................А5" +
-                "Разметка........................Косая линейка" +
+        characteristics = "Производитель...................Hatber\n" +
+                "Крепление.......................Скрепка\n" +
+                "Количество листов...............12\n" +
+                "Формат..........................А5\n" +
+                "Разметка........................Косая линейка\n" +
                 "Особенности.....................С полями";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item notebookSchoolSlantingRuler = new Item("Тетрадь школьная, 12 листов, клетка, зеленая", 5000L, 0.035D, 20D, description, characteristics, code, notebooks);
@@ -499,14 +499,14 @@ public class InitDB {
                 "бумаги позволят рисовать всем, чем хотите: от карандаша и маркера до " +
                 "акварели! Выбирайте лучшее!\n" +
                 "Формат А4, офсет 160 гр., 50 страниц, евроспираль.";
-        characteristics = "Производитель...................Бомбора (Эксмо)" +
-                "Редактор........................Сабанова Залина Олеговна" +
-                "Крепление.......................Спираль, гребень" +
-                "Количество листов...............25" +
-                "Формат..........................А4" +
-                "Цвет............................Мульти" +
-                "Тип бумаги......................Офсетная" +
-                "Плотность бумаги, г/м2..........160" +
+        characteristics = "Производитель...................Бомбора (Эксмо)\n" +
+                "Редактор........................Сабанова Залина Олеговна\n" +
+                "Крепление.......................Спираль, гребень\n" +
+                "Количество листов...............25\n" +
+                "Формат..........................А4\n" +
+                "Цвет............................Мульти\n" +
+                "Тип бумаги......................Офсетная\n" +
+                "Плотность бумаги, г/м2..........160\n" +
                 "ISBN............................978-5-04-095366-0";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item designArtSketchbook = new Item("Design Art. Альбом для рисования", 2000L, 0.298D, 250D, description, characteristics, code, notebooks);
@@ -524,11 +524,11 @@ public class InitDB {
                 "Пишущий узел: 0,7 мм.\n" +
                 "Сменный стержень.\n" +
                 "Цвет чернил: синий.\n";
-        characteristics = "Производитель...................Erichkrause" +
-                "Цвет............................Оранжевый" +
-                "Диаметр пишущего узла, мм.......0.7" +
-                "Цвет чернил.....................Синий" +
-                "Тип.............................Шариковые" +
+        characteristics = "Производитель...................Erichkrause\n" +
+                "Цвет............................Оранжевый\n" +
+                "Диаметр пишущего узла, мм.......0.7\n" +
+                "Цвет чернил.....................Синий\n" +
+                "Тип.............................Шариковые\n" +
                 "Форма корпуса...................Шестигранная";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item ballpointPenR301OrangeStick = new Item("Ручка шариковая \"R-301 Orange Stick\", 0,7 мм, синие чернила", 5000L, 0.006D, 15D, description, characteristics, code, writing);
@@ -546,11 +546,11 @@ public class InitDB {
                 "Пишущий узел: 0,7 мм.\n" +
                 "Толщина линии: 0,32 мм.\n" +
                 "Диаметр корпуса: 9,2 мм.";
-        characteristics = "Производитель...................Pilot" +
-                "Цвет............................Прозрачный" +
-                "Диаметр пишущего узла, мм.......0.7" +
-                "Цвет чернил.....................Синий" +
-                "Тип.............................Шариковые" +
+        characteristics = "Производитель...................Pilot\n" +
+                "Цвет............................Прозрачный\n" +
+                "Диаметр пишущего узла, мм.......0.7\n" +
+                "Цвет чернил.....................Синий\n" +
+                "Тип.............................Шариковые\n" +
                 "Форма корпуса...................Круглая";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item ballpointPenPilotBPS = new Item("Ручка шариковая \"Pilot BPS\", синяя", 5000L, 0.025D, 50D, description, characteristics, code, writing);
@@ -588,10 +588,10 @@ public class InitDB {
                 "1 - стандартный замок безопасности.\n" +
                 "Аккумулятор HP большой емкости, 3-элементный, 45 Вт/ч, литий-ионный.\n" +
                 "Размеры: 32,42x23,77x1,80 см.";
-        characteristics = "Производитель...................Hewlett Packard (HP)" +
-                "Цвет............................Серый" +
-                "Страна изготовления.............Китай" +
-                "Вес без упаковки................1600 г" +
+        characteristics = "Производитель...................Hewlett Packard (HP)\n" +
+                "Цвет............................Серый\n" +
+                "Страна изготовления.............Китай\n" +
+                "Вес без упаковки................1600 г\n" +
                 "Гарантийный срок................12 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item laptopHPProBook = new Item("Ноутбук HP ProBook 440 G7, 14\", Intel Core i3 10110U, 8192 Мб, Windows 10 Pro, арт. 9VZ38EA#ACB", 200L, 2.9D, 59320D, description, characteristics, code, computers);
@@ -616,10 +616,10 @@ public class InitDB {
                 "1 - USB-C 3.1 Gen 1, 1 - USB-C 3.1 Gen 2 (with the function of DisplayPort and power delivery), HDMI 1.4b, Ethernet (RJ45).\n" +
                 "Аккумулятор: 45 Вт/ч.\n" +
                 "Размеры: 326x230x17.9 мм.";
-        characteristics = "Производитель...................Lenovo" +
-                "Цвет............................Серый" +
-                "Страна изготовления.............Китай" +
-                "Вес без упаковки................1500 г" +
+        characteristics = "Производитель...................Lenovo\n" +
+                "Цвет............................Серый\n" +
+                "Страна изготовления.............Китай\n" +
+                "Вес без упаковки................1500 г\n" +
                 "Гарантийный срок................12 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item laptopLenovoThinkBook = new Item("Ноутбук Lenovo ThinkBook 14-IIL, 14.0\", Intel Core i5 1035G4, 8 Гб, DOS, арт. 20SL004BRU", 200L, 2.7D, 54220D, description, characteristics, code, computers);
@@ -638,10 +638,10 @@ public class InitDB {
                 "Порты: 2 - USB 2.0, USB 3.0 - 1, HDMI, RJ-45.\n" +
                 "Аккумулятор: 2 ячейки, Li-Ion, 36,7 Вт/ч.\n" +
                 "Размеры: 363.4x247.5x19.9 мм.\n";
-        characteristics = "Производитель...................Acer" +
-                "Цвет............................Чёрный" +
-                "Страна изготовления.............Китай" +
-                "Вес без упаковки................1900 г" +
+        characteristics = "Производитель...................Acer\n" +
+                "Цвет............................Чёрный\n" +
+                "Страна изготовления.............Китай\n" +
+                "Вес без упаковки................1900 г\n" +
                 "Гарантийный срок................12 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item laptopAcerExtensa = new Item("Ноутбук Acer Extensa EX215-51K-55C5, 15.6\", Intel Core i5-6300U, 8 Гб, Windows 10 Home, арт. NX.EFPER.00Y", 200L, 3.3D, 52609D, description, characteristics, code, computers);
@@ -662,9 +662,9 @@ public class InitDB {
                 "Key design: scissor.\n" +
                 "Size: 12.8x3.6x44.0 cm.\n" +
                 "Weight: 1.1 kg.";
-        characteristics = "Производитель...................Redragon" +
-                "Цвет............................Чёрный" +
-                "Материал........................Пластик" +
+        characteristics = "Производитель...................Redragon\n" +
+                "Цвет............................Чёрный\n" +
+                "Материал........................Пластик\n" +
                 "Гарантийный срок................18 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item dedragonSuraraMechanicalKeyboard = new Item("Механическая клавиатура Redragon Surara", 500L, 1.31D, 5000D, description, characteristics, code, peripherals);
@@ -687,8 +687,8 @@ public class InitDB {
                 "Цвет: черный.\n" +
                 "Габаритные размеры (ВхШхГ): 2.2х47.5х15 см.\n" +
                 "Вес: 1145 г.";
-        characteristics = "Производитель...................Logitech" +
-                "Цвет............................Чёрный" +
+        characteristics = "Производитель...................Logitech\n" +
+                "Цвет............................Чёрный\n" +
                 "Материал........................Пластик, металл";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item keyboardGamingLogitech = new Item("Клавиатура игровая Logitech G815 Linear, арт. 920-009007", 500L, 1.2D, 16124D, description, characteristics, code, peripherals);
@@ -713,9 +713,9 @@ public class InitDB {
                 "Цвет: чёрный.\n" +
                 "Размер: 9.0x4.25x12.0 см.\n" +
                 "Вес: 0.25 кг.";
-        characteristics = "Производитель...................Redragon" +
-                "Цвет............................Чёрный" +
-                "Материал........................Пластик" +
+        characteristics = "Производитель...................Redragon\n" +
+                "Цвет............................Чёрный\n" +
+                "Материал........................Пластик\n" +
                 "Гарантийный срок................18 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item wiredGamingMouseRedragonVampire = new Item("Мышь проводная игровая Redragon Vampire", 500L, 0.35D, 2150D, description, characteristics, code, peripherals);
@@ -731,12 +731,12 @@ public class InitDB {
                 "Количество клавиш: 3.\n" +
                 "Источник питания мыши: 1xAA.\n" +
                 "Цвет: синий.\n";
-        characteristics = "Производитель...................Hewlett Packard (HP)" +
-                "Цвет............................Синий" +
-                "Тип элементов питания...........пальчиковые (AA; LR6; FR6; ZR6; R6; 316)" +
-                "Количество элементов питания....1 шт." +
-                "Разрешение сенсора, dpi.........1600" +
-                "Интерфейс подключения...........USB" +
+        characteristics = "Производитель...................Hewlett Packard (HP)\n" +
+                "Цвет............................Синий\n" +
+                "Тип элементов питания...........пальчиковые (AA; LR6; FR6; ZR6; R6; 316)\n" +
+                "Количество элементов питания....1 шт.\n" +
+                "Разрешение сенсора, dpi.........1600\n" +
+                "Интерфейс подключения...........USB\n" +
                 "Принцип работы..................Светодиодная";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item hpWirelessMouse = new Item("Компьютерная мышь HP Wireless Mouse 220 Blue, арт. 7KX11AA#ABB", 500L, 0.22D, 1462D, description, characteristics, code, peripherals);
@@ -762,7 +762,7 @@ public class InitDB {
                 "Длина шнура: 1,8 метра.\n" +
                 "Частотный диапазон микрофона: 15-16 000 Гц.\n" +
                 "Дальность действия: 1,8 метра.";
-        characteristics = "Производитель...................Sven" +
+        characteristics = "Производитель...................Sven\n" +
                           "Страна изготовителя.............Китай";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item computerMicrophoneSvenMK150 = new Item("Микрофон компьютерный \"Sven MK-150\", цвет черный", 400L, 0.04D, 1500D, description, characteristics, code, peripherals);
@@ -788,7 +788,7 @@ public class InitDB {
                 "Длина шнура: 2,4 метра.\n" +
                 "Частотный диапазон микрофона: 20-16 000 Гц.\n" +
                 "Дальность действия: 2,4 метра.";
-        characteristics = "Производитель...................Sven" +
+        characteristics = "Производитель...................Sven\n" +
                 "Страна изготовителя.............Китай";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item computerMicrophoneSvenMK490 = new Item("Микрофон компьютерный \"Sven MK-490\", цвет черный", 400L, 0.22D, 730D, description, characteristics, code, peripherals);
@@ -842,13 +842,13 @@ public class InitDB {
                 "Аудио: встроенные динамик и микрофон.\n" +
                 "Панорама / Наклон: 355° / V=120°.\n" +
                 "Габариты (ДxШxВ): 118х107х106 мм.";
-        characteristics = "Производитель...................Tenda" +
-                "Страна изготовителя.............Китай" +
-                "Материал........................Пластик" +
-                "Цвет............................Белый" +
-                "Разрешение (видео)..............1280x720" +
-                "Интерфейс.......................Беспроводная" +
-                "Число мегапикселов матрицы......1.3" +
+        characteristics = "Производитель...................Tenda\n" +
+                "Страна изготовителя.............Китай\n" +
+                "Материал........................Пластик\n" +
+                "Цвет............................Белый\n" +
+                "Разрешение (видео)..............1280x720\n" +
+                "Интерфейс.......................Беспроводная\n" +
+                "Число мегапикселов матрицы......1.3\n" +
                 "Микрофон........................Встроенный";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item tendaC50SWirelessHDSwivelCamera = new Item("Беспроводная поворотная HD камера Tenda C50S", 300L, 0.5D, 3000D, description, characteristics, code, peripherals);
@@ -900,11 +900,11 @@ public class InitDB {
                 "Длина кабеля: 1.5 м.\n" +
                 "Рамеры: 102x27x27 мм.\n" +
                 "Вес: 63 г.";
-        characteristics = "Производитель...................Logitech" +
-                "Материал........................Пластик" +
-                "Цвет............................Чёрный" +
-                "Разрешение (видео)..............4096x2160" +
-                "Интерфейс.......................USB" +
+        characteristics = "Производитель...................Logitech\n" +
+                "Материал........................Пластик\n" +
+                "Цвет............................Чёрный\n" +
+                "Разрешение (видео)..............4096x2160\n" +
+                "Интерфейс.......................USB\n" +
                 "Микрофон........................Встроенный";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item webLogitechCamera = new Item("Камера Web Logitech Webcam BRIO 960-001106", 300L, 0.35D, 18963D, description, characteristics, code, peripherals);
@@ -928,10 +928,10 @@ public class InitDB {
                 "Длина кабеля: 2 м.\n" +
                 "Разъемы: USB, 2 x 3,5-мм джек.\n" +
                 "Цвет: чёрный + красный.";
-        characteristics = "Производитель...................Redragon" +
-                "Материал........................Пластик" +
-                "Цвет............................Чёрный, красный" +
-                "Вес без упаковки................380 г" +
+        characteristics = "Производитель...................Redragon\n" +
+                "Материал........................Пластик\n" +
+                "Цвет............................Чёрный, красный\n" +
+                "Вес без упаковки................380 г\n" +
                 "Гарантийный срок................18 мес.";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item dedragonThemisGamingHeadset = new Item("Игровая гарнитура Redragon Themis, красный + черный", 600L, 0.46D, 1650D, description, characteristics, code, peripherals);
@@ -954,7 +954,7 @@ public class InitDB {
                 "Чувствительность микрофона: -38 дБ.\n" +
                 "Частотный диапазон микрофона: 100 - 16000 Гц.\n" +
                 "Цвет: чёрный.\n";
-        characteristics = "Производитель...................Cooler Master" +
+        characteristics = "Производитель...................Cooler Master\n" +
                 "Цвет............................Чёрный, красный";
         code = UUID.randomUUID().toString().substring(0, 8);
         Item coolerMasterHeadset = new Item("Гарнитура Cooler Master CH-321", 600L, 0.5D, 3811D, description, characteristics, code, peripherals);
@@ -1002,12 +1002,17 @@ public class InitDB {
         //first
         OrderedItem orderedItem1 = new OrderedItem(spring5ForProfessionals, 1);
         OrderedItem orderedItem2 = new OrderedItem(perfectCode, 2);
-        orderedItemService.save(orderedItem1);
-        orderedItemService.save(orderedItem2);
 
         Contacts contactsLiana = new Contacts("457043", "Россия", "Южноуральск", "Зелёная д5 к64", "8 (632) 452-72-98");
         Order order1 = new Order(new HashSet<>(Arrays.asList(orderedItem1, orderedItem2)), contactsLiana, "C.O.D");
+        order1.setClient(lianaKraevska);
+        order1.setOrderStatus(OrderStatus.ACCEPTED);
         orderService.save(order1);
+
+        orderedItem1.setOrder(order1);
+        orderedItem2.setOrder(order1);
+        orderedItemService.save(orderedItem1);
+        orderedItemService.save(orderedItem2);
 
         lianaKraevska.setOrders(new HashSet<>(Collections.singletonList(order1)));
         clientService.save(lianaKraevska);
@@ -1016,17 +1021,29 @@ public class InitDB {
         OrderedItem orderedItem3 = new OrderedItem(notebookDragonfly, 3);
         OrderedItem orderedItem4 = new OrderedItem(designArtSketchbook, 5);
         OrderedItem orderedItem5 = new OrderedItem(ballpointPenR301OrangeStick, 10);
-        orderedItemService.save(orderedItem3);
-        orderedItemService.save(orderedItem4);
-        orderedItemService.save(orderedItem5);
 
         Contacts contactsAlbina = new Contacts("115569", "Россия", "Москва", "Баженова д4А", "8 (499) 387-62-54");
         Order order2 = new Order(new HashSet<>(Collections.singletonList(orderedItem3)), contactsAlbina, "C.O.D");
+        order2.setClient(albinaBudanova);
+        order2.setOrderStatus(OrderStatus.COMPLETED);
         Order order3 = new Order(new HashSet<>(Collections.singletonList(orderedItem4)), contactsAlbina, "C.O.D");
+        order3.setClient(albinaBudanova);
+        order3.setOrderStatus(OrderStatus.ON_THE_WAY);
+        order3.setTrackNumber("1234567891011");
         Order order4 = new Order(new HashSet<>(Collections.singletonList(orderedItem5)), contactsAlbina, "C.O.D");
+        order4.setClient(albinaBudanova);
+        order4.setOrderStatus(OrderStatus.PAYMENT);
+        order4.setTrackNumber("121314151617");
         orderService.save(order2);
         orderService.save(order3);
         orderService.save(order4);
+
+        orderedItem3.setOrder(order2);
+        orderedItem4.setOrder(order3);
+        orderedItem5.setOrder(order4);
+        orderedItemService.save(orderedItem3);
+        orderedItemService.save(orderedItem4);
+        orderedItemService.save(orderedItem5);
 
         albinaBudanova.setOrders(new HashSet<>(Arrays.asList(order2, order3, order4)));
         clientService.save(albinaBudanova);

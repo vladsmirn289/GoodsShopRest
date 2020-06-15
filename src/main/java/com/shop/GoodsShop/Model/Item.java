@@ -43,7 +43,8 @@ public class Item {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Temporal(TemporalType.DATE)
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     private Date createdOn;
 
@@ -147,6 +148,10 @@ public class Item {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.shop.GoodsShop.Model;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -37,9 +38,14 @@ public class Order {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     private Date createdOn;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    private Date lastUpdate;
 
 
     protected Order() {}
@@ -101,7 +107,21 @@ public class Order {
         this.trackNumber = trackNumber;
     }
 
+    public Client getClient() {
+        return client;
+    }
 
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
 
     @Override
     public boolean equals(Object o) {

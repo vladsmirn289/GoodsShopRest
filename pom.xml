@@ -14,6 +14,9 @@
 		<apache.maven.compiler.plugin.version>3.8.1</apache.maven.compiler.plugin.version>
 		<apache.commons.io.version>2.7</apache.commons.io.version>
 		<h2.version>1.4.200</h2.version>
+		<webJars.bootstrap.version>4.5.0</webJars.bootstrap.version>
+		<webJars.locator.version>0.40</webJars.locator.version>
+		<webJars.jQuery.version>3.5.1</webJars.jQuery.version>
 	</properties>
 
 	<parent>
@@ -135,6 +138,26 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${apache.commons.io.version}</version>
+		</dependency>
+
+		<!-- WebJars -->
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>${webJars.bootstrap.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>${webJars.jQuery.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator</artifactId>
+			<version>${webJars.locator.version}</version>
 		</dependency>
 
 	</dependencies>

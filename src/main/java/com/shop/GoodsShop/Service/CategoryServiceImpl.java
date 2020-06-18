@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
@@ -14,6 +16,18 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     public void setCategoryRepo(CategoryRepo categoryRepo) {
         this.categoryRepo = categoryRepo;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Category> findByParent(Category parent) {
+        return categoryRepo.findByParent(parent);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Category> findByParentIsNull() {
+        return categoryRepo.findByParentIsNull();
     }
 
     @Override

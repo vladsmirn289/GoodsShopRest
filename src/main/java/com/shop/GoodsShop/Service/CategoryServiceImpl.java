@@ -1,5 +1,6 @@
 package com.shop.GoodsShop.Service;
 
+import com.shop.GoodsShop.Excepton.NoCategoryException;
 import com.shop.GoodsShop.Model.Category;
 import com.shop.GoodsShop.Repositories.CategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     public List<Category> findByParentIsNull() {
         return categoryRepo.findByParentIsNull();
+    }
+
+    @Override
+    public Category findById(Long id) {
+        return categoryRepo.findById(id).orElseThrow(NoCategoryException::new);
     }
 
     @Override

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.File;
 import java.util.*;
 
@@ -21,6 +23,9 @@ public class InitDB {
     private ClientService clientService;
     private OrderService orderService;
     private OrderedItemService orderedItemService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     public void setCategoryService(CategoryService categoryService) {
@@ -1066,5 +1071,7 @@ public class InitDB {
         clientService.save(admin);
 
         /* --- --- */
+
+        entityManager.createNativeQuery("create sequence hibernate_sequence start 69 increment 1");
     }
 }

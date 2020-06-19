@@ -1,5 +1,6 @@
 package com.shop.GoodsShop.Service;
 
+import com.shop.GoodsShop.Excepton.NoItemException;
 import com.shop.GoodsShop.Model.Category;
 import com.shop.GoodsShop.Model.Item;
 import com.shop.GoodsShop.Repositories.ItemRepo;
@@ -35,6 +36,11 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     public List<Item> findByCategory(Category category) {
         return itemRepo.findByCategory(category);
+    }
+
+    @Override
+    public Item findById(Long id) {
+        return itemRepo.findById(id).orElseThrow(NoItemException::new);
     }
 
     @Override

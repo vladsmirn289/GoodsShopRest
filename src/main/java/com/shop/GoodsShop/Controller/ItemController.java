@@ -20,16 +20,20 @@ public class ItemController {
 
     @Autowired
     public void setItemService(ItemService itemService) {
+        logger.debug("Setting itemService");
         this.itemService = itemService;
     }
 
     @GetMapping("/image/{id}")
     @ResponseBody
     public byte[] downloadPhoto(@PathVariable("id") Long id) {
+        logger.info("downloadPhoto method called");
         Item item = itemService.findById(id);
 
         if (item.getImage() != null) {
             logger.info("Download image for item with id = " + id);
+        } else {
+            logger.warn("Image is null");
         }
 
         return item.getImage();

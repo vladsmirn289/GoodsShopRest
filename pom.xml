@@ -160,7 +160,7 @@
 			<version>${webJars.locator.version}</version>
 		</dependency>
 
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>

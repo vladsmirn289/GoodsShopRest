@@ -17,6 +17,7 @@
 		<webJars.bootstrap.version>4.5.0</webJars.bootstrap.version>
 		<webJars.locator.version>0.40</webJars.locator.version>
 		<webJars.jQuery.version>3.5.1</webJars.jQuery.version>
+		<jacoco.plugin.version>0.8.5</jacoco.plugin.version>
 	</properties>
 
 	<parent>
@@ -178,6 +179,26 @@
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ItemValidation {
+public class ItemValidationTest {
     private Validator validator;
     private Item item;
 

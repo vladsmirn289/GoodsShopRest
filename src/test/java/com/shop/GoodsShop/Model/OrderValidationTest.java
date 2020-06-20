@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrderValidation {
+public class OrderValidationTest {
     private Validator validator;
     private Order order;
 

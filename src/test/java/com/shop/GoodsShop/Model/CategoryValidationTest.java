@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CategoryValidation {
+public class CategoryValidationTest {
     private Validator validator;
 
     @BeforeEach

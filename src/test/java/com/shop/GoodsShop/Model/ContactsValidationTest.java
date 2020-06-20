@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ContactsValidation {
+public class ContactsValidationTest {
     private Validator validator;
     private Contacts contacts;
 

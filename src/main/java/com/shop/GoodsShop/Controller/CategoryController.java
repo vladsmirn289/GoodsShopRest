@@ -39,7 +39,6 @@ public class CategoryController {
     public String showCategoryItems(@PathVariable("id") Long id,
                                 Model model) {
         logger.info("showCategoryItems method called for category with id = " + id);
-        //TODO: add controller advice for exceptions
         Category category = categoryService.findById(id);
         List<Item> items = itemService.findByCategory(category);
 

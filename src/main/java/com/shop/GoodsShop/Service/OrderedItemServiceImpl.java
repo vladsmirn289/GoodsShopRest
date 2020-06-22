@@ -21,13 +21,13 @@ public class OrderedItemServiceImpl implements OrderedItemService {
 
     @Override
     public void save(OrderedItem orderedItem) {
-        logger.info("Saving ordered item with item name = " + orderedItem.getItem().getName() + " to database");
+        logger.info("Saving ordered item to database");
         orderedItemRepo.save(orderedItem);
     }
 
     @Override
     public void delete(OrderedItem orderedItem) {
-        logger.info("Deleting ordered item with item name = " + orderedItem.getItem().getName() + " from database");
+        logger.info("Deleting ordered item with id = " + orderedItem.getId() + " from database");
         orderedItemRepo.delete(orderedItem);
     }
 

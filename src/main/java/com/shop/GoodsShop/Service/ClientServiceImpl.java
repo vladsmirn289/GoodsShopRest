@@ -23,15 +23,13 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void save(Client client) {
-        logger.info("Saving client with first name = " + client.getFirstName() + "" +
-                ", last name " + client.getLastName() + " to database");
+        logger.info("Saving client to database");
         clientRepo.save(client);
     }
 
     @Override
     public void delete(Client client) {
-        logger.info("Deleting client with first name = " + client.getFirstName() + "" +
-                ", last name " + client.getLastName() + " from database");
+        logger.info("Deleting client with id = " + client.getId() + " from database");
         clientRepo.delete(client);
     }
 

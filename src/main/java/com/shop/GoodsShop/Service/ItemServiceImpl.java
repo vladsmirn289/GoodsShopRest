@@ -28,7 +28,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public List<Item> findByName(String name) {
-        logger.info("findByName method called for item name = " + name);
+        logger.info("findByName method called");
         return itemRepo.findByName(name);
     }
 
@@ -42,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public List<Item> findByCategory(Category category) {
-        logger.info("findByCategory method called for category name = " + category.getName());
+        logger.info("findByCategory method called");
         return itemRepo.findByCategory(category);
     }
 
@@ -62,13 +62,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void save(Item item) {
-        logger.info("Saving item with name = " + item.getName() + " to database");
+        logger.info("Saving item to database");
         itemRepo.save(item);
     }
 
     @Override
     public void delete(Item item) {
-        logger.info("Deleting item with name = " + item.getName() + " from database");
+        logger.info("Deleting item with id = " + item.getId() + " from database");
         itemRepo.delete(item);
     }
 

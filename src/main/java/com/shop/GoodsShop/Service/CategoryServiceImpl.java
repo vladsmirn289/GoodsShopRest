@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public List<Category> findByParent(Category parent) {
-        logger.info("findByParent method called for parent = " + parent.getName());
+        logger.info("findByParent method called");
         return categoryRepo.findByParent(parent);
     }
 
@@ -46,13 +46,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void save(Category category) {
-        logger.info("Saving category with name = " + category.getName() + " to database");
+        logger.info("Saving category to database");
         categoryRepo.save(category);
     }
 
     @Override
     public void delete(Category category) {
-        logger.info("Deleting category with name = " + category.getName() + " from database");
+        logger.info("Deleting category with id = " + category.getId() + " from database");
         categoryRepo.delete(category);
     }
 

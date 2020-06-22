@@ -21,8 +21,7 @@ import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -83,5 +82,17 @@ public class ItemControllerTest {
         Exception exception = result.getResolvedException();
         assertThat(exception).isNotNull();
         assertThat(exception.getMessage()).isEqualTo("Такого предмета не существует!");
+    }
+
+    @Test
+    public void testGetItemPage() throws Exception {
+        mockMvc
+                .perform(get("/item/6"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("itemPage"))
+                .andExpect(model().size(1))
+                .andExpect(model().attributeExists("item"))
+                .andExpect(xpath("/html/body/div/div[1]/div/div[2]/div/h5")
+                        .string("Spring 5 для профессионалов"));
     }
 }

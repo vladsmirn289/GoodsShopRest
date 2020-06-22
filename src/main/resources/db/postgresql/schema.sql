@@ -80,6 +80,35 @@ CREATE TABLE public.orders (
 );
 
 --
+-- Name: image; Type: TABLE; Schema: public
+--
+
+CREATE TABLE public.image (
+  id bigint NOT NULL,
+  image oid
+);
+
+--
+-- Name: item_additional_images; Type: TABLE; Schema: public
+--
+
+CREATE TABLE public.item_additional_images (
+    item_id bigint NOT NULL,
+    additional_images_id bigint NOT NULL
+);
+
+--
+-- Name: hibernate_sequence; Type: SEQUENCE; Schema: public
+--
+
+CREATE SEQUENCE public.hibernate_sequence
+    START WITH 69
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+--
 -- Name: basket_items basket_items_pkey; Type: CONSTRAINT; Schema: public
 --
 
@@ -125,6 +154,30 @@ ALTER TABLE ONLY public.ordered_item
 
 ALTER TABLE ONLY public.orders
     ADD CONSTRAINT orders_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: image image_pkey; Type: CONSTRAINT; Schema: public
+--
+
+ALTER TABLE ONLY public.image
+    ADD CONSTRAINT image_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: item_additional_images item_additional_images_pkey; Type: CONSTRAINT; Schema: public
+--
+
+ALTER TABLE ONLY public.item_additional_images
+    ADD CONSTRAINT item_additional_images_pkey PRIMARY KEY (item_id, additional_images_id);
+
+
+--
+-- Name: item_additional_images uk_additional_images_id; Type: CONSTRAINT; Schema: public
+--
+
+ALTER TABLE ONLY public.item_additional_images
+    ADD CONSTRAINT uk_additional_images_id UNIQUE (additional_images_id);
 
 
 --
@@ -181,3 +234,19 @@ ALTER TABLE ONLY public.basket_items
 
 ALTER TABLE ONLY public.basket_items
     ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.client(id);
+
+
+--
+-- Name: item_additional_images fk_additional_images_id; Type: FK CONSTRAINT; Schema: public
+--
+
+ALTER TABLE ONLY public.item_additional_images
+    ADD CONSTRAINT fk_additional_images_id FOREIGN KEY (additional_images_id) REFERENCES public.image(id);
+
+
+--
+-- Name: item_additional_images fk_item_id; Type: FK CONSTRAINT; Schema: public
+--
+
+ALTER TABLE ONLY public.item_additional_images
+    ADD CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES public.item(id);

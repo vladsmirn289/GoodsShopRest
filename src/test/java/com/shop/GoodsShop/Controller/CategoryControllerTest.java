@@ -1,6 +1,10 @@
 package com.shop.GoodsShop.Controller;
 
+import com.shop.GoodsShop.Model.Category;
+import com.shop.GoodsShop.Model.Item;
+import com.shop.GoodsShop.Service.CategoryService;
 import com.shop.GoodsShop.Service.InitDB;
+import com.shop.GoodsShop.Service.ItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -12,6 +16,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,6 +36,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class CategoryControllerTest {
     @Autowired
+    private ItemService itemService;
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
@@ -46,10 +58,15 @@ public class CategoryControllerTest {
 
     @Test
     public void showCategoryItemsTest() throws Exception {
+        Category category = categoryService.findById(3L);
+        List<Item> items = itemService.findByCategory(category);
+
         mockMvc
                 .perform(get("/category/3"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("categoryItems"))
+                .andExpect(model().size(1))
+                .andExpect(model().attributeExists("items"))
                 .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(2))
                 .andExpect(xpath("//div[@id='itemsBlock']/div[1]/div/div/div[2]/div/h4")
                         .string("Spring 5 для профессионалов"))

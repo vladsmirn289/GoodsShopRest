@@ -24,9 +24,9 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @GetMapping("/image/{id}")
+    @GetMapping("{id}/image")
     @ResponseBody
-    public byte[] downloadPhoto(@PathVariable("id") Long id) {
+    public byte[] downloadImage(@PathVariable("id") Long id) {
         logger.info("downloadPhoto method called");
         Item item = itemService.findById(id);
 

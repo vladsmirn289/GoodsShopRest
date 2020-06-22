@@ -5,7 +5,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Item {
@@ -34,6 +36,10 @@ public class Item {
 
     @Lob
     private byte[] image;
+
+    @OneToMany(fetch = FetchType.EAGER,
+               cascade = {CascadeType.REMOVE})
+    private Set<Image> additionalImages = new HashSet<>();
 
     @NotBlank(message = "Code must be set")
     private String code;
@@ -132,6 +138,14 @@ public class Item {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public Set<Image> getAdditionalImages() {
+        return additionalImages;
+    }
+
+    public void setAdditionalImages(Set<Image> additionalImages) {
+        this.additionalImages = additionalImages;
     }
 
     public String getCode() {

@@ -18,6 +18,7 @@
 		<webJars.locator.version>0.40</webJars.locator.version>
 		<webJars.jQuery.version>3.5.1</webJars.jQuery.version>
 		<jacoco.plugin.version>0.8.5</jacoco.plugin.version>
+		<maven-surfire.plugin.version>3.0.0-M5</maven-surfire.plugin.version>
 	</properties>
 
 	<parent>
@@ -182,9 +183,19 @@
 			</plugin>
 
 			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surfire.plugin.version}</version>
+			</plugin>
+
+			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco.plugin.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>**/Service/InitDB.*</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>

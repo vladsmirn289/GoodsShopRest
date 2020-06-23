@@ -57,7 +57,7 @@ public class ItemControllerTest {
     @Test
     public void testFailDownloadImage() throws Exception {
         mockMvc
-                .perform(get("/item/image/6"))
+                .perform(get("/item/6/image"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
     }
@@ -67,7 +67,7 @@ public class ItemControllerTest {
         File image = new File("src/test/resources/images/proGit.jpg");
         FileUtil fileUtil = new FileUtil();
         mockMvc
-                .perform(get("/item/image/7"))
+                .perform(get("/item/7/image"))
                 .andExpect(status().isOk())
                 .andExpect(content().bytes(fileUtil.fileToBytes(image)));
     }
@@ -75,7 +75,7 @@ public class ItemControllerTest {
     @Test
     public void testNoItemError() throws Exception {
         MvcResult result = mockMvc
-                .perform(get("/item/image/100"))
+                .perform(get("/item/100/image"))
                 .andExpect(status().isNotFound())
                 .andReturn();
 

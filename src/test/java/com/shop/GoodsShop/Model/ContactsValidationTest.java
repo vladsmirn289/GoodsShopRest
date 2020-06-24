@@ -6,6 +6,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,5 +101,48 @@ public class ContactsValidationTest {
         ConstraintViolation<Contacts> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("phoneNumber");
         assertThat(violation.getMessage()).isEqualTo("Phone number cannot be empty");
+    }
+
+    @Test
+    void shouldGetZipCode() {
+        assertThat(contacts.getZipCode()).isEqualTo("123456");
+    }
+
+    @Test
+    void shouldGetCountry() {
+        assertThat(contacts.getCountry()).isEqualTo("Russia");
+    }
+
+    @Test
+    void shouldGetCity() {
+        assertThat(contacts.getCity()).isEqualTo("Moscow");
+    }
+
+    @Test
+    void shouldGetStreet() {
+        assertThat(contacts.getStreet()).isEqualTo("Bolotnaya street");
+    }
+
+    @Test
+    void shouldGetPhoneNumber() {
+        assertThat(contacts.getPhoneNumber()).isEqualTo("+7-499-123-45-67");
+    }
+
+    @Test
+    void shouldEqualsIsTrue() {
+        Contacts contacts = new Contacts("123456", "Russia",
+                "Moscow", "Bolotnaya street", "+7-499-123-45-67");
+
+        assertThat(this.contacts.equals(contacts)).isTrue();
+    }
+
+    @Test
+    void hashCodeTest() {
+        assertThat(contacts.hashCode())
+                .isEqualTo(Objects.hash("123456",
+                        "Russia",
+                        "Moscow",
+                        "Bolotnaya street",
+                        "+7-499-123-45-67"));
     }
 }

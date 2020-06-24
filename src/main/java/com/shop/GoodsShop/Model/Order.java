@@ -119,8 +119,16 @@ public class Order {
         return createdOn;
     }
 
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
     public Date getLastUpdate() {
         return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     @Override

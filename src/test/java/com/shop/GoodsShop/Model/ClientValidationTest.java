@@ -6,6 +6,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.Collections;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClientValidationTest {
     private Validator validator;
     private Client client;
+    private Order order;
+    private Item item;
 
     @BeforeEach
     void init() {
@@ -20,7 +23,21 @@ public class ClientValidationTest {
         localValidatorFactoryBean.afterPropertiesSet();
         this.validator = localValidatorFactoryBean;
 
-        this.client = new Client("i@gmail.com", "12345", "Igor", "Key", "IK");
+        Category books = new Category("Books");
+        this.item = new Item("Spring 5", 50L, 1.592D, 3300D,
+                "..........", "....", "1234567", books);
+        OrderedItem orderedItem = new OrderedItem(item, 1);
+        Contacts contacts = new Contacts("123456", "Russia",
+                "Moscow", "Bolotnaya street", "+7-499-123-45-67");
+        this.order = new Order(Collections.singleton(orderedItem), contacts, "C.O.D");
+
+        Client client = new Client("i@gmail.com", "12345",
+                "Igor", "Key", "IK");
+        client.setPatronymic("P");
+        client.setId(1L);
+        client.setBasket(Collections.singleton(item));
+        client.setOrders(Collections.singleton(order));
+        this.client = client;
     }
 
     @Test
@@ -111,5 +128,50 @@ public class ClientValidationTest {
         ConstraintViolation<Client> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("email");
         assertThat(violation.getMessage()).isEqualTo("Wrong email");
+    }
+
+    @Test
+    void shouldGetId() {
+        assertThat(client.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void shouldGetFirstName() {
+        assertThat(client.getFirstName()).isEqualTo("Igor");
+    }
+
+    @Test
+    void shouldGetLastName() {
+        assertThat(client.getLastName()).isEqualTo("Key");
+    }
+
+    @Test
+    void shouldGetLogin() {
+        assertThat(client.getLogin()).isEqualTo("IK");
+    }
+
+    @Test
+    void shouldGetPassword() {
+        assertThat(client.getPassword()).isEqualTo("12345");
+    }
+
+    @Test
+    void shouldGetEmail() {
+        assertThat(client.getEmail()).isEqualTo("i@gmail.com");
+    }
+
+    @Test
+    void shouldGetPatronymic() {
+        assertThat(client.getPatronymic()).isEqualTo("P");
+    }
+
+    @Test
+    void shouldGetBasket() {
+        assertThat(client.getBasket()).isEqualTo(Collections.singleton(item));
+    }
+
+    @Test
+    void shouldGetOrders() {
+        assertThat(client.getOrders()).isEqualTo(Collections.singleton(order));
     }
 }

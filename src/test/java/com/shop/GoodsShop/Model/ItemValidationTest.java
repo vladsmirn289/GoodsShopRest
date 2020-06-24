@@ -6,14 +6,14 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ItemValidationTest {
     private Validator validator;
     private Item item;
+    private Category books;
 
     @BeforeEach
     void init() {
@@ -21,9 +21,16 @@ public class ItemValidationTest {
         localValidatorFactoryBean.afterPropertiesSet();
         this.validator = localValidatorFactoryBean;
 
-        Category books = new Category("Books");
-        this.item = new Item("Spring 5", 50L, 1.592D, 3300D,
-                "..........", "....", UUID.randomUUID().toString(), books);
+        this.books = new Category("Books");
+        Item item = new Item("Spring 5", 50L, 1.592D, 3300D,
+                "..........", "....", "1234567", books);
+        Image image = new Image();
+        image.setImage("1234".getBytes());
+        item.setId(1L);
+        item.setImage("123".getBytes());
+        item.setAdditionalImages(Collections.singleton(image));
+        item.setCreatedOn(new Date(2020, Calendar.JUNE, 24));
+        this.item = item;
     }
 
     @Test
@@ -140,5 +147,87 @@ public class ItemValidationTest {
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("price");
         assertThat(violation.getMessage()).isEqualTo("Price must be positive");
+    }
+
+    @Test
+    public void shouldGetId() {
+        assertThat(item.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    public void shouldGetName() {
+        assertThat(item.getName()).isEqualTo("Spring 5");
+    }
+
+    @Test
+    public void shouldGetCount() {
+        assertThat(item.getCount()).isEqualTo(50L);
+    }
+
+    @Test
+    public void shouldGetWeight() {
+        assertThat(item.getWeight()).isEqualTo(1.592D);
+    }
+
+    @Test
+    public void shouldGetPrice() {
+        assertThat(item.getPrice()).isEqualTo(3300D);
+    }
+
+    @Test
+    public void shouldGetDescription() {
+        assertThat(item.getDescription()).isEqualTo("..........");
+    }
+
+    @Test
+    public void shouldGetCharacteristics() {
+        assertThat(item.getCharacteristics()).isEqualTo("....");
+    }
+
+    @Test
+    public void shouldGetImage() {
+        assertThat(item.getImage()).isEqualTo("123".getBytes());
+    }
+
+    @Test
+    public void shouldGetAdditionalImage() {
+        assertThat(item.getAdditionalImages().iterator().next().getImage())
+                .isEqualTo("1234".getBytes());
+    }
+
+    @Test
+    public void shouldGetCode() {
+        assertThat(item.getCode()).isEqualTo("1234567");
+    }
+
+    @Test
+    public void shouldGetCategory() {
+        assertThat(item.getCategory()).isEqualTo(books);
+    }
+
+    @Test
+    public void shouldGetCreatedOn() {
+        assertThat(item.getCreatedOn()).isEqualTo(new Date(2020, Calendar.JUNE, 24));
+    }
+
+    @Test
+    public void shouldEqualsIsTrue() {
+        Item item = new Item("Spring 5", 50L, 1.592D, 3300D,
+                "..........", "....", "1234567", books);
+
+        assertThat(this.item.equals(item)).isTrue();
+    }
+
+    @Test
+    public void hashCodeTest() {
+        assertThat(this.item.hashCode())
+                .isEqualTo(Objects.hash(
+                        "Spring 5",
+                        50L,
+                        1.592D,
+                        3300D,
+                        "..........",
+                        "....",
+                        "1234567"));
     }
 }

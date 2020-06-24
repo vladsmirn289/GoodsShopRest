@@ -1,6 +1,7 @@
 package com.shop.GoodsShop.Model;
 
 import javax.persistence.*;
+import java.util.Arrays;
 
 @Entity
 public class Image {
@@ -25,5 +26,18 @@ public class Image {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Image image1 = (Image) o;
+        return Arrays.equals(image, image1.image);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(image);
     }
 }

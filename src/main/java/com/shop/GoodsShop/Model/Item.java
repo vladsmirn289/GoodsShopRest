@@ -168,6 +168,10 @@ public class Item {
         return createdOn;
     }
 
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

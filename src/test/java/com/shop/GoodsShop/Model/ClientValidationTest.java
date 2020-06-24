@@ -6,7 +6,9 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +39,7 @@ public class ClientValidationTest {
         client.setId(1L);
         client.setBasket(Collections.singleton(item));
         client.setOrders(Collections.singleton(order));
+        client.setRoles(Collections.singleton(Role.USER));
         this.client = client;
     }
 
@@ -173,5 +176,18 @@ public class ClientValidationTest {
     @Test
     void shouldGetOrders() {
         assertThat(client.getOrders()).isEqualTo(Collections.singleton(order));
+    }
+
+    @Test
+    void shouldGetRoles() {
+        assertThat(client.getRoles()).isEqualTo(Collections.singleton(Role.USER));
+    }
+
+    @Test
+    void isAdminTest() {
+        assertThat(client.isAdmin()).isFalse();
+
+        client.setRoles(new HashSet<>(Arrays.asList(Role.USER, Role.ADMIN)));
+        assertThat(client.isAdmin()).isTrue();
     }
 }

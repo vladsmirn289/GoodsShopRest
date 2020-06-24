@@ -98,11 +98,20 @@ CREATE TABLE public.item_additional_images (
 );
 
 --
+-- Name: client_roles; Type: TABLE; Schema: public
+--
+
+CREATE TABLE public.client_roles (
+    client_id bigint NOT NULL,
+    roles character varying(255)
+);
+
+--
 -- Name: hibernate_sequence; Type: SEQUENCE; Schema: public
 --
 
 CREATE SEQUENCE public.hibernate_sequence
-    START WITH 69
+    START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
@@ -250,3 +259,10 @@ ALTER TABLE ONLY public.item_additional_images
 
 ALTER TABLE ONLY public.item_additional_images
     ADD CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES public.item(id);
+
+--
+-- Name: client_roles fk_client_id; Type: FK CONSTRAINT; Schema: public
+--
+
+ALTER TABLE ONLY public.client_roles
+    ADD CONSTRAINT fk_client_id FOREIGN KEY (client_id) REFERENCES public.client(id);

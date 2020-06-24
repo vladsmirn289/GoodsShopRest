@@ -50,6 +50,18 @@ public class ClientRepoTest {
     }
 
     @Test
+    public void shouldFindClientByLogin() {
+        Client client = clientRepo.findByLogin("IK");
+
+        assertThat(client).isNotNull();
+        assertThat(client.getEmail()).isEqualTo("i@gmail.com");
+        assertThat(client.getPassword()).isEqualTo("12345");
+        assertThat(client.getFirstName()).isEqualTo("Igor");
+        assertThat(client.getLastName()).isEqualTo("Key");
+        assertThat(client.getPatronymic()).isEqualTo("C");
+    }
+
+    @Test
     public void shouldSaveClient() {
         Client client = new Client("l@gmail.com", "45678", "ABC", "DEF", "GHI", "ADG");
         clientRepo.save(client);

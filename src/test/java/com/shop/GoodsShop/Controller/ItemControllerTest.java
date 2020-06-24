@@ -21,6 +21,7 @@ import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -58,6 +59,7 @@ public class ItemControllerTest {
     public void testFailDownloadImage() throws Exception {
         mockMvc
                 .perform(get("/item/6/image"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
     }
@@ -68,6 +70,7 @@ public class ItemControllerTest {
         FileUtil fileUtil = new FileUtil();
         mockMvc
                 .perform(get("/item/7/image"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().bytes(fileUtil.fileToBytes(image)));
     }
@@ -76,6 +79,7 @@ public class ItemControllerTest {
     public void testNoItemError() throws Exception {
         MvcResult result = mockMvc
                 .perform(get("/item/100/image"))
+                .andDo(print())
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -88,6 +92,7 @@ public class ItemControllerTest {
     public void testGetItemPage() throws Exception {
         mockMvc
                 .perform(get("/item/6"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("itemPage"))
                 .andExpect(model().size(1))

@@ -979,8 +979,11 @@ public class InitDB {
         Client prokofiyKravchuk = new Client("hane.ayla@yahoo.com", "1Rhm47zO", "Прокофий", "Кравчук", "ProkofiyKravchuk");
         Client timofeyBarshev = new Client("norene04@yahoo.com", "Yn865FbJ", "Тимофей", "Барышев", "TimofeyBarshev");
 
+        yakovMaurov.setRoles(Collections.singleton(Role.USER));
         clientService.save(yakovMaurov);
+        prokofiyKravchuk.setRoles(Collections.singleton(Role.USER));
         clientService.save(prokofiyKravchuk);
+        timofeyBarshev.setRoles(Collections.singleton(Role.USER));
         clientService.save(timofeyBarshev);
 
         //With items in basket
@@ -996,8 +999,11 @@ public class InitDB {
         vladislavPutilin.setBasket(basket2);
         borislavPotemkin.setBasket(basket3);
 
+        egorSolomonov.setRoles(Collections.singleton(Role.USER));
         clientService.save(egorSolomonov);
+        vladislavPutilin.setRoles(Collections.singleton(Role.USER));
         clientService.save(vladislavPutilin);
+        borislavPotemkin.setRoles(Collections.singleton(Role.USER));
         clientService.save(borislavPotemkin);
 
         //With orders
@@ -1020,6 +1026,7 @@ public class InitDB {
         orderedItemService.save(orderedItem2);
 
         lianaKraevska.setOrders(new HashSet<>(Collections.singletonList(order1)));
+        lianaKraevska.setRoles(Collections.singleton(Role.USER));
         clientService.save(lianaKraevska);
 
         //second
@@ -1051,11 +1058,13 @@ public class InitDB {
         orderedItemService.save(orderedItem5);
 
         albinaBudanova.setOrders(new HashSet<>(Arrays.asList(order2, order3, order4)));
+        albinaBudanova.setRoles(Collections.singleton(Role.USER));
         clientService.save(albinaBudanova);
 
         //Test user
         Client vladislavSmirnov = new Client("vladsmirn289@gmail.com", "12345", "Владислав", "Смирнов", "VladislavSmirnov");
 
+        vladislavSmirnov.setRoles(Collections.singleton(Role.USER));
         clientService.save(vladislavSmirnov);
 
         //Manager, who manage orders and create items
@@ -1065,9 +1074,13 @@ public class InitDB {
 
         Client admin = new Client("goconnell@bernhard.com", "25oMTtm3", "Семён", "Буков", "CemenBukov");
 
+        manager1.setRoles(new HashSet<>(Arrays.asList(Role.USER, Role.MANAGER)));
         clientService.save(manager1);
+        manager2.setRoles(new HashSet<>(Arrays.asList(Role.USER, Role.MANAGER)));
         clientService.save(manager2);
+        manager3.setRoles(new HashSet<>(Arrays.asList(Role.USER, Role.MANAGER)));
         clientService.save(manager3);
+        admin.setRoles(new HashSet<>(Arrays.asList(Role.USER, Role.MANAGER, Role.ADMIN)));
         clientService.save(admin);
 
         /* --- --- */

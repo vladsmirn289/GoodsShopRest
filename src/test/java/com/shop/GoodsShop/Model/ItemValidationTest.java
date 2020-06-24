@@ -10,6 +10,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("deprecation")
 public class ItemValidationTest {
     private Validator validator;
     private Item item;

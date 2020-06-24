@@ -21,6 +21,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -51,6 +52,7 @@ public class CategoryControllerTest {
     public void showParentCategoryNoItemsTest() throws Exception {
         mockMvc
                 .perform(get("/category/1"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("categoryItems"))
                 .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(0));
@@ -63,6 +65,7 @@ public class CategoryControllerTest {
 
         mockMvc
                 .perform(get("/category/3"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("categoryItems"))
                 .andExpect(model().size(1))
@@ -78,6 +81,7 @@ public class CategoryControllerTest {
     public void showNoCategoryError() throws Exception {
         MvcResult result = mockMvc
                 .perform(get("/category/10"))
+                .andDo(print())
                 .andExpect(status().isNotFound())
                 .andReturn();
 

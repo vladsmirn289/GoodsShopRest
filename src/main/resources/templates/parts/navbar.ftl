@@ -1,3 +1,5 @@
+<#include "security.ftl">
+
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="/">GoodsShop</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,26 +12,35 @@
                 <a class="nav-link" href="/">Каталог <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Корзина <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/basket">Корзина <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Мои заказы <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/myOrders">Мои заказы <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Личный кабинет <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/personalRoom">Личный кабинет <span class="sr-only">(current)</span></a>
             </li>
         </ul>
 
-        <form class="mr-2" method="post" action="#">
-            <button type="submit" class="btn btn-outline-success">Войти</button>
-        </form>
+        <div class="navbar-text mr-2">
+            ${login_name}
+        </div>
 
-        <form class="mr-2" method="post" action="#">
-            <button type="submit" class="btn btn-outline-success">Выйти</button>
-        </form>
+        <#if isExist>
+            <form class="mr-2" action="/logout" method="post">
+                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                <button type="submit" class="btn btn-outline-success">Выйти</button>
+            </form>
+        <#else>
+            <form class="mr-2" action="/login" method="get">
+                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                <button type="submit" class="btn btn-outline-success">Войти</button>
+            </form>
+        </#if>
 
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Поиск" aria-label="Search"/>
+            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Найти  </button>
         </form>
     </div>

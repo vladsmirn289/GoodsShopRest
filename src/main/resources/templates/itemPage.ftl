@@ -19,6 +19,7 @@
                     <form name="inBasket" method="post">
                         <input name="quantity" type="number" size="10" value="1" style="width: 50px" /> шт.<br/>
                         <input name="item_id" type="text" value="${item.id}" hidden="hidden" /> <br/>
+                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                         <input class="btn btn-primary" type="submit" value="В корзину" />
                     </form>
                 </div>

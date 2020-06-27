@@ -61,7 +61,7 @@ public class OrderValidationTest {
 
         ConstraintViolation<Order> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("orderedItems");
-        assertThat(violation.getMessage()).isEqualTo("Ordered items cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Список заказанных предметов не может быть пустым");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class OrderValidationTest {
 
         ConstraintViolation<Order> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("contacts");
-        assertThat(violation.getMessage()).isEqualTo("Contacts must be set");
+        assertThat(violation.getMessage()).isEqualTo("Контактная информация должна быть задана");
     }
 
     @Test
@@ -85,7 +85,7 @@ public class OrderValidationTest {
 
         ConstraintViolation<Order> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("paymentMethod");
-        assertThat(violation.getMessage()).isEqualTo("Payment method cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Способ оплаты должен быть задан");
     }
 
     @Test

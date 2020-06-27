@@ -1,6 +1,7 @@
 package com.shop.GoodsShop.Service;
 
 import com.shop.GoodsShop.Model.Client;
+import com.shop.GoodsShop.Model.Role;
 import com.shop.GoodsShop.Repositories.ClientRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
 
 @Service
 @Transactional
@@ -31,6 +34,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Client findByLogin(String login) {
         return clientRepo.findByLogin(login);
     }
@@ -41,6 +45,7 @@ public class ClientServiceImpl implements ClientService {
         String password = client.getPassword();
         password = passwordEncoder.encode(password);
         client.setPassword(password);
+        client.setRoles(Collections.singleton(Role.USER));
 
         clientRepo.save(client);
     }

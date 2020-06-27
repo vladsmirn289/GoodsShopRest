@@ -16,7 +16,7 @@ public class Category {
     @JoinColumn(name = "parent_id")
     private Category parent;
 
-    @NotBlank(message = "Category name cannot be empty")
+    @NotBlank(message = "Имя категории не может быть пустым")
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY,

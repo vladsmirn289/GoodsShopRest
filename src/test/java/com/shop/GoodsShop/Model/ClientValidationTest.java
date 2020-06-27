@@ -58,7 +58,7 @@ public class ClientValidationTest {
 
         ConstraintViolation<Client> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("firstName");
-        assertThat(violation.getMessage()).isEqualTo("First name must be minimum 3 symbols");
+        assertThat(violation.getMessage()).isEqualTo("Имя должно состоять как минимум из 3 символов");
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ClientValidationTest {
 
         ConstraintViolation<Client> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("lastName");
-        assertThat(violation.getMessage()).isEqualTo("Last name must be minimum 3 symbols");
+        assertThat(violation.getMessage()).isEqualTo("Фамилия должна состоять как минимум из 3 символов");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ClientValidationTest {
 
         ConstraintViolation<Client> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("login");
-        assertThat(violation.getMessage()).isEqualTo("Login cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Логин не может быть пустым");
     }
 
     @Test
@@ -94,7 +94,7 @@ public class ClientValidationTest {
 
         ConstraintViolation<Client> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("password");
-        assertThat(violation.getMessage()).isEqualTo("Password must be minimum 5 symbols");
+        assertThat(violation.getMessage()).isEqualTo("Пароль должен состоять из как минимум 5 символов");
     }
 
     @Test
@@ -106,7 +106,7 @@ public class ClientValidationTest {
 
         ConstraintViolation<Client> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("email");
-        assertThat(violation.getMessage()).isEqualTo("Email cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Email не может быть пустым");
     }
 
     @Test
@@ -118,7 +118,7 @@ public class ClientValidationTest {
 
         ConstraintViolation<Client> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("email");
-        assertThat(violation.getMessage()).isEqualTo("Email cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Email не может быть пустым");
     }
 
     @Test
@@ -130,7 +130,7 @@ public class ClientValidationTest {
 
         ConstraintViolation<Client> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("email");
-        assertThat(violation.getMessage()).isEqualTo("Wrong email");
+        assertThat(violation.getMessage()).isEqualTo("Неправильный email");
     }
 
     @Test

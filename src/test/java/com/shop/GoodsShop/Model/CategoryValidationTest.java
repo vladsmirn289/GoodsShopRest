@@ -51,7 +51,7 @@ public class CategoryValidationTest {
 
         ConstraintViolation<Category> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-        assertThat(violation.getMessage()).isEqualTo("Category name cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Имя категории не может быть пустым");
     }
 
     @Test

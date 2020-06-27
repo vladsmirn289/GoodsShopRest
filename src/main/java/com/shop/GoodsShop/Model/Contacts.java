@@ -7,19 +7,19 @@ import java.util.Objects;
 
 @Embeddable
 public class Contacts {
-    @Size(min = 4, max = 9, message = "Zip code must be between 4 and 9 digits")
+    @Size(min = 4, max = 9, message = "Почтовый индекс должен быть от 4 до 9 символов")
     private String zipCode;
 
-    @NotBlank(message = "Country cannot be empty")
+    @NotBlank(message = "Страна должна быть задана")
     private String country;
 
-    @NotBlank(message = "City cannot be empty")
+    @NotBlank(message = "Город должен быть задан")
     private String city;
 
-    @NotBlank(message = "Street cannot be empty")
+    @NotBlank(message = "Улица должна быть задана")
     private String street;
 
-    @NotBlank(message = "Phone number cannot be empty")
+    @NotBlank(message = "Номер телефона должен быть задан")
     private String phoneNumber;
 
 

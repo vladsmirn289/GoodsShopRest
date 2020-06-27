@@ -32,7 +32,7 @@
                 <button type="submit" class="btn btn-outline-success">Выйти</button>
             </form>
         <#else>
-            <form class="mr-2" action="/login" method="get">
+            <form class="mr-2" action="/logout" method="post">
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 <button type="submit" class="btn btn-outline-success">Войти</button>
             </form>

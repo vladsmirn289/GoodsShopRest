@@ -17,20 +17,20 @@ public class Client implements UserDetails {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Size(min = 3, message = "First name must be minimum 3 symbols")
+    @Size(min = 3, message = "Имя должно состоять как минимум из 3 символов")
     private String firstName;
 
-    @Size(min = 3, message = "Last name must be minimum 3 symbols")
+    @Size(min = 3, message = "Фамилия должна состоять как минимум из 3 символов")
     private String lastName;
 
-    @NotBlank(message = "Login cannot be empty")
+    @NotBlank(message = "Логин не может быть пустым")
     private String login;
 
-    @Size(min = 5, message = "Password must be minimum 5 symbols")
+    @Size(min = 5, message = "Пароль должен состоять из как минимум 5 символов")
     private String password;
 
-    @Email(message = "Wrong email")
-    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Неправильный email")
+    @NotBlank(message = "Email не может быть пустым")
     private String email;
 
     private String patronymic;

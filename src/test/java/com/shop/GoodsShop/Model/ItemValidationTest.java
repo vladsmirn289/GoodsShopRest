@@ -48,7 +48,7 @@ public class ItemValidationTest {
 
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-        assertThat(violation.getMessage()).isEqualTo("Name cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Название не может быть пустым");
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ItemValidationTest {
 
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-        assertThat(violation.getMessage()).isEqualTo("Description must be between 10 and 5000 symbols");
+        assertThat(violation.getMessage()).isEqualTo("Описание должно быть от 10 символов");
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ItemValidationTest {
 
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("characteristics");
-        assertThat(violation.getMessage()).isEqualTo("Characteristics cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Характеристики должны быть заданы");
     }
 
     @Test
@@ -81,7 +81,7 @@ public class ItemValidationTest {
 
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("code");
-        assertThat(violation.getMessage()).isEqualTo("Code must be set");
+        assertThat(violation.getMessage()).isEqualTo("Код товара должен быть задан");
     }
 
     @Test
@@ -92,7 +92,7 @@ public class ItemValidationTest {
 
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("category");
-        assertThat(violation.getMessage()).isEqualTo("Category cannot be null");
+        assertThat(violation.getMessage()).isEqualTo("Категория должна существовать");
     }
 
     @Test
@@ -103,7 +103,7 @@ public class ItemValidationTest {
 
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("count");
-        assertThat(violation.getMessage()).isEqualTo("Count must be positive or zero");
+        assertThat(violation.getMessage()).isEqualTo("Количество должно быть положительным числом, или равно нулю");
     }
 
     @Test
@@ -114,7 +114,7 @@ public class ItemValidationTest {
 
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("weight");
-        assertThat(violation.getMessage()).isEqualTo("Weight must be positive");
+        assertThat(violation.getMessage()).isEqualTo("Вес должен быть положительным");
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ItemValidationTest {
 
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("weight");
-        assertThat(violation.getMessage()).isEqualTo("Weight must be positive");
+        assertThat(violation.getMessage()).isEqualTo("Вес должен быть положительным");
     }
 
     @Test
@@ -136,7 +136,7 @@ public class ItemValidationTest {
 
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("price");
-        assertThat(violation.getMessage()).isEqualTo("Price must be positive");
+        assertThat(violation.getMessage()).isEqualTo("Цена должна быть положительной");
     }
 
     @Test
@@ -147,7 +147,7 @@ public class ItemValidationTest {
 
         ConstraintViolation<Item> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("price");
-        assertThat(violation.getMessage()).isEqualTo("Price must be positive");
+        assertThat(violation.getMessage()).isEqualTo("Цена должна быть положительной");
     }
 
     @Test

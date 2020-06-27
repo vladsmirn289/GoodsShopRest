@@ -54,7 +54,7 @@ public class OrderedItemValidationTest {
 
         ConstraintViolation<OrderedItem> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("item");
-        assertThat(violation.getMessage()).isEqualTo("Item must be set");
+        assertThat(violation.getMessage()).isEqualTo("Предмет должен быть задан");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class OrderedItemValidationTest {
 
         ConstraintViolation<OrderedItem> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("quantity");
-        assertThat(violation.getMessage()).isEqualTo("Quantity cannot be negative or zero");
+        assertThat(violation.getMessage()).isEqualTo("Количество должно быть положительным числом");
     }
 
     @Test
@@ -76,7 +76,7 @@ public class OrderedItemValidationTest {
 
         ConstraintViolation<OrderedItem> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("quantity");
-        assertThat(violation.getMessage()).isEqualTo("Quantity cannot be negative or zero");
+        assertThat(violation.getMessage()).isEqualTo("Количество должно быть положительным числом");
     }
 
     @Test

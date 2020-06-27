@@ -10,6 +10,8 @@
 
     <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.min.css"/>
     <link type="text/css" rel="stylesheet" href="/css/common.css"/>
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://faviconka.ru/ico/faviconka_ru_1463.ico"/>
 </head>
 
 <body>

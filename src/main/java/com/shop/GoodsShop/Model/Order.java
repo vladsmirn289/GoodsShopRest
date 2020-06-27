@@ -19,17 +19,17 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @NotEmpty(message = "Ordered items cannot be empty")
+    @NotEmpty(message = "Список заказанных предметов не может быть пустым")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
     private Set<OrderedItem> orderedItems = new HashSet<>();
 
-    @NotNull(message = "Contacts must be set")
+    @NotNull(message = "Контактная информация должна быть задана")
     private Contacts contacts;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @NotBlank(message = "Payment method cannot be empty")
+    @NotBlank(message = "Способ оплаты должен быть задан")
     private String paymentMethod;
 
     private String trackNumber;

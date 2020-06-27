@@ -1,6 +1,7 @@
 package com.shop.GoodsShop.Service;
 
 import com.shop.GoodsShop.Model.Client;
+import com.shop.GoodsShop.Model.Role;
 import com.shop.GoodsShop.Repositories.ClientRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,6 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClientServiceTest {
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @MockBean
     private InitDB initDB;
@@ -48,6 +53,9 @@ public class ClientServiceTest {
     public void shouldSaveClient() {
         clientService.save(client);
 
+        assertThat(client.getRoles().size()).isEqualTo(1);
+        assertThat(client.getRoles().iterator().next()).isEqualTo(Role.USER);
+        assertThat(passwordEncoder.matches("123456", client.getPassword())).isTrue();
         Mockito.verify(clientRepo, Mockito.times(1))
                 .save(client);
     }

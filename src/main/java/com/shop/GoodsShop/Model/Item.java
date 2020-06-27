@@ -15,23 +15,23 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @NotBlank(message = "Name cannot be empty")
+    @NotBlank(message = "Название не может быть пустым")
     private String name;
 
-    @PositiveOrZero(message = "Count must be positive or zero")
+    @PositiveOrZero(message = "Количество должно быть положительным числом, или равно нулю")
     private Long count;
 
-    @Positive(message = "Weight must be positive")
+    @Positive(message = "Вес должен быть положительным")
     private Double weight;
 
-    @Positive(message = "Price must be positive")
+    @Positive(message = "Цена должна быть положительной")
     private Double price;
 
-    @Size(min = 10, max = 5000, message = "Description must be between 10 and 5000 symbols")
+    @Size(min = 10, max = 50_000, message = "Описание должно быть от 10 символов")
     private String description;
 
-    @NotBlank(message = "Characteristics cannot be empty")
-    @Size(max = 5000, message = "Characteristics must be less than 5000 symbols")
+    @NotBlank(message = "Характеристики должны быть заданы")
+    @Size(max = 50_000)
     private String characteristics;
 
     @Lob
@@ -41,10 +41,10 @@ public class Item {
                cascade = {CascadeType.REMOVE})
     private Set<Image> additionalImages = new HashSet<>();
 
-    @NotBlank(message = "Code must be set")
+    @NotBlank(message = "Код товара должен быть задан")
     private String code;
 
-    @NotNull(message = "Category cannot be null")
+    @NotNull(message = "Категория должна существовать")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;

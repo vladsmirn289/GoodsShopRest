@@ -39,7 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/item/*/image",
                         "/webjars/**",
                         "/css/**",
-                        "/images/**")
+                        "/images/**",
+                        "/registration")
                     .permitAll()
 
                     .antMatchers(

@@ -12,7 +12,7 @@ public class OrderedItem {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @NotNull(message = "Item must be set")
+    @NotNull(message = "Предмет должен быть задан")
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     private Item item;
@@ -21,7 +21,7 @@ public class OrderedItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Positive(message = "Quantity cannot be negative or zero")
+    @Positive(message = "Количество должно быть положительным числом")
     private int quantity;
 
 

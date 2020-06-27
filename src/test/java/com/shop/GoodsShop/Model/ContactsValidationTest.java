@@ -40,7 +40,7 @@ public class ContactsValidationTest {
 
         ConstraintViolation<Contacts> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("zipCode");
-        assertThat(violation.getMessage()).isEqualTo("Zip code must be between 4 and 9 digits");
+        assertThat(violation.getMessage()).isEqualTo("Почтовый индекс должен быть от 4 до 9 символов");
     }
 
     @Test
@@ -52,7 +52,7 @@ public class ContactsValidationTest {
 
         ConstraintViolation<Contacts> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("zipCode");
-        assertThat(violation.getMessage()).isEqualTo("Zip code must be between 4 and 9 digits");
+        assertThat(violation.getMessage()).isEqualTo("Почтовый индекс должен быть от 4 до 9 символов");
     }
 
     @Test
@@ -64,7 +64,7 @@ public class ContactsValidationTest {
 
         ConstraintViolation<Contacts> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("country");
-        assertThat(violation.getMessage()).isEqualTo("Country cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Страна должна быть задана");
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ContactsValidationTest {
 
         ConstraintViolation<Contacts> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("city");
-        assertThat(violation.getMessage()).isEqualTo("City cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Город должен быть задан");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class ContactsValidationTest {
 
         ConstraintViolation<Contacts> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("street");
-        assertThat(violation.getMessage()).isEqualTo("Street cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Улица должна быть задана");
     }
 
     @Test
@@ -100,7 +100,7 @@ public class ContactsValidationTest {
 
         ConstraintViolation<Contacts> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("phoneNumber");
-        assertThat(violation.getMessage()).isEqualTo("Phone number cannot be empty");
+        assertThat(violation.getMessage()).isEqualTo("Номер телефона должен быть задан");
     }
 
     @Test

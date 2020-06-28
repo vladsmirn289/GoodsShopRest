@@ -50,13 +50,29 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void shouldSaveClient() {
+    public void shouldSaveOrUpdateClient() {
         clientService.save(client);
 
         assertThat(client.getRoles().size()).isEqualTo(1);
         assertThat(client.getRoles().iterator().next()).isEqualTo(Role.USER);
         assertThat(passwordEncoder.matches("123456", client.getPassword())).isTrue();
         Mockito.verify(clientRepo, Mockito.times(1))
+                .save(client);
+
+        Long id = client.getId();
+
+        Mockito
+                .doReturn(client)
+                .when(clientRepo)
+                .findByLogin(client.getLogin());
+
+        client.setPatronymic("Patronymic");
+        client.setEmail("g@g");
+        clientService.save(client);
+
+        assertThat(client.getId()).isEqualTo(id);
+        assertThat(passwordEncoder.matches("123456", client.getPassword())).isTrue();
+        Mockito.verify(clientRepo, Mockito.times(2))
                 .save(client);
     }
 

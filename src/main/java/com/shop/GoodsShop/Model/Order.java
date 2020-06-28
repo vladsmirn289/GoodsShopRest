@@ -21,7 +21,7 @@ public class Order {
 
     @NotEmpty(message = "Список заказанных предметов не может быть пустым")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
-    private Set<OrderedItem> orderedItems = new HashSet<>();
+    private Set<ClientItem> clientItems = new HashSet<>();
 
     @NotNull(message = "Контактная информация должна быть задана")
     private Contacts contacts;
@@ -50,10 +50,10 @@ public class Order {
 
     protected Order() {}
 
-    public Order(Set<OrderedItem> orderedItems,
+    public Order(Set<ClientItem> clientItems,
                  Contacts contacts,
                  String paymentMethod) {
-        this.orderedItems = orderedItems;
+        this.clientItems = clientItems;
         this.contacts = contacts;
         this.paymentMethod = paymentMethod;
     }
@@ -67,12 +67,12 @@ public class Order {
         this.id = id;
     }
 
-    public Set<OrderedItem> getOrderedItems() {
-        return orderedItems;
+    public Set<ClientItem> getClientItems() {
+        return clientItems;
     }
 
-    public void setOrderedItems(Set<OrderedItem> orderedItems) {
-        this.orderedItems = orderedItems;
+    public void setClientItems(Set<ClientItem> clientItems) {
+        this.clientItems = clientItems;
     }
 
     public Contacts getContacts() {
@@ -136,13 +136,13 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return orderedItems.equals(order.orderedItems) &&
+        return clientItems.equals(order.clientItems) &&
                 contacts.equals(order.contacts) &&
                 paymentMethod.equals(order.paymentMethod);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderedItems, contacts, paymentMethod);
+        return Objects.hash(clientItems, contacts, paymentMethod);
     }
 }

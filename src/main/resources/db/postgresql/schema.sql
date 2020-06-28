@@ -37,11 +37,11 @@ CREATE TABLE public.client (
 
 CREATE TABLE public.item (
     id bigint NOT NULL,
-    characteristics character varying(5000),
+    characteristics character varying(50000),
     code character varying(255),
     count bigint,
     created_on timestamp without time zone,
-    description character varying(5000),
+    description character varying(50000),
     image oid,
     name character varying(255),
     price double precision,
@@ -50,10 +50,10 @@ CREATE TABLE public.item (
 );
 
 --
--- Name: ordered_item; Type: TABLE; Schema: public
+-- Name: client_item; Type: TABLE; Schema: public
 --
 
-CREATE TABLE public.ordered_item (
+CREATE TABLE public.client_item (
     id bigint NOT NULL,
     quantity integer NOT NULL,
     item_id bigint NOT NULL,
@@ -150,11 +150,11 @@ ALTER TABLE ONLY public.item
 
 
 --
--- Name: ordered_item ordered_item_pkey; Type: CONSTRAINT; Schema: public
+-- Name: ordered_item client_item_pkey; Type: CONSTRAINT; Schema: public
 --
 
-ALTER TABLE ONLY public.ordered_item
-    ADD CONSTRAINT ordered_item_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.client_item
+    ADD CONSTRAINT client_item_pkey PRIMARY KEY (id);
 
 
 --
@@ -217,7 +217,7 @@ ALTER TABLE ONLY public.category
 -- Name: ordered_item fk_order_id; Type: FK CONSTRAINT; Schema: public
 --
 
-ALTER TABLE ONLY public.ordered_item
+ALTER TABLE ONLY public.client_item
     ADD CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES public.orders(id);
 
 
@@ -225,7 +225,7 @@ ALTER TABLE ONLY public.ordered_item
 -- Name: ordered_item fk_item_id; Type: FK CONSTRAINT; Schema: public
 --
 
-ALTER TABLE ONLY public.ordered_item
+ALTER TABLE ONLY public.client_item
     ADD CONSTRAINT fk_ordered_item_id FOREIGN KEY (item_id) REFERENCES public.item(id);
 
 
@@ -234,7 +234,7 @@ ALTER TABLE ONLY public.ordered_item
 --
 
 ALTER TABLE ONLY public.basket_items
-    ADD CONSTRAINT fk_basket_items_id FOREIGN KEY (item_id) REFERENCES public.item(id);
+    ADD CONSTRAINT fk_basket_items_id FOREIGN KEY (item_id) REFERENCES public.client_item(id);
 
 
 --

@@ -28,16 +28,16 @@ public class ClientValidationTest {
         Category books = new Category("Books");
         this.item = new Item("Spring 5", 50L, 1.592D, 3300D,
                 "..........", "....", "1234567", books);
-        OrderedItem orderedItem = new OrderedItem(item, 1);
+        ClientItem clientItem = new ClientItem(item, 1);
         Contacts contacts = new Contacts("123456", "Russia",
                 "Moscow", "Bolotnaya street", "+7-499-123-45-67");
-        this.order = new Order(Collections.singleton(orderedItem), contacts, "C.O.D");
+        this.order = new Order(Collections.singleton(clientItem), contacts, "C.O.D");
 
         Client client = new Client("i@gmail.com", "12345",
                 "Igor", "Key", "IK");
         client.setPatronymic("P");
         client.setId(1L);
-        client.setBasket(Collections.singleton(item));
+        client.setBasket(Collections.singleton(clientItem));
         client.setOrders(Collections.singleton(order));
         client.setRoles(Collections.singleton(Role.USER));
         this.client = client;
@@ -170,7 +170,7 @@ public class ClientValidationTest {
 
     @Test
     void shouldGetBasket() {
-        assertThat(client.getBasket()).isEqualTo(Collections.singleton(item));
+        assertThat(client.getBasket()).isEqualTo(Collections.singleton(new ClientItem(item, 1)));
     }
 
     @Test

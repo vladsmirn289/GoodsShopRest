@@ -22,7 +22,7 @@ public class InitDB {
     private ItemService itemService;
     private ClientService clientService;
     private OrderService orderService;
-    private OrderedItemService orderedItemService;
+    private ClientItemService clientItemService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -48,8 +48,8 @@ public class InitDB {
     }
 
     @Autowired
-    public void setOrderedItemService(OrderedItemService orderedItemService) {
-        this.orderedItemService = orderedItemService;
+    public void setClientItemService(ClientItemService clientItemService) {
+        this.clientItemService = clientItemService;
     }
 
     public void init() {
@@ -991,9 +991,21 @@ public class InitDB {
         Client vladislavPutilin = new Client("hassan66@yahoo.com", "2s1L8lPC", "Владислав", "Путилин", "VladislavPutilin");
         Client borislavPotemkin = new Client("dylan80@yahoo.com", "UBq9H13C", "Борислав", "Потёмкин", "BorislavPotemkin");
 
-        Set<Item> basket1 = new HashSet<>(Arrays.asList(callOfCthulhu, bookAboutTheWayOfLife, jokesFromNikulin));
-        Set<Item> basket2 = new HashSet<>(Arrays.asList(proGit, javaConcurrencyInPractice, ballpointPenPilotBPS, notebookLandscape));
-        Set<Item> basket3 = new HashSet<>(Arrays.asList(computerMicrophoneSvenMK490, dedragonThemisGamingHeadset, keyboardGamingLogitech, wiredGamingMouseRedragonVampire));
+        ClientItem callOfCthulhuItem = new ClientItem(callOfCthulhu, 2);
+        ClientItem bookAboutTheWayOfLifeItem = new ClientItem(bookAboutTheWayOfLife, 1);
+        ClientItem jokesFromNikulinItem = new ClientItem(jokesFromNikulin, 1);
+        ClientItem proGitItem = new ClientItem(proGit, 1);
+        ClientItem javaConcurrencyInPracticeItem = new ClientItem(javaConcurrencyInPractice, 1);
+        ClientItem ballpointPenPilotBPSItem = new ClientItem(ballpointPenPilotBPS, 1);
+        ClientItem notebookLandscapeItem = new ClientItem(notebookLandscape, 1);
+        ClientItem computerMicrophoneSvenMK490Item = new ClientItem(computerMicrophoneSvenMK490, 1);
+        ClientItem dedragonThemisGamingHeadsetItem = new ClientItem(dedragonThemisGamingHeadset, 1);
+        ClientItem keyboardGamingLogitechItem = new ClientItem(keyboardGamingLogitech, 1);
+        ClientItem wiredGamingMouseRedragonVampireItem = new ClientItem(wiredGamingMouseRedragonVampire, 1);
+
+        Set<ClientItem> basket1 = new HashSet<>(Arrays.asList(callOfCthulhuItem, bookAboutTheWayOfLifeItem, jokesFromNikulinItem));
+        Set<ClientItem> basket2 = new HashSet<>(Arrays.asList(proGitItem, javaConcurrencyInPracticeItem, ballpointPenPilotBPSItem, notebookLandscapeItem));
+        Set<ClientItem> basket3 = new HashSet<>(Arrays.asList(computerMicrophoneSvenMK490Item, dedragonThemisGamingHeadsetItem, keyboardGamingLogitechItem, wiredGamingMouseRedragonVampireItem));
 
         egorSolomonov.setBasket(basket1);
         vladislavPutilin.setBasket(basket2);
@@ -1011,38 +1023,38 @@ public class InitDB {
         Client albinaBudanova = new Client("nickolas49@ohara.org", "v7gIe11t", "Альбина", "Буданова", "AlbinaBudanova");
 
         //first
-        OrderedItem orderedItem1 = new OrderedItem(spring5ForProfessionals, 1);
-        OrderedItem orderedItem2 = new OrderedItem(perfectCode, 2);
+        ClientItem clientItem1 = new ClientItem(spring5ForProfessionals, 1);
+        ClientItem clientItem2 = new ClientItem(perfectCode, 2);
 
         Contacts contactsLiana = new Contacts("457043", "Россия", "Южноуральск", "Зелёная д5 к64", "8 (632) 452-72-98");
-        Order order1 = new Order(new HashSet<>(Arrays.asList(orderedItem1, orderedItem2)), contactsLiana, "C.O.D");
+        Order order1 = new Order(new HashSet<>(Arrays.asList(clientItem1, clientItem2)), contactsLiana, "C.O.D");
         order1.setClient(lianaKraevska);
         order1.setOrderStatus(OrderStatus.ACCEPTED);
         orderService.save(order1);
 
-        orderedItem1.setOrder(order1);
-        orderedItem2.setOrder(order1);
-        orderedItemService.save(orderedItem1);
-        orderedItemService.save(orderedItem2);
+        clientItem1.setOrder(order1);
+        clientItem2.setOrder(order1);
+        clientItemService.save(clientItem1);
+        clientItemService.save(clientItem2);
 
         lianaKraevska.setOrders(new HashSet<>(Collections.singletonList(order1)));
         lianaKraevska.setRoles(Collections.singleton(Role.USER));
         clientService.save(lianaKraevska);
 
         //second
-        OrderedItem orderedItem3 = new OrderedItem(notebookDragonfly, 3);
-        OrderedItem orderedItem4 = new OrderedItem(designArtSketchbook, 5);
-        OrderedItem orderedItem5 = new OrderedItem(ballpointPenR301OrangeStick, 10);
+        ClientItem clientItem3 = new ClientItem(notebookDragonfly, 3);
+        ClientItem clientItem4 = new ClientItem(designArtSketchbook, 5);
+        ClientItem clientItem5 = new ClientItem(ballpointPenR301OrangeStick, 10);
 
         Contacts contactsAlbina = new Contacts("115569", "Россия", "Москва", "Баженова д4А", "8 (499) 387-62-54");
-        Order order2 = new Order(new HashSet<>(Collections.singletonList(orderedItem3)), contactsAlbina, "C.O.D");
+        Order order2 = new Order(new HashSet<>(Collections.singletonList(clientItem3)), contactsAlbina, "C.O.D");
         order2.setClient(albinaBudanova);
         order2.setOrderStatus(OrderStatus.COMPLETED);
-        Order order3 = new Order(new HashSet<>(Collections.singletonList(orderedItem4)), contactsAlbina, "C.O.D");
+        Order order3 = new Order(new HashSet<>(Collections.singletonList(clientItem4)), contactsAlbina, "C.O.D");
         order3.setClient(albinaBudanova);
         order3.setOrderStatus(OrderStatus.ON_THE_WAY);
         order3.setTrackNumber("1234567891011");
-        Order order4 = new Order(new HashSet<>(Collections.singletonList(orderedItem5)), contactsAlbina, "C.O.D");
+        Order order4 = new Order(new HashSet<>(Collections.singletonList(clientItem5)), contactsAlbina, "C.O.D");
         order4.setClient(albinaBudanova);
         order4.setOrderStatus(OrderStatus.PAYMENT);
         order4.setTrackNumber("121314151617");
@@ -1050,12 +1062,12 @@ public class InitDB {
         orderService.save(order3);
         orderService.save(order4);
 
-        orderedItem3.setOrder(order2);
-        orderedItem4.setOrder(order3);
-        orderedItem5.setOrder(order4);
-        orderedItemService.save(orderedItem3);
-        orderedItemService.save(orderedItem4);
-        orderedItemService.save(orderedItem5);
+        clientItem3.setOrder(order2);
+        clientItem4.setOrder(order3);
+        clientItem5.setOrder(order4);
+        clientItemService.save(clientItem3);
+        clientItemService.save(clientItem4);
+        clientItemService.save(clientItem5);
 
         albinaBudanova.setOrders(new HashSet<>(Arrays.asList(order2, order3, order4)));
         albinaBudanova.setRoles(Collections.singleton(Role.USER));
@@ -1085,6 +1097,6 @@ public class InitDB {
 
         /* --- --- */
 
-        entityManager.createNativeQuery("create sequence hibernate_sequence start 69 increment 1");
+        entityManager.createNativeQuery("create sequence hibernate_sequence start 80 increment 1");
     }
 }

@@ -27,7 +27,7 @@ public class OrderRepoTest {
     private ItemRepo itemRepo;
 
     @Autowired
-    private OrderedItemRepo orderedItemRepo;
+    private ClientItemRepo clientItemRepo;
 
     @MockBean
     private InitDB initDB;
@@ -42,14 +42,14 @@ public class OrderRepoTest {
         Item item = new Item("item", 30L, 3D
                 , 600D, "description..."
                 , "characteristics...", "123", book);
-        OrderedItem orderedItem = new OrderedItem(item, 2);
+        ClientItem clientItem = new ClientItem(item, 2);
         Contacts contacts = new Contacts("123456", "Russia", "Moscow", "...", "89441234567");
-        Order order = new Order(new HashSet<>(Collections.singleton(orderedItem)), contacts, "C.O.D");
+        Order order = new Order(new HashSet<>(Collections.singleton(clientItem)), contacts, "C.O.D");
 
         categoryRepo.save(books);
         categoryRepo.save(book);
         itemRepo.save(item);
-        orderedItemRepo.save(orderedItem);
+        clientItemRepo.save(clientItem);
         orderRepo.save(order);
     }
 
@@ -65,7 +65,7 @@ public class OrderRepoTest {
         Order order = orderRepo.findById(5L).orElse(null);
 
         assertThat(order).isNotNull();
-        assertThat(order.getOrderedItems().iterator().next().getItem().getName()).isEqualTo("item");
+        assertThat(order.getClientItems().iterator().next().getItem().getName()).isEqualTo("item");
         assertThat(order.getContacts().getZipCode()).isEqualTo("123456");
         assertThat(order.getPaymentMethod()).isEqualTo("C.O.D");
     }
@@ -77,21 +77,21 @@ public class OrderRepoTest {
         Item item = new Item("laptop", 40L, 2D
                 , 56000D, "LaptopDescription..."
                 , "LaptopCharacteristics...", "567", laptop);
-        OrderedItem orderedItem = new OrderedItem(item, 1);
+        ClientItem clientItem = new ClientItem(item, 1);
         Contacts contacts = new Contacts("789101", "Russia", "Moscow", "...", "89441234567");
-        Order order = new Order(new HashSet<>(Collections.singleton(orderedItem)), contacts, "C.O.D");
+        Order order = new Order(new HashSet<>(Collections.singleton(clientItem)), contacts, "C.O.D");
 
         categoryRepo.save(laptops);
         categoryRepo.save(laptop);
         itemRepo.save(item);
-        orderedItemRepo.save(orderedItem);
+        clientItemRepo.save(clientItem);
         orderRepo.save(order);
 
         assertThat(orderRepo.findAll().size()).isEqualTo(2);
         Order order1 = orderRepo.findById(10L).orElse(null);
 
         assertThat(order).isNotNull();
-        assertThat(order.getOrderedItems().iterator().next().getItem().getName()).isEqualTo("laptop");
+        assertThat(order.getClientItems().iterator().next().getItem().getName()).isEqualTo("laptop");
         assertThat(order.getContacts().getZipCode()).isEqualTo("789101");
         assertThat(order.getPaymentMethod()).isEqualTo("C.O.D");
     }

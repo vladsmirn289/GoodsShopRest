@@ -6,8 +6,8 @@ import javax.validation.constraints.Positive;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ordered_item")
-public class OrderedItem {
+@Table(name = "client_item")
+public class ClientItem {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -25,10 +25,10 @@ public class OrderedItem {
     private int quantity;
 
 
-    protected OrderedItem() {}
+    protected ClientItem() {}
 
-    public OrderedItem(Item item,
-                       int quantity) {
+    public ClientItem(Item item,
+                      int quantity) {
         this.item = item;
         this.quantity = quantity;
     }
@@ -70,7 +70,7 @@ public class OrderedItem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrderedItem that = (OrderedItem) o;
+        ClientItem that = (ClientItem) o;
         return quantity == that.quantity &&
                 item.equals(that.item);
     }

@@ -32,9 +32,9 @@ public class OrderServiceTest {
         Item item = new Item("item", 30L, 3D
                 , 600D, "description..."
                 , "characteristics...", "123", book);
-        OrderedItem orderedItem = new OrderedItem(item, 2);
+        ClientItem clientItem = new ClientItem(item, 2);
         Contacts contacts = new Contacts("123456", "Russia", "Moscow", "...", "89441234567");
-        this.order = new Order(new HashSet<>(Collections.singleton(orderedItem)), contacts, "C.O.D");
+        this.order = new Order(new HashSet<>(Collections.singleton(clientItem)), contacts, "C.O.D");
     }
 
     @Test

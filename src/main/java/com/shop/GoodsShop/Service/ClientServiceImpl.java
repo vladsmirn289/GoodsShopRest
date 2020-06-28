@@ -41,11 +41,18 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void save(Client client) {
-        logger.info("Saving client to database");
-        String password = client.getPassword();
-        password = passwordEncoder.encode(password);
-        client.setPassword(password);
-        client.setRoles(Collections.singleton(Role.USER));
+        if (findByLogin(client.getLogin()) == null) {
+            logger.info("Saving client to database");
+            String password = client.getPassword();
+            password = passwordEncoder.encode(password);
+            client.setPassword(password);
+
+            if (client.getRoles().isEmpty()) {
+                client.setRoles(Collections.singleton(Role.USER));
+            }
+        } else {
+            logger.info("Update client");
+        }
 
         clientRepo.save(client);
     }

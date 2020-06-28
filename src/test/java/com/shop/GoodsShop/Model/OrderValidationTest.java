@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderValidationTest {
     private Validator validator;
     private Order order;
-    private OrderedItem orderedItem;
+    private ClientItem clientItem;
     private Contacts contacts;
     private Client client;
 
@@ -27,16 +27,16 @@ public class OrderValidationTest {
         Category books = new Category("Books");
         Item item = new Item("Spring 5", 50L, 1.592D, 3300D,
                 "..........", "...", UUID.randomUUID().toString(), books);
-        this.orderedItem = new OrderedItem(item, 1);
-        Set<OrderedItem> orderedItems = new HashSet<>();
-        orderedItems.add(orderedItem);
+        this.clientItem = new ClientItem(item, 1);
+        Set<ClientItem> clientItems = new HashSet<>();
+        clientItems.add(clientItem);
 
         this.contacts = new Contacts("123456", "Russia",
                 "Moscow", "Bolotnaya street", "+7-499-123-45-67");
 
         this.client = new Client("i@gmail.com", "12345", "Igor", "Key", "IK");
 
-        Order order = new Order(orderedItems, contacts, "C.O.D");
+        Order order = new Order(clientItems, contacts, "C.O.D");
         order.setId(1L);
         order.setTrackNumber("123456789101");
         order.setOrderStatus(OrderStatus.COMPLETED);
@@ -53,14 +53,14 @@ public class OrderValidationTest {
     }
 
     @Test
-    void ShouldNotValidateWithEmptyOrderedItems() {
-        order.setOrderedItems(new HashSet<>());
+    void ShouldNotValidateWithEmptyClientItems() {
+        order.setClientItems(new HashSet<>());
 
         Set<ConstraintViolation<Order>> constraintViolations = validator.validate(order);
         assertThat(constraintViolations).hasSize(1);
 
         ConstraintViolation<Order> violation = constraintViolations.iterator().next();
-        assertThat(violation.getPropertyPath().toString()).isEqualTo("orderedItems");
+        assertThat(violation.getPropertyPath().toString()).isEqualTo("clientItems");
         assertThat(violation.getMessage()).isEqualTo("Список заказанных предметов не может быть пустым");
     }
 
@@ -94,8 +94,8 @@ public class OrderValidationTest {
     }
 
     @Test
-    public void shouldGetOrderedItems() {
-        assertThat(order.getOrderedItems()).isEqualTo(Collections.singleton(orderedItem));
+    public void shouldGetClientItems() {
+        assertThat(order.getClientItems()).isEqualTo(Collections.singleton(clientItem));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class OrderValidationTest {
 
     @Test
     public void shouldEqualsIsTrue() {
-        Order order = new Order(Collections.singleton(orderedItem), contacts, "C.O.D");
+        Order order = new Order(Collections.singleton(clientItem), contacts, "C.O.D");
 
         assertThat(this.order.equals(order)).isTrue();
     }
@@ -144,7 +144,7 @@ public class OrderValidationTest {
     public void hashCodeTest() {
         assertThat(order.hashCode())
                 .isEqualTo(Objects.hash(
-                        Collections.singleton(orderedItem),
+                        Collections.singleton(clientItem),
                         contacts,
                         "C.O.D"));
     }

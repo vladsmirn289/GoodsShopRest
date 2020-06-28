@@ -12,9 +12,9 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrderedItemValidationTest {
+public class ClientItemValidationTest {
     private Validator validator;
-    private OrderedItem orderedItem;
+    private ClientItem clientItem;
     private Order order;
     private Item item;
     private Category books;
@@ -29,88 +29,88 @@ public class OrderedItemValidationTest {
         this.item = new Item("Spring 5", 50L, 1.592D, 3300D,
                 "..........", "....", "1234567", books);
 
-        OrderedItem orderedItem = new OrderedItem(item, 1);
-        orderedItem.setId(1L);
+        ClientItem clientItem = new ClientItem(item, 1);
+        clientItem.setId(1L);
 
         Contacts contacts = new Contacts("123456", "Russia",
                 "Moscow", "Bolotnaya street", "+7-499-123-45-67");
-        this.order = new Order(Collections.singleton(orderedItem), contacts, "C.O.D");
+        this.order = new Order(Collections.singleton(clientItem), contacts, "C.O.D");
 
-        orderedItem.setOrder(order);
-        this.orderedItem = orderedItem;
+        clientItem.setOrder(order);
+        this.clientItem = clientItem;
     }
 
     @Test
     void shouldValidateWithCorrectData() {
-        Set<ConstraintViolation<OrderedItem>> constraintViolations = validator.validate(orderedItem);
+        Set<ConstraintViolation<ClientItem>> constraintViolations = validator.validate(clientItem);
         assertThat(constraintViolations).hasSize(0);
     }
 
     @Test
     void shouldNotValidateWithNullItem() {
-        orderedItem.setItem(null);
-        Set<ConstraintViolation<OrderedItem>> constraintViolations = validator.validate(orderedItem);
+        clientItem.setItem(null);
+        Set<ConstraintViolation<ClientItem>> constraintViolations = validator.validate(clientItem);
         assertThat(constraintViolations).hasSize(1);
 
-        ConstraintViolation<OrderedItem> violation = constraintViolations.iterator().next();
+        ConstraintViolation<ClientItem> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("item");
         assertThat(violation.getMessage()).isEqualTo("Предмет должен быть задан");
     }
 
     @Test
     void shouldNotValidateWithNegativeQuantity() {
-        orderedItem.setQuantity(-1);
-        Set<ConstraintViolation<OrderedItem>> constraintViolations = validator.validate(orderedItem);
+        clientItem.setQuantity(-1);
+        Set<ConstraintViolation<ClientItem>> constraintViolations = validator.validate(clientItem);
         assertThat(constraintViolations).hasSize(1);
 
-        ConstraintViolation<OrderedItem> violation = constraintViolations.iterator().next();
+        ConstraintViolation<ClientItem> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("quantity");
         assertThat(violation.getMessage()).isEqualTo("Количество должно быть положительным числом");
     }
 
     @Test
     void shouldNotValidateWithZeroQuantity() {
-        orderedItem.setQuantity(0);
-        Set<ConstraintViolation<OrderedItem>> constraintViolations = validator.validate(orderedItem);
+        clientItem.setQuantity(0);
+        Set<ConstraintViolation<ClientItem>> constraintViolations = validator.validate(clientItem);
         assertThat(constraintViolations).hasSize(1);
 
-        ConstraintViolation<OrderedItem> violation = constraintViolations.iterator().next();
+        ConstraintViolation<ClientItem> violation = constraintViolations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("quantity");
         assertThat(violation.getMessage()).isEqualTo("Количество должно быть положительным числом");
     }
 
     @Test
     public void shouldGetId() {
-        assertThat(orderedItem.getId()).isEqualTo(1L);
+        assertThat(clientItem.getId()).isEqualTo(1L);
     }
 
     @Test
     public void shouldGetItem() {
-        assertThat(orderedItem.getItem()).isEqualTo(item);
+        assertThat(clientItem.getItem()).isEqualTo(item);
     }
 
     @Test
     public void shouldGetOrder() {
-        assertThat(orderedItem.getOrder()).isEqualTo(order);
+        assertThat(clientItem.getOrder()).isEqualTo(order);
     }
 
     @Test
     public void shouldGetQuantity() {
-        assertThat(orderedItem.getQuantity()).isEqualTo(1);
+        assertThat(clientItem.getQuantity()).isEqualTo(1);
     }
 
     @Test
     public void shouldEqualsTrue() {
         Item item = new Item("Spring 5", 50L, 1.592D, 3300D,
                 "..........", "....", "1234567", books);
-        OrderedItem orderedItem = new OrderedItem(item, 1);
+        ClientItem clientItem = new ClientItem(item, 1);
 
-        assertThat(this.orderedItem.equals(orderedItem)).isTrue();
+        assertThat(this.clientItem.equals(clientItem)).isTrue();
     }
 
     @Test
     public void hashCodeTest() {
-        assertThat(this.orderedItem.hashCode())
+        assertThat(this.clientItem.hashCode())
                 .isEqualTo(Objects.hash(
                         item,
                         1));

@@ -1,9 +1,9 @@
 package com.shop.GoodsShop.Service;
 
 import com.shop.GoodsShop.Model.Category;
+import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Model.Item;
-import com.shop.GoodsShop.Model.OrderedItem;
-import com.shop.GoodsShop.Repositories.OrderedItemRepo;
+import com.shop.GoodsShop.Repositories.ClientItemRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,17 +12,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
-public class OrderedItemServiceTest {
+public class ClientItemServiceTest {
     @Autowired
-    private OrderedItemService orderedItemService;
+    private ClientItemService clientItemService;
 
     @MockBean
     private InitDB initDB;
 
     @MockBean
-    private OrderedItemRepo orderedItemRepo;
+    private ClientItemRepo clientItemRepo;
 
-    private OrderedItem orderedItem;
+    private ClientItem clientItem;
 
     @BeforeEach
     public void init() {
@@ -32,30 +32,30 @@ public class OrderedItemServiceTest {
                 , 600D, "description..."
                 , "characteristics...", "123", book);
         item.setId(1L);
-        this.orderedItem = new OrderedItem(item, 3);
+        this.clientItem = new ClientItem(item, 3);
     }
 
     @Test
-    public void shouldSaveOrderedItem() {
-        orderedItemService.save(orderedItem);
+    public void shouldSaveClientItem() {
+        clientItemService.save(clientItem);
 
-        Mockito.verify(orderedItemRepo, Mockito.times(1))
-                .save(orderedItem);
+        Mockito.verify(clientItemRepo, Mockito.times(1))
+                .save(clientItem);
     }
 
     @Test
-    public void shouldDeleteOrderedItem() {
-        orderedItemService.delete(orderedItem);
+    public void shouldDeleteClientItem() {
+        clientItemService.delete(clientItem);
 
-        Mockito.verify(orderedItemRepo, Mockito.times(1))
-                .delete(orderedItem);
+        Mockito.verify(clientItemRepo, Mockito.times(1))
+                .delete(clientItem);
     }
 
     @Test
-    public void shouldDeleteOrderedItemById() {
-        orderedItemService.deleteById(1L);
+    public void shouldDeleteClientItemById() {
+        clientItemService.deleteById(1L);
 
-        Mockito.verify(orderedItemRepo, Mockito.times(1))
+        Mockito.verify(clientItemRepo, Mockito.times(1))
                 .deleteById(1L);
     }
 }

@@ -35,11 +35,11 @@ public class Client implements UserDetails {
 
     private String patronymic;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "basket_items",
                joinColumns = @JoinColumn(name = "user_id"),
                inverseJoinColumns = @JoinColumn(name = "item_id"))
-    private Set<Item> basket = new HashSet<>();
+    private Set<ClientItem> basket = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "client", cascade = CascadeType.REMOVE)
     private Set<Order> orders = new HashSet<>();
@@ -48,7 +48,7 @@ public class Client implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "client_roles",
             joinColumns = @JoinColumn(name = "client_id"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
 
     protected Client() {}
@@ -132,11 +132,11 @@ public class Client implements UserDetails {
         this.patronymic = patronymic;
     }
 
-    public Set<Item> getBasket() {
+    public Set<ClientItem> getBasket() {
         return basket;
     }
 
-    public void setBasket(Set<Item> basket) {
+    public void setBasket(Set<ClientItem> basket) {
         this.basket = basket;
     }
 

@@ -1,5 +1,6 @@
 package com.shop.GoodsShop.Service;
 
+import com.shop.GoodsShop.Excepton.NoItemException;
 import com.shop.GoodsShop.Model.Category;
 import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Model.Item;
@@ -10,6 +11,11 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class ClientItemServiceTest {
@@ -33,6 +39,30 @@ public class ClientItemServiceTest {
                 , "characteristics...", "123", book);
         item.setId(1L);
         this.clientItem = new ClientItem(item, 3);
+    }
+
+    @Test
+    public void shouldFindClientItemById() {
+        Mockito
+                .doReturn(Optional.of(clientItem))
+                .when(clientItemRepo)
+                .findById(1L);
+
+        ClientItem item = clientItemService.findById(1L);
+
+        assertThat(item.getQuantity()).isEqualTo(3);
+        assertThat(item.getItem().getName()).isEqualTo("item");
+        Mockito.verify(clientItemRepo, Mockito.times(1))
+                .findById(1L);
+    }
+
+    @Test
+    public void shouldRaiseExceptionWhenFindClientItemByIncorrectId() {
+        assertThrows(NoItemException.class,
+                () -> clientItemService.findById(1L));
+
+        Mockito.verify(clientItemRepo, Mockito.times(1))
+                .findById(1L);
     }
 
     @Test

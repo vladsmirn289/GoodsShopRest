@@ -1,5 +1,5 @@
 DELETE FROM basket_items;
-DELETE FROM ordered_item;
+DELETE FROM client_item;
 DELETE FROM item;
 DELETE FROM category;
 DELETE FROM client_roles;

@@ -1,5 +1,6 @@
 package com.shop.GoodsShop.Service;
 
+import com.shop.GoodsShop.Excepton.NoItemException;
 import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Repositories.ClientItemRepo;
 import org.slf4j.Logger;
@@ -17,6 +18,11 @@ public class ClientItemServiceImpl implements ClientItemService {
     public void setClientItemRepo(ClientItemRepo clientItemRepo) {
         logger.debug("Setting orderedItemRepo");
         this.clientItemRepo = clientItemRepo;
+    }
+
+    @Override
+    public ClientItem findById(Long id) {
+        return clientItemRepo.findById(id).orElseThrow(NoItemException::new);
     }
 
     @Override

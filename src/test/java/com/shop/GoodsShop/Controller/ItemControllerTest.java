@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,7 +21,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -30,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @Sql(value = {
         "classpath:db/H2/category-test.sql",
+        "classpath:db/H2/user-test.sql",
         "classpath:db/H2/item-test.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {
@@ -99,5 +103,35 @@ public class ItemControllerTest {
                 .andExpect(model().attributeExists("item"))
                 .andExpect(xpath("/html/body/div/div[1]/div/div[2]/div/h5")
                         .string("Spring 5 для профессионалов"));
+    }
+
+    @Test
+    @WithUserDetails(value = "simpleUser")
+    public void testAddItemsToBasket() throws Exception {
+        mockMvc
+                .perform(post("/item/6/addToBasket")
+                            .with(csrf())
+                            .param("quantity", "2")
+                            .param("item_id", "6"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+
+        mockMvc
+                .perform(get("/basket"))
+                .andExpect(status().isOk())
+                .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(1));
+    }
+
+    @Test
+    public void testAddItemsToBasketNotAuthenticated() throws Exception {
+        mockMvc
+                .perform(post("/item/6/addToBasket")
+                        .with(csrf())
+                        .param("quantity", "2")
+                        .param("item_id", "6"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
     }
 }

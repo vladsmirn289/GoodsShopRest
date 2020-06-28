@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
     private ClientService clientService;
+    private AuthenticationSuccessHandler successHandler;
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
@@ -25,6 +27,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void setClientService(ClientService clientService) {
         this.clientService = clientService;
+    }
+
+    @Autowired
+    public void setSuccessHandler(AuthenticationSuccessHandler successHandler) {
+        this.successHandler = successHandler;
     }
 
     @Override
@@ -46,16 +53,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(
                             "/basket",
                             "/myOrders",
-                            "/personalRoom")
+                            "/personalRoom",
+                            "/addToBasket")
                     .authenticated()
 
                     .anyRequest()
-                    .denyAll()
+                    .authenticated()
 
                 .and()
 
                     .formLogin()
                     .loginPage("/login")
+                    .successHandler(successHandler)
                     .permitAll()
 
                 .and()

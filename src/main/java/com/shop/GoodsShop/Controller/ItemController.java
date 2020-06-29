@@ -39,6 +39,7 @@ public class ItemController {
 
     @Autowired
     public void setClientService(ClientService clientService) {
+        logger.debug("Setting clientService");
         this.clientService = clientService;
     }
 
@@ -60,6 +61,7 @@ public class ItemController {
     @GetMapping("/{id}")
     public String itemPage(@PathVariable("id") Long id,
                            Model model) {
+        logger.info("Called itemPage method");
         Item item = itemService.findById(id);
         model.addAttribute("item", item);
 
@@ -74,6 +76,7 @@ public class ItemController {
                                   @AuthenticationPrincipal Client client,
                                   RedirectAttributes redirectAttributes,
                                   @RequestHeader(required = false) String referer) {
+        logger.info("Called addItemToBasket method");
         Item item = itemService.findById(itemId);
         Client persistentClient = entityManager.merge(client);
         ClientItem itemToBasket = new ClientItem(item, quantity);

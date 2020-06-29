@@ -19,6 +19,7 @@ public class LoginController {
 
         if (request.getSession().getAttribute("url_prior_login") == null) {
             String referer = request.getHeader("Referer");
+            logger.info("Add attribute url_prior_login to current session");
             request.getSession().setAttribute("url_prior_login", referer);
         }
 

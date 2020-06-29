@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,5 +89,13 @@ public class ClientItemServiceTest {
 
         Mockito.verify(clientItemRepo, Mockito.times(1))
                 .deleteById(1L);
+    }
+
+    @Test
+    public void shouldDeleteClientItemsSet() {
+        clientItemService.deleteSetItems(new HashSet<>(Collections.singleton(clientItem)));
+
+        Mockito.verify(clientItemRepo, Mockito.times(1))
+                .delete(clientItem);
     }
 }

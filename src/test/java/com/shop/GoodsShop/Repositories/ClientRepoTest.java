@@ -62,6 +62,17 @@ public class ClientRepoTest {
     }
 
     @Test
+    public void shouldFindClientByConfirmationCode() {
+        Client client = clientRepo.findByLogin("IK");
+        client.setConfirmationCode("123");
+        clientRepo.save(client);
+
+        Client foundedByCode = clientRepo.findByConfirmationCode("123");
+
+        assertThat(foundedByCode).isNotNull();
+    }
+
+    @Test
     public void shouldSaveClient() {
         Client client = new Client("l@gmail.com", "45678", "ABC", "DEF", "GHI", "ADG");
         clientRepo.save(client);

@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,12 +51,29 @@ public class ClientServiceTest {
     }
 
     @Test
+    public void shouldFindClientByConfirmationCode() {
+        client.setConfirmationCode("123");
+        Mockito
+                .doReturn(client)
+                .when(clientRepo)
+                .findByConfirmationCode("123");
+
+        Client founded = clientService.findByConfirmationCode("123");
+
+        assertThat(founded).isNotNull();
+        assertThat(founded.getConfirmationCode()).isEqualTo("123");
+
+        Mockito.verify(clientRepo, Mockito.times(1))
+                .findByConfirmationCode("123");
+    }
+
+    @Test
     public void shouldSaveOrUpdateClient() {
         clientService.save(client);
 
         assertThat(client.getRoles().size()).isEqualTo(1);
         assertThat(client.getRoles().iterator().next()).isEqualTo(Role.USER);
-        assertThat(passwordEncoder.matches("123456", client.getPassword())).isTrue();
+        assertThat(client.getPassword()).isEqualTo("123456");
         Mockito.verify(clientRepo, Mockito.times(1))
                 .save(client);
 
@@ -71,9 +89,25 @@ public class ClientServiceTest {
         clientService.save(client);
 
         assertThat(client.getId()).isEqualTo(id);
-        assertThat(passwordEncoder.matches("123456", client.getPassword())).isTrue();
+        assertThat(client.getPassword()).isEqualTo("123456");
         Mockito.verify(clientRepo, Mockito.times(2))
                 .save(client);
+    }
+
+    @Test
+    public void shouldEncodePasswordWhenConfirmationCodeIsNotNull() {
+        client.setConfirmationCode("123");
+        clientService.save(client);
+
+        Mockito
+                .doReturn(client)
+                .when(clientRepo)
+                .findByLogin("A");
+
+        clientService.save(client);
+
+        assertThat(client.getConfirmationCode()).isNull();
+        assertThat(passwordEncoder.matches("123456", client.getPassword()));
     }
 
     @Test
@@ -90,5 +124,32 @@ public class ClientServiceTest {
 
         Mockito.verify(clientRepo, Mockito.times(1))
                 .deleteById(1L);
+    }
+
+    @Test
+    public void shouldReturnNullWhenLoadClientByUsernameWithNotEmptyConfirmationCode() {
+        client.setConfirmationCode("123");
+        Mockito
+                .doReturn(client)
+                .when(clientRepo)
+                .findByLogin("A");
+
+        UserDetails userDetails = clientService.loadUserByUsername("A");
+
+        assertThat(userDetails).isNull();
+    }
+
+    @Test
+    public void shouldReturnUserDetailsWhenLoadClientByUsernameWithNullConfirmationCode() {
+        client.setConfirmationCode(null);
+        Mockito
+                .doReturn(client)
+                .when(clientRepo)
+                .findByLogin("A");
+
+        UserDetails userDetails = clientService.loadUserByUsername("A");
+
+        assertThat(userDetails).isNotNull();
+        assertThat(userDetails.getUsername()).isEqualTo("A");
     }
 }

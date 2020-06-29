@@ -6,6 +6,10 @@ import com.shop.GoodsShop.Repositories.ClientRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,24 +38,45 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public void authenticateClient(String rawPassword, String login, AuthenticationManager authManager) {
+        UserDetails userDetails = loadUserByUsername(login);
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                userDetails.getUsername(),
+                rawPassword,
+                userDetails.getAuthorities()
+        );
+
+        Authentication authentication = authManager.authenticate(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Client findByLogin(String login) {
         return clientRepo.findByLogin(login);
     }
 
     @Override
+    public Client findByConfirmationCode(String confirmationCode) {
+        return clientRepo.findByConfirmationCode(confirmationCode);
+    }
+
+    @Override
     public void save(Client client) {
         if (findByLogin(client.getLogin()) == null) {
-            logger.info("Saving client to database");
-            String password = client.getPassword();
-            password = passwordEncoder.encode(password);
-            client.setPassword(password);
-
+            logger.info("Saving client to database without confirmation");
             if (client.getRoles().isEmpty()) {
                 client.setRoles(Collections.singleton(Role.USER));
             }
         } else {
             logger.info("Update client");
+            if (client.getConfirmationCode() != null) {
+                client.setConfirmationCode(null);
+                String password = client.getPassword();
+                password = passwordEncoder.encode(password);
+                client.setPassword(password);
+            }
         }
 
         clientRepo.save(client);
@@ -71,6 +96,13 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        return findByLogin(login);
+        logger.info("LoadingUserByUsername called");
+        Client client = findByLogin(login);
+        if ( (client != null) && (client.getConfirmationCode() == null) ) {
+            return client;
+        } else {
+            logger.warn("Client null or not confirmed");
+            return null;
+        }
     }
 }

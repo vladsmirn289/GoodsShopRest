@@ -1,7 +1,7 @@
 <#import "parts/common.ftl" as c>
 
 <@c.commonPage>
-    <div class="align-items-center" id="categoryBlock">
+    <div class="mx-auto" style="width: 20%" id="categoryBlock">
         <#list treeOfCategories as parent, value>
 
             <div class="mb-4">

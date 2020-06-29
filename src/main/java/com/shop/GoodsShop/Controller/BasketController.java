@@ -15,32 +15,29 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Collections;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/basket")
 @PreAuthorize(value = "isAuthenticated()")
 public class BasketController {
     private static final Logger logger = LoggerFactory.getLogger(BasketController.class);
+
     private ClientService clientService;
     private ClientItemService clientItemService;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Autowired
     public void setClientService(ClientService clientService) {
+        logger.debug("Setting clientService");
         this.clientService = clientService;
     }
 
     @Autowired
     public void setClientItemService(ClientItemService clientItemService) {
+        logger.debug("Setting clientItemService");
         this.clientItemService = clientItemService;
     }
 
@@ -48,8 +45,11 @@ public class BasketController {
     @Transactional
     public String showBasketItems(@AuthenticationPrincipal Client client,
                                 Model model) {
-        Client persistentClient = entityManager.merge(client);
+        logger.info("Called showBasketItems method");
+        Client persistentClient = clientService.findByLogin(client.getLogin());
+        logger.info("Initializing lazy getBasket...");
         Hibernate.initialize(persistentClient.getBasket());
+        logger.info("Successful init");
 
         model.addAttribute("basketItems", persistentClient.getBasket());
 
@@ -59,12 +59,12 @@ public class BasketController {
     @GetMapping("/delete/{itemId}")
     @Transactional
     public String deleteItemFromBasket(@PathVariable("itemId") Long clientItemId,
-                                       @AuthenticationPrincipal Client client,
-                                       RedirectAttributes redirectAttributes,
-                                       @RequestHeader(required = false) String referer) {
-        Client persistentClient = entityManager.merge(client);
+                                       @AuthenticationPrincipal Client client) {
+        logger.info("Called deleteItemFromBasket method");
+        Client persistentClient = clientService.findByLogin(client.getLogin());
         ClientItem itemToDelete = clientItemService.findById(clientItemId);
         persistentClient.getBasket().remove(itemToDelete);
+        clientItemService.delete(itemToDelete);
 
         clientService.save(persistentClient);
 
@@ -73,12 +73,14 @@ public class BasketController {
 
     @GetMapping("/delete")
     @Transactional
-    public String deleteAllItemsFromBasket(@AuthenticationPrincipal Client client,
-                                           RedirectAttributes redirectAttributes,
-                                           @RequestHeader(required = false) String referer) {
-        Client persistentClient = entityManager.merge(client);
-        persistentClient.getBasket().clear();
-        clientService.save(client);
+    public String deleteAllItemsFromBasket(@AuthenticationPrincipal Client client) {
+        logger.info("Called deleteAllItemsFromBasket method");
+        Client persistentClient = clientService.findByLogin(client.getLogin());
+        Set<ClientItem> clientItemSet = persistentClient.getBasket();
+        clientItemService.deleteSetItems(clientItemSet);
+        clientItemSet.clear();
+
+        clientService.save(persistentClient);
 
         return "redirect:/basket";
     }
@@ -87,7 +89,8 @@ public class BasketController {
     @Transactional
     public String checkoutAllItems(@AuthenticationPrincipal Client client,
                                    Model model) {
-        Client persistentClient = entityManager.merge(client);
+        logger.info("Called checkoutAllItems method");
+        Client persistentClient = clientService.findByLogin(client.getLogin());
 
         model.addAttribute("clientItems", persistentClient.getBasket());
         model.addAttribute("client", client);
@@ -97,10 +100,11 @@ public class BasketController {
 
     @GetMapping("/checkout/{itemId}")
     @Transactional
-    public String checkoutAllItems(@AuthenticationPrincipal Client client,
+    public String checkoutItem(@AuthenticationPrincipal Client client,
                                    @PathVariable("itemId") Long id,
                                    Model model) {
-        Client persistentClient = entityManager.merge(client);
+        logger.info("Called checkoutItem method");
+        Client persistentClient = clientService.findByLogin(client.getLogin());
         ClientItem item = clientItemService.findById(id);
 
         model.addAttribute("clientItems", Collections.singletonList(item));

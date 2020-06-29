@@ -2,6 +2,12 @@
 
 <@c.commonPage>
     <div class="mx-auto bg-dark" style="padding: 15px; width: 40%; border-radius: 10px;">
+        <#if mailError??>
+            <div class="alert alert-danger" role="alert">
+                ${mailError}
+            </div>
+        </#if>
+
         <form action="/registration" name="newClient" method="post">
             <div class="form-group">
                 <label for="first_name" class="text-white">Имя</label>

@@ -40,6 +40,7 @@ public class ClientValidationTest {
         client.setBasket(Collections.singleton(clientItem));
         client.setOrders(Collections.singleton(order));
         client.setRoles(Collections.singleton(Role.USER));
+        client.setConfirmationCode("123");
         this.client = client;
     }
 
@@ -181,6 +182,11 @@ public class ClientValidationTest {
     @Test
     void shouldGetRoles() {
         assertThat(client.getRoles()).isEqualTo(Collections.singleton(Role.USER));
+    }
+
+    @Test
+    void shouldGetConfirmationCode() {
+        assertThat(client.getConfirmationCode()).isEqualTo("123");
     }
 
     @Test

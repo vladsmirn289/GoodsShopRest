@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClientRepo extends JpaRepository<Client, Long> {
     Client findByLogin(String login);
+    Client findByConfirmationCode(String confirmationCode);
 }

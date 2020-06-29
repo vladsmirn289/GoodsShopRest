@@ -2,7 +2,9 @@ package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.InitDB;
+import com.shop.GoodsShop.Utils.MailSenderUtil;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -14,6 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,6 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @PropertySource(value = "classpath:application-test.properties")
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@Sql(value = {
+        "classpath:db/H2/after-test.sql"},
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class RegistrationControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -31,8 +37,8 @@ public class RegistrationControllerTest {
     @Autowired
     private ClientService clientService;
 
-    @Autowired
-    private RegistrationController registrationController;
+    @MockBean
+    private MailSenderUtil mailSenderUtil;
 
     @MockBean
     private InitDB initDB;
@@ -58,10 +64,48 @@ public class RegistrationControllerTest {
                         .param("password", "12345")
                         .param("passwordRepeat", "12345"))
                 .andDo(print())
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("util/needConfirmation"));
 
-        assertThat(clientService.findByLogin("tU")).isNotNull();
+        assertThat(clientService.findByLogin("tU").getConfirmationCode()).isNotNull();
+        assertThat(clientService.loadUserByUsername("tU")).isNull();
+
+        Mockito
+                .verify(mailSenderUtil, Mockito.times(1))
+                    .sendMessage(eq("g@g"),
+                            eq("Активация электронной почты"),
+                            contains("http://localhost:8080/client/activate/"));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void shouldRaiseExceptionWhenSuccessRegisterNewClientAndMailSendingError() throws Exception {
+        Mockito
+                .doThrow(RuntimeException.class)
+                .when(mailSenderUtil)
+                .sendMessage(eq("g@g"), anyObject(), anyObject());
+
+        mockMvc
+                .perform(post("/registration")
+                        .with(csrf())
+                        .param("firstName", "test")
+                        .param("lastName", "user")
+                        .param("login", "tU")
+                        .param("email", "g@g")
+                        .param("password", "12345")
+                        .param("passwordRepeat", "12345"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("registration"))
+                .andExpect(model().attributeExists("mailError"));
+
+        assertThat(clientService.findByLogin("tU")).isNull();
+
+        Mockito
+                .verify(mailSenderUtil, Mockito.times(1))
+                .sendMessage(eq("g@g"),
+                        eq("Активация электронной почты"),
+                        contains("http://localhost:8080/client/activate/"));
     }
 
     @Test

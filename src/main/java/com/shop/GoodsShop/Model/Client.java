@@ -50,6 +50,8 @@ public class Client implements UserDetails {
             joinColumns = @JoinColumn(name = "client_id"))
     private Set<Role> roles = new HashSet<>();
 
+    private String confirmationCode;
+
 
     protected Client() {}
 
@@ -154,6 +156,14 @@ public class Client implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getConfirmationCode() {
+        return confirmationCode;
+    }
+
+    public void setConfirmationCode(String confirmationCode) {
+        this.confirmationCode = confirmationCode;
     }
 
     public boolean isAdmin() {

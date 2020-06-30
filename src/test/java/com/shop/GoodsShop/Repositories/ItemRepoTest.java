@@ -166,4 +166,11 @@ public class ItemRepoTest {
 
         assertThat(itemRepo.findAll().size()).isEqualTo(0);
     }
+
+    @Test
+    public void shouldFindBySearch() {
+        List<Item> items = itemRepo.findBySearch("tE");
+
+        assertThat(items.size()).isEqualTo(1);
+    }
 }

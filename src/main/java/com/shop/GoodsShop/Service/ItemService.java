@@ -9,6 +9,7 @@ public interface ItemService {
     List<Item> findByName(String name);
     List<Item> findByPrice(Double price);
     List<Item> findByCategory(Category category);
+    List<Item> findBySearch(String keyword);
     Item findById(Long id);
     Item findByCode(String code);
 

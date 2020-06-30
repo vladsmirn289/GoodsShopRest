@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Controller
 @RequestMapping("/item")
@@ -41,6 +42,16 @@ public class ItemController {
     public void setClientService(ClientService clientService) {
         logger.debug("Setting clientService");
         this.clientService = clientService;
+    }
+
+    @GetMapping
+    public String searchItems(@RequestParam("keyword") String keyword,
+                              Model model) {
+        List<Item> items = itemService.findBySearch(keyword);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("items", items);
+
+        return "categoryItems";
     }
 
     @GetMapping("{id}/image")

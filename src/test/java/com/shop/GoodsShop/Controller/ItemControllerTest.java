@@ -60,6 +60,19 @@ public class ItemControllerTest {
     }
 
     @Test
+    public void testSearchItemsByKeyword() throws Exception {
+        mockMvc
+                .perform(get("/item")
+                        .param("keyword", "фес"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("categoryItems"))
+                .andExpect(model().attribute("keyword", "фес"))
+                .andExpect(model().attributeExists("items"))
+                .andExpect(xpath("//div[@id=\"itemsBlock\"]/div").nodeCount(2));
+    }
+
+    @Test
     public void testFailDownloadImage() throws Exception {
         mockMvc
                 .perform(get("/item/6/image"))

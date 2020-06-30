@@ -84,6 +84,20 @@ public class ItemServiceTest {
     }
 
     @Test
+    public void shouldFindBySearch() {
+        Mockito
+                .doReturn(Collections.singletonList(item))
+                .when(itemRepo)
+                .findBySearch("tE");
+
+        Item item = itemService.findBySearch("tE").get(0);
+
+        assertThat(item.getName()).isEqualTo("item");
+        Mockito.verify(itemRepo, Mockito.times(1))
+                .findBySearch("tE");
+    }
+
+    @Test
     public void shouldFindById() {
         Mockito
                 .doReturn(Optional.of(item))

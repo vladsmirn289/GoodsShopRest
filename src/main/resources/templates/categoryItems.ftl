@@ -1,6 +1,11 @@
 <#import "parts/common.ftl" as c>
+<#import "parts/customMessage.ftl" as m>
 
 <@c.commonPage>
+    <#if items?size == 0>
+        <@m.customMessage "Предметов, удовлетворяющих данному запросу, не найдено!"/>
+    </#if>
+
     <div class="row row-cols-1 row-cols-md-2" id="itemsBlock">
         <#list items as item>
             <div class="col-md-6">

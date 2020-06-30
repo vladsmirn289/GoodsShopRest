@@ -38,10 +38,12 @@
             </form>
         </#if>
 
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Поиск" aria-label="Search"/>
-            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Найти  </button>
+        <form class="form-inline my-2 my-lg-0" action="/item" method="get">
+            <input class="form-control mr-sm-2" type="search" placeholder="Поиск"
+                <#if keyword??>
+                   value="${keyword}"
+                </#if> name="keyword" aria-label="Search"/>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Найти</button>
         </form>
     </div>
 </nav>

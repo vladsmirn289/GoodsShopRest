@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(
                         "/",
                         "/category/*",
+                        "/item",
                         "/item/*",
                         "/item/*/image",
                         "/webjars/**",

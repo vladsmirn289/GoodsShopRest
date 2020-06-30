@@ -48,6 +48,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Item> findBySearch(String keyword) {
+        return itemRepo.findBySearch(keyword);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Item findById(Long id) {
         logger.info("findById method called for item id = " + id);
         return itemRepo.findById(id).orElseThrow(NoItemException::new);

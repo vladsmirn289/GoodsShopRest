@@ -57,7 +57,7 @@
                            value="${client.email}" readonly="readonly"/>
                 </div>
                 <div class="form-group col-md-4">
-                    <a class="btn btn-primary" href="#">Сменить электронную почту</a>
+                    <a class="btn btn-primary" href="/client/changeEmail">Сменить электронную почту</a>
                 </div>
             </div>
 

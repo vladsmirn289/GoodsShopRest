@@ -3,6 +3,7 @@ package com.shop.GoodsShop.Controller;
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.InitDB;
+import com.shop.GoodsShop.Utils.MailSenderUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class ClientControllerTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private MailSenderUtil mailSenderUtil;
 
     @MockBean
     private InitDB initDB;
@@ -207,5 +211,85 @@ public class ClientControllerTest {
 
         Client client = clientService.findByLogin("simpleUser");
         assertThat(passwordEncoder.matches("1234567890", client.getPassword()));
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void showChangeEmailPageTest() throws Exception {
+        mockMvc
+                .perform(get("/client/changeEmail"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("changeEmailPage"));
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void shouldSendCodeForActivationEmail() throws Exception {
+        mockMvc
+                .perform(post("/client/changeEmail")
+                         .with(csrf())
+                         .param("email", "g@g"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages/setNewEmailMessage"));
+
+        Client client = clientService.findByLogin("simpleUser");
+        String password = client.getPassword();
+        assertThat(client.getConfirmationCode()).isNotNull();
+        assertThat(client.getEmail()).isEqualTo("vladsmirn289@gmail.com");
+        assertThat(passwordEncoder.matches("12345", password));
+
+        Mockito
+                .verify(mailSenderUtil, Mockito.times(1))
+                .sendTemplateMessage(eq("g@g"),
+                        eq("simpleUser"),
+                        contains("http://localhost:8080/client/setNewEmail/g@g"));
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    @SuppressWarnings("deprecation")
+    public void shouldRaiseExceptionWhenTryToChangeEmail() throws Exception {
+        Mockito
+                .doThrow(RuntimeException.class)
+                .when(mailSenderUtil)
+                .sendTemplateMessage(eq("g@g"), eq("simpleUser"), anyObject());
+
+        mockMvc
+                .perform(post("/client/changeEmail")
+                        .with(csrf())
+                        .param("email", "g@g"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("changeEmailPage"))
+                .andExpect(model().attributeExists("mailError"));
+
+        Client client = clientService.findByLogin("simpleUser");
+        String password = client.getPassword();
+        assertThat(client.getConfirmationCode()).isNull();
+        assertThat(client.getEmail()).isEqualTo("vladsmirn289@gmail.com");
+        assertThat(passwordEncoder.matches("12345", password));
+
+        Mockito
+                .verify(mailSenderUtil, Mockito.times(1))
+                .sendTemplateMessage(eq("g@g"),
+                        eq("simpleUser"),
+                        contains("http://localhost:8080/client/setNewEmail/g@g"));
+    }
+
+    @Test
+    public void shouldConfirmChangeEmail() throws Exception {
+        mockMvc
+                .perform(get("/client/setNewEmail/m@m/123"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages/successfulNewEmail"));
+
+        Client client = clientService.findByLogin("userWithCode");
+
+        assertThat(client.getConfirmationCode()).isNull();
+        assertThat(client.getEmail()).isEqualTo("m@m");
+        assertThat(client.getPassword()).isEqualTo("01112");
     }
 }

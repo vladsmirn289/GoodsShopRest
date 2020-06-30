@@ -34,4 +34,12 @@ public class MailSenderUtil {
 
         mailSender.send(message);
     }
+
+    public void sendTemplateMessage(String to, String name, String uri) {
+        sendMessage(
+                to,
+                "Активация электронной почты",
+                "Здравствуйте, " + name + "\nПожалуйста пройдите по данной ссылке," +
+                "чтобы активировать почту:\n" + uri);
+    }
 }

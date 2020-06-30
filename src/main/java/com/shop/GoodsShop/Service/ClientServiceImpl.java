@@ -77,10 +77,12 @@ public class ClientServiceImpl implements ClientService {
         } else {
             logger.info("Update client");
             if (client.getConfirmationCode() != null) {
-                client.setConfirmationCode(null);
                 String password = client.getPassword();
-                password = passwordEncoder.encode(password);
-                client.setPassword(password);
+                if (!password.startsWith("$2a$")) {
+                    client.setConfirmationCode(null);
+                    password = passwordEncoder.encode(password);
+                    client.setPassword(password);
+                }
             }
         }
 

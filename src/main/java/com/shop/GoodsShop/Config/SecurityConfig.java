@@ -57,7 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/css/**",
                         "/images/**",
                         "/registration",
-                        "/client/activate/*")
+                        "/client/activate/*",
+                        "/client/setNewEmail/**")
                     .permitAll()
 
                     .anyRequest()

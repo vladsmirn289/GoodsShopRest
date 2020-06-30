@@ -2,6 +2,7 @@ package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Service.ClientService;
+import com.shop.GoodsShop.Utils.MailSenderUtil;
 import com.shop.GoodsShop.Utils.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/client")
@@ -25,6 +27,7 @@ public class ClientController {
     private ClientService clientService;
     private AuthenticationManager authenticationManager;
     private PasswordEncoder passwordEncoder;
+    private MailSenderUtil mailSenderUtil;
 
     @Autowired
     public void setClientService(ClientService clientService) {
@@ -40,18 +43,25 @@ public class ClientController {
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        logger.debug("Setting passwordEncoder");
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Autowired
+    public void setMailSenderUtil(MailSenderUtil mailSenderUtil) {
+        logger.debug("Setting mailSenderUtil");
+        this.mailSenderUtil = mailSenderUtil;
     }
 
     @GetMapping("/activate/{code}")
     public String activateClient(@PathVariable("code") String activationCode) {
         logger.info("Called activateClient method");
-        Client foundedByActivationCode = clientService.findByConfirmationCode(activationCode);
-        String rawPassword = foundedByActivationCode.getPassword();
-        clientService.save(foundedByActivationCode);
+        Client foundByActivationCode = clientService.findByConfirmationCode(activationCode);
+        String rawPassword = foundByActivationCode.getPassword();
+        clientService.save(foundByActivationCode);
 
         logger.info("Authenticate client...");
-        clientService.authenticateClient(rawPassword, foundedByActivationCode.getLogin(), authenticationManager);
+        clientService.authenticateClient(rawPassword, foundByActivationCode.getLogin(), authenticationManager);
 
         return "messages/successConfirmation";
     }
@@ -132,16 +142,19 @@ public class ClientController {
         boolean hasErrors = false;
 
         if (!passwordEncoder.matches(currentPassword, client.getPassword())) {
+            logger.error("Wrong password");
             model.addAttribute("currentPasswordError", "Неверный пароль");
             hasErrors = true;
         }
 
         if (newPassword.length() < 5) {
+            logger.error("Small password");
             model.addAttribute("lengthPasswordError", "Пароль должен состоять из как минимум 5 символов");
             hasErrors = true;
         }
 
         if (!newPassword.equals(retypePassword)) {
+            logger.error("Passwords are not matching");
             model.addAttribute("retypePasswordError", "Пароли не совпадают!");
             hasErrors = true;
         }
@@ -155,5 +168,50 @@ public class ClientController {
 
             return "messages/passwordSuccessfulChanged";
         }
+    }
+
+    @GetMapping("/changeEmail")
+    @PreAuthorize("isAuthenticated()")
+    public String changeEmailPage() {
+        logger.info("Called changeEmailPage method");
+
+        return "changeEmailPage";
+    }
+
+    @PostMapping("/changeEmail")
+    @PreAuthorize("isAuthenticated()")
+    public String sendCodeForSetNewEmail(@AuthenticationPrincipal Client client,
+                              @RequestParam("email") String email,
+                              Model model) {
+        logger.info("Called changeEmail method");
+        String code = UUID.randomUUID().toString();
+        client.setConfirmationCode(code);
+
+        try {
+            mailSenderUtil.sendTemplateMessage(
+                    email,
+                    client.getLogin(),
+                    "http://localhost:8080/client/setNewEmail/" + email + "/" + code);
+        } catch (Exception e) {
+            logger.error(e.toString());
+            model.addAttribute("mailError", "Не удалось отправить письмо");
+
+            return "changeEmailPage";
+        }
+
+        clientService.save(client);
+        return "messages/setNewEmailMessage";
+    }
+
+    @GetMapping("/setNewEmail/{email}/{code}")
+    public String changeEmail(@PathVariable("email") String email,
+                              @PathVariable("code") String code) {
+        logger.info("Called changeEmail method");
+        Client foundByCode = clientService.findByConfirmationCode(code);
+        foundByCode.setConfirmationCode(null);
+        foundByCode.setEmail(email);
+        clientService.save(foundByCode);
+
+        return "messages/successfulNewEmail";
     }
 }

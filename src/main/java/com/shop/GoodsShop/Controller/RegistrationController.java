@@ -74,12 +74,10 @@ public class RegistrationController {
         client.setConfirmationCode(code);
 
         try {
-            mailSenderUtil.sendMessage(
+            mailSenderUtil.sendTemplateMessage(
                     client.getEmail(),
-                    "Активация электронной почты",
-                    "Здравствуйте, " + client.getLogin() + "\nПожалуйста пройдите по данной ссылке," +
-                            "чтобы активировать почту:\n" +
-                            "http://localhost:8080/client/activate/" + code);
+                    client.getLogin(),
+                    "http://localhost:8080/client/activate/" + code);
         } catch (Exception e) {
             logger.error(e.toString());
             model.addAttribute("client", client);

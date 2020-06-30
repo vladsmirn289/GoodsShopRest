@@ -72,8 +72,8 @@ public class RegistrationControllerTest {
 
         Mockito
                 .verify(mailSenderUtil, Mockito.times(1))
-                    .sendMessage(eq("g@g"),
-                            eq("Активация электронной почты"),
+                    .sendTemplateMessage(eq("g@g"),
+                            eq("tU"),
                             contains("http://localhost:8080/client/activate/"));
     }
 
@@ -83,7 +83,7 @@ public class RegistrationControllerTest {
         Mockito
                 .doThrow(RuntimeException.class)
                 .when(mailSenderUtil)
-                .sendMessage(eq("g@g"), anyObject(), anyObject());
+                .sendTemplateMessage(eq("g@g"), eq("tU"), anyObject());
 
         mockMvc
                 .perform(post("/registration")
@@ -103,8 +103,8 @@ public class RegistrationControllerTest {
 
         Mockito
                 .verify(mailSenderUtil, Mockito.times(1))
-                .sendMessage(eq("g@g"),
-                        eq("Активация электронной почты"),
+                .sendTemplateMessage(eq("g@g"),
+                        eq("tU"),
                         contains("http://localhost:8080/client/activate/"));
     }
 

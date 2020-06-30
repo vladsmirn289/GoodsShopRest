@@ -14,15 +14,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -71,5 +73,92 @@ public class ClientControllerTest {
         Mockito
                 .verify(clientService, Mockito.times(1))
                     .authenticateClient(eq("01112"), eq("userWithCode"), any());
+    }
+
+    @Test
+    public void notAuthenticatedWhenGoToPersonalRoomPage() throws Exception {
+        mockMvc
+                .perform(get("/client/personalRoom"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void showPersonalRoomPageTest() throws Exception {
+        mockMvc
+                .perform(get("/client/personalRoom"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("personalRoom"))
+                .andExpect(model().attribute("client", clientService.findByLogin("simpleUser")));
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void shouldSuccessChangingClientInfo() throws Exception {
+        mockMvc
+                .perform(post("/client/personalRoom")
+                        .with(csrf())
+                        .param("id", "12")
+                        .param("firstName", "firstName")
+                        .param("lastName", "lastName")
+                        .param("login", "user")
+                        .param("patronymic", "")
+                        .param("email", "g@g"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("personalRoom"))
+                .andExpect(model().attributeExists("client"));
+
+        Client client = clientService.findByLogin("user");
+        assertThat(client).isNotNull();
+        assertThat(client.getId()).isEqualTo(12L);
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void shouldErrorShowWhenChangingPersonalInfoWithWrongData() throws Exception {
+        mockMvc
+                .perform(post("/client/personalRoom")
+                        .with(csrf())
+                        .param("id", "12")
+                        .param("firstName", "")
+                        .param("lastName", "")
+                        .param("login", "")
+                        .param("patronymic", "")
+                        .param("email", "g"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("personalRoom"))
+                .andExpect(model().errorCount(4))
+                .andExpect(model().attributeHasFieldErrors(
+                        "changedPerson", "firstName",
+                        "lastName", "login",
+                        "email"))
+                .andExpect(model().attributeExists("firstNameError"))
+                .andExpect(model().attributeExists("lastNameError"))
+                .andExpect(model().attributeExists("loginError"))
+                .andExpect(model().attributeExists("emailError"))
+                .andExpect(model().attributeDoesNotExist("userExistsError"));
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void shouldErrorUserExistsWhenTryingChangePersonalInfo() throws Exception {
+        mockMvc
+                .perform(post("/client/personalRoom")
+                        .with(csrf())
+                        .param("id", "12")
+                        .param("firstName", "test")
+                        .param("lastName", "user")
+                        .param("login", "admin")
+                        .param("patronymic", "")
+                        .param("email", "g@g"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("personalRoom"))
+                .andExpect(model().attributeExists("userExistsError"));
     }
 }

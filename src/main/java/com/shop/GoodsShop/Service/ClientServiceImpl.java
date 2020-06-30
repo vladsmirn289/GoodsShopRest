@@ -52,6 +52,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public Client findById(Long id) {
+        return clientRepo.findById(id).orElse(null);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Client findByLogin(String login) {
         return clientRepo.findByLogin(login);

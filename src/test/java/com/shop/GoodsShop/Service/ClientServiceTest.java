@@ -12,6 +12,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -33,6 +35,31 @@ public class ClientServiceTest {
     @BeforeEach
     public void init() {
         this.client = new Client("f@f","123456", "ABC", "DEF", "A");
+    }
+
+    @Test
+    public void shouldFindClientById() {
+        Mockito
+                .doReturn(Optional.of(client))
+                .when(clientRepo)
+                .findById(1L);
+
+        Client client = clientService.findById(1L);
+
+        assertThat(client.getLogin()).isEqualTo("A");
+        Mockito
+                .verify(clientRepo, Mockito.times(1))
+                .findById(1L);
+    }
+
+    @Test
+    public void shouldReturnNullWhenFindClientByIncorrectId() {
+        Client client = clientService.findById(1L);
+
+        assertThat(client).isNull();
+        Mockito
+                .verify(clientRepo, Mockito.times(1))
+                .findById(1L);
     }
 
     @Test

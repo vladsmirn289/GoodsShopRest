@@ -9,8 +9,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class URIUtils {
     public static final Logger logger = LoggerFactory.getLogger(URIUtils.class);
 
-    public static String toSamePage(String referer,
-                                    RedirectAttributes redirectAttributes) {
+    public static String toPriorPage(String referer,
+                                     RedirectAttributes redirectAttributes) {
         logger.info("Called toSamePage method called");
         String path;
 

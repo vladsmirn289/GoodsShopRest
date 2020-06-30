@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public interface ClientService extends UserDetailsService {
     void authenticateClient(String rawPassword, String login, AuthenticationManager authManager);
 
+    Client findById(Long id);
     Client findByLogin(String login);
     Client findByConfirmationCode(String confirmationCode);
 

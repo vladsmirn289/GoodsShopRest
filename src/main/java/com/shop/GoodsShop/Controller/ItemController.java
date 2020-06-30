@@ -47,6 +47,7 @@ public class ItemController {
     @GetMapping
     public String searchItems(@RequestParam("keyword") String keyword,
                               Model model) {
+        logger.info("Called searchItems method");
         List<Item> items = itemService.findBySearch(keyword);
         model.addAttribute("keyword", keyword);
         model.addAttribute("items", items);
@@ -95,6 +96,6 @@ public class ItemController {
         persistentClient.getBasket().add(itemToBasket);
         clientService.save(client);
 
-        return "redirect:" + URIUtils.toSamePage(referer, redirectAttributes);
+        return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }
 }

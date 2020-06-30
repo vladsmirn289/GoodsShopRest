@@ -18,7 +18,7 @@
                 <a class="nav-link" href="/myOrders">Мои заказы <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/personalRoom">Личный кабинет <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/client/personalRoom">Личный кабинет <span class="sr-only">(current)</span></a>
             </li>
         </ul>
 

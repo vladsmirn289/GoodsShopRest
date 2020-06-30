@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,7 @@ public class ClientController {
 
     private ClientService clientService;
     private AuthenticationManager authenticationManager;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public void setClientService(ClientService clientService) {
@@ -36,6 +38,11 @@ public class ClientController {
         this.authenticationManager = authenticationManager;
     }
 
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @GetMapping("/activate/{code}")
     public String activateClient(@PathVariable("code") String activationCode) {
         logger.info("Called activateClient method");
@@ -46,7 +53,7 @@ public class ClientController {
         logger.info("Authenticate client...");
         clientService.authenticateClient(rawPassword, foundedByActivationCode.getLogin(), authenticationManager);
 
-        return "util/successConfirmation";
+        return "messages/successConfirmation";
     }
 
     @GetMapping("/personalRoom")
@@ -60,6 +67,7 @@ public class ClientController {
     }
 
     @PostMapping("/personalRoom")
+    @PreAuthorize("isAuthenticated()")
     public String changePersonalInfo(@Valid @ModelAttribute("changedPerson") Client client,
                                      BindingResult bindingResult,
                                      Model model) {
@@ -103,5 +111,49 @@ public class ClientController {
 
         model.addAttribute("client", originalClient);
         return "personalRoom";
+    }
+
+    @GetMapping("/changePassword")
+    @PreAuthorize("isAuthenticated()")
+    public String changePasswordPage() {
+        logger.info("Called changePasswordPage method");
+
+        return "changePassword";
+    }
+
+    @PostMapping("/changePassword")
+    @PreAuthorize("isAuthenticated()")
+    public String changePassword(@AuthenticationPrincipal Client client,
+                                 @RequestParam("currentPassword") String currentPassword,
+                                 @RequestParam("newPassword") String newPassword,
+                                 @RequestParam("retypePassword") String retypePassword,
+                                 Model model) {
+        logger.info("Called changePassword method");
+        boolean hasErrors = false;
+
+        if (!passwordEncoder.matches(currentPassword, client.getPassword())) {
+            model.addAttribute("currentPasswordError", "Неверный пароль");
+            hasErrors = true;
+        }
+
+        if (newPassword.length() < 5) {
+            model.addAttribute("lengthPasswordError", "Пароль должен состоять из как минимум 5 символов");
+            hasErrors = true;
+        }
+
+        if (!newPassword.equals(retypePassword)) {
+            model.addAttribute("retypePasswordError", "Пароли не совпадают!");
+            hasErrors = true;
+        }
+
+        if (hasErrors) {
+            return "changePassword";
+        } else {
+            Client persistentClient = clientService.findByLogin(client.getLogin());
+            persistentClient.setPassword(passwordEncoder.encode(newPassword));
+            clientService.save(persistentClient);
+
+            return "messages/passwordSuccessfulChanged";
+        }
     }
 }

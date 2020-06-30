@@ -89,6 +89,6 @@ public class RegistrationController {
         }
 
         clientService.save(client);
-        return "util/needConfirmation";
+        return "messages/needConfirmation";
     }
 }

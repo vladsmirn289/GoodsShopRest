@@ -63,7 +63,7 @@ public class ClientControllerTest {
                 .perform(get("/client/activate/123"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("util/successConfirmation"));
+                .andExpect(view().name("messages/successConfirmation"));
 
         Client client = clientService.findByLogin("userWithCode");
         String password = client.getPassword();
@@ -160,5 +160,52 @@ public class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("personalRoom"))
                 .andExpect(model().attributeExists("userExistsError"));
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void showChangePasswordPageTest() throws Exception {
+        mockMvc
+                .perform(get("/client/changePassword"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("changePassword"));
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void shouldShowErrorWhenTryChangePasswordWithIncorrectData() throws Exception {
+        mockMvc
+                .perform(post("/client/changePassword")
+                         .with(csrf())
+                         .param("currentPassword", "67890")
+                         .param("newPassword", "1")
+                         .param("retypePassword", "2"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("changePassword"))
+                .andExpect(model().attribute("currentPasswordError", "Неверный пароль"))
+                .andExpect(model().attribute("lengthPasswordError", "Пароль должен состоять из как минимум 5 символов"))
+                .andExpect(model().attribute("retypePasswordError", "Пароли не совпадают!"));
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void shouldCorrectChangePassword() throws Exception {
+        mockMvc
+                .perform(post("/client/changePassword")
+                        .with(csrf())
+                        .param("currentPassword", "12345")
+                        .param("newPassword", "1234567890")
+                        .param("retypePassword", "1234567890"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages/passwordSuccessfulChanged"))
+                .andExpect(model().attributeDoesNotExist("currentPasswordError"))
+                .andExpect(model().attributeDoesNotExist("lengthPasswordError"))
+                .andExpect(model().attributeDoesNotExist("retypePasswordError"));
+
+        Client client = clientService.findByLogin("simpleUser");
+        assertThat(passwordEncoder.matches("1234567890", client.getPassword()));
     }
 }

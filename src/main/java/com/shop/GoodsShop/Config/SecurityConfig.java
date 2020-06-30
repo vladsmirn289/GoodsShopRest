@@ -60,13 +60,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/client/activate/*")
                     .permitAll()
 
-                    .antMatchers(
-                            "/basket",
-                            "/myOrders",
-                            "/personalRoom",
-                            "/addToBasket")
-                    .authenticated()
-
                     .anyRequest()
                     .authenticated()
 

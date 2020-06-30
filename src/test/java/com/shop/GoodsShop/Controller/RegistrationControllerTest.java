@@ -65,7 +65,7 @@ public class RegistrationControllerTest {
                         .param("passwordRepeat", "12345"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("util/needConfirmation"));
+                .andExpect(view().name("messages/needConfirmation"));
 
         assertThat(clientService.findByLogin("tU").getConfirmationCode()).isNotNull();
         assertThat(clientService.loadUserByUsername("tU")).isNull();

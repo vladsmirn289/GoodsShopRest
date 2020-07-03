@@ -5,6 +5,7 @@ import com.shop.GoodsShop.Utils.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,8 @@ import java.util.*;
 public class InitDB {
     Logger logger = LoggerFactory.getLogger(InitDB.class);
 
+    private PasswordEncoder passwordEncoder;
+
     private CategoryService categoryService;
     private ItemService itemService;
     private ClientService clientService;
@@ -26,6 +29,11 @@ public class InitDB {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Autowired
     public void setCategoryService(CategoryService categoryService) {
@@ -975,9 +983,9 @@ public class InitDB {
         /* --- Users init --- */
 
         //Without items
-        Client yakovMaurov = new Client("condricka@hotmail.com", "25oMTtm3", "Яков", "Маюров", "YakovMaurov");
-        Client prokofiyKravchuk = new Client("hane.ayla@yahoo.com", "1Rhm47zO", "Прокофий", "Кравчук", "ProkofiyKravchuk");
-        Client timofeyBarshev = new Client("norene04@yahoo.com", "Yn865FbJ", "Тимофей", "Барышев", "TimofeyBarshev");
+        Client yakovMaurov = new Client("condricka@hotmail.com", passwordEncoder.encode("25oMTtm3"), "Яков", "Маюров", "YakovMaurov");
+        Client prokofiyKravchuk = new Client("hane.ayla@yahoo.com", passwordEncoder.encode("1Rhm47zO"), "Прокофий", "Кравчук", "ProkofiyKravchuk");
+        Client timofeyBarshev = new Client("norene04@yahoo.com", passwordEncoder.encode("Yn865FbJ"), "Тимофей", "Барышев", "TimofeyBarshev");
 
         yakovMaurov.setRoles(Collections.singleton(Role.USER));
         clientService.save(yakovMaurov);
@@ -987,9 +995,9 @@ public class InitDB {
         clientService.save(timofeyBarshev);
 
         //With items in basket
-        Client egorSolomonov = new Client("tianna94@gmail.com", "92zoKcG5", "Егор", "Соломонов", "EgorSolomonov");
-        Client vladislavPutilin = new Client("hassan66@yahoo.com", "2s1L8lPC", "Владислав", "Путилин", "VladislavPutilin");
-        Client borislavPotemkin = new Client("dylan80@yahoo.com", "UBq9H13C", "Борислав", "Потёмкин", "BorislavPotemkin");
+        Client egorSolomonov = new Client("tianna94@gmail.com", passwordEncoder.encode("92zoKcG5"), "Егор", "Соломонов", "EgorSolomonov");
+        Client vladislavPutilin = new Client("hassan66@yahoo.com", passwordEncoder.encode("2s1L8lPC"), "Владислав", "Путилин", "VladislavPutilin");
+        Client borislavPotemkin = new Client("dylan80@yahoo.com", passwordEncoder.encode("UBq9H13C"), "Борислав", "Потёмкин", "BorislavPotemkin");
 
         ClientItem callOfCthulhuItem = new ClientItem(callOfCthulhu, 2);
         ClientItem bookAboutTheWayOfLifeItem = new ClientItem(bookAboutTheWayOfLife, 1);
@@ -1019,8 +1027,8 @@ public class InitDB {
         clientService.save(borislavPotemkin);
 
         //With orders
-        Client lianaKraevska = new Client("electa54@lowe.biz", "Z1BY5O6c", "Лиана", "Краевская", "LianaKraevska");
-        Client albinaBudanova = new Client("nickolas49@ohara.org", "v7gIe11t", "Альбина", "Буданова", "AlbinaBudanova");
+        Client lianaKraevska = new Client("electa54@lowe.biz", passwordEncoder.encode("Z1BY5O6c"), "Лиана", "Краевская", "LianaKraevska");
+        Client albinaBudanova = new Client("nickolas49@ohara.org", passwordEncoder.encode("v7gIe11t"), "Альбина", "Буданова", "AlbinaBudanova");
 
         //first
         ClientItem clientItem1 = new ClientItem(spring5ForProfessionals, 1);
@@ -1028,7 +1036,6 @@ public class InitDB {
 
         Contacts contactsLiana = new Contacts("457043", "Россия", "Южноуральск", "Зелёная д5 к64", "8 (632) 452-72-98");
         Order order1 = new Order(new HashSet<>(Arrays.asList(clientItem1, clientItem2)), contactsLiana, "C.O.D");
-        order1.setClient(lianaKraevska);
         order1.setOrderStatus(OrderStatus.ACCEPTED);
         orderService.save(order1);
 
@@ -1040,6 +1047,8 @@ public class InitDB {
         lianaKraevska.setOrders(new HashSet<>(Collections.singletonList(order1)));
         lianaKraevska.setRoles(Collections.singleton(Role.USER));
         clientService.save(lianaKraevska);
+        order1.setClient(lianaKraevska);
+        orderService.save(order1);
 
         //second
         ClientItem clientItem3 = new ClientItem(notebookDragonfly, 3);
@@ -1048,14 +1057,11 @@ public class InitDB {
 
         Contacts contactsAlbina = new Contacts("115569", "Россия", "Москва", "Баженова д4А", "8 (499) 387-62-54");
         Order order2 = new Order(new HashSet<>(Collections.singletonList(clientItem3)), contactsAlbina, "C.O.D");
-        order2.setClient(albinaBudanova);
         order2.setOrderStatus(OrderStatus.COMPLETED);
         Order order3 = new Order(new HashSet<>(Collections.singletonList(clientItem4)), contactsAlbina, "C.O.D");
-        order3.setClient(albinaBudanova);
         order3.setOrderStatus(OrderStatus.ON_THE_WAY);
         order3.setTrackNumber("1234567891011");
         Order order4 = new Order(new HashSet<>(Collections.singletonList(clientItem5)), contactsAlbina, "C.O.D");
-        order4.setClient(albinaBudanova);
         order4.setOrderStatus(OrderStatus.PAYMENT);
         order4.setTrackNumber("121314151617");
         orderService.save(order2);
@@ -1072,19 +1078,26 @@ public class InitDB {
         albinaBudanova.setOrders(new HashSet<>(Arrays.asList(order2, order3, order4)));
         albinaBudanova.setRoles(Collections.singleton(Role.USER));
         clientService.save(albinaBudanova);
+        order2.setClient(albinaBudanova);
+        order3.setClient(albinaBudanova);
+        order4.setClient(albinaBudanova);
+        orderService.save(order2);
+        orderService.save(order3);
+        orderService.save(order4);
+
 
         //Test user
-        Client vladislavSmirnov = new Client("vladsmirn289@gmail.com", "12345", "Владислав", "Смирнов", "VladislavSmirnov");
+        Client vladislavSmirnov = new Client("vladsmirn289@gmail.com", passwordEncoder.encode("12345"), "Владислав", "Смирнов", "VladislavSmirnov");
 
         vladislavSmirnov.setRoles(Collections.singleton(Role.USER));
         clientService.save(vladislavSmirnov);
 
         //Manager, who manage orders and create items
-        Client manager1 = new Client("bonnie99@grimes.com", "25oMTtm3", "Роман", "Гусев", "RomanGusev");
-        Client manager2 = new Client("kyle67@grady.com", "25oMTtm3", "Регина", "Рудова", "ReginaRudova");
-        Client manager3 = new Client("xwitting@powlowski.com", "25oMTtm3", "Вячеслав", "Юнкин", "VyacheslavYunkin");
+        Client manager1 = new Client("bonnie99@grimes.com", passwordEncoder.encode("25oMTtm3"), "Роман", "Гусев", "RomanGusev");
+        Client manager2 = new Client("kyle67@grady.com", passwordEncoder.encode("25oMTtm3"), "Регина", "Рудова", "ReginaRudova");
+        Client manager3 = new Client("xwitting@powlowski.com", passwordEncoder.encode("25oMTtm3"), "Вячеслав", "Юнкин", "VyacheslavYunkin");
 
-        Client admin = new Client("goconnell@bernhard.com", "25oMTtm3", "Семён", "Буков", "CemenBukov");
+        Client admin = new Client("goconnell@bernhard.com", passwordEncoder.encode("25oMTtm3"), "Семён", "Буков", "CemenBukov");
 
         manager1.setRoles(new HashSet<>(Arrays.asList(Role.USER, Role.MANAGER)));
         clientService.save(manager1);
@@ -1094,6 +1107,14 @@ public class InitDB {
         clientService.save(manager3);
         admin.setRoles(new HashSet<>(Arrays.asList(Role.USER, Role.MANAGER, Role.ADMIN)));
         clientService.save(admin);
+
+        order1.setManager(manager1);
+        order3.setManager(manager2);
+        order4.setManager(manager3);
+
+        orderService.save(order1);
+        orderService.save(order3);
+        orderService.save(order4);
 
         /* --- --- */
 

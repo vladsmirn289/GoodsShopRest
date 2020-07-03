@@ -76,7 +76,8 @@ CREATE TABLE public.orders (
     order_status character varying(255),
     payment_method character varying(255),
     track_number character varying(255),
-    client_id bigint
+    client_id bigint,
+    manager_id bigint
 );
 
 --
@@ -195,6 +196,14 @@ ALTER TABLE ONLY public.item_additional_images
 
 ALTER TABLE ONLY public.orders
     ADD CONSTRAINT fk_client_id FOREIGN KEY (client_id) REFERENCES public.client(id);
+
+
+--
+-- Name: orders fk_manager_id; Type: FK CONSTRAINT; Schema: public
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT fk_manager_id FOREIGN KEY (manager_id) REFERENCES public.client(id);
 
 
 --

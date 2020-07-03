@@ -38,6 +38,10 @@ public class Order {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @OneToOne
+    @JoinColumn
+    private Client manager;
+
     @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -113,6 +117,14 @@ public class Order {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public Client getManager() {
+        return manager;
+    }
+
+    public void setManager(Client manager) {
+        this.manager = manager;
     }
 
     public Date getCreatedOn() {

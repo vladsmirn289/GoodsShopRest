@@ -11,6 +11,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class OrderServiceTest {
@@ -35,6 +38,28 @@ public class OrderServiceTest {
         ClientItem clientItem = new ClientItem(item, 2);
         Contacts contacts = new Contacts("123456", "Russia", "Moscow", "...", "89441234567");
         this.order = new Order(new HashSet<>(Collections.singleton(clientItem)), contacts, "C.O.D");
+    }
+
+    @Test
+    public void shouldFindOrderById() {
+        Mockito
+                .doReturn(Optional.of(order))
+                .when(orderRepo)
+                .findById(1L);
+
+        Order order1 = orderService.findById(1L);
+        
+        Mockito.verify(orderRepo, Mockito.times(1))
+                .findById(1L);
+    }
+
+    @Test
+    public void shouldReturnNullWhenFindOrderByIncorrectId() {
+        Order order1 = orderService.findById(1L);
+
+        assertThat(order1).isNull();
+        Mockito.verify(orderRepo, Mockito.times(1))
+                .findById(1L);
     }
 
     @Test

@@ -22,6 +22,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order findById(Long id) {
+        logger.info("findById method called for order with id = " + id);
+        return orderRepo.findById(id).orElse(null);
+    }
+
+    @Override
     public void save(Order order) {
         logger.info("Saving order with id = " + order.getId() + " to database");
         orderRepo.save(order);

@@ -108,13 +108,35 @@ public class ClientControllerTest {
                         .param("id", "12")
                         .param("firstName", "firstName")
                         .param("lastName", "lastName")
-                        .param("login", "user")
+                        .param("login", "simpleUser")
                         .param("patronymic", "")
                         .param("email", "g@g"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("personalRoom"))
                 .andExpect(model().attributeExists("client"));
+
+        Client client = clientService.findByLogin("simpleUser");
+        assertThat(client).isNotNull();
+        assertThat(client.getId()).isEqualTo(12L);
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void shouldSuccessChangingLogin() throws Exception {
+        mockMvc
+                .perform(post("/client/personalRoom")
+                        .with(csrf())
+                        .param("id", "12")
+                        .param("firstName", "ABC")
+                        .param("lastName", "DEF")
+                        .param("login", "user")
+                        .param("patronymic", "")
+                        .param("email", "vladsmirn289@gmail.com"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(""))
+                .andExpect(model().attributeDoesNotExist("client"));
 
         Client client = clientService.findByLogin("user");
         assertThat(client).isNotNull();

@@ -37,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "classpath:db/H2/category-test.sql",
         "classpath:db/H2/user-test.sql",
         "classpath:db/H2/item-test.sql",
+        "classpath:db/H2/order-test.sql",
         "classpath:db/H2/clientItem-test.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {
@@ -62,9 +63,9 @@ public class BasketControllerTest {
     @BeforeEach
     public void init() {
         Client client = clientService.findByLogin("simpleUser");
-        ClientItem item1 = clientItemService.findById(15L);
-        ClientItem item2 = clientItemService.findById(16L);
-        ClientItem item3 = clientItemService.findById(17L);
+        ClientItem item1 = clientItemService.findById(16L);
+        ClientItem item2 = clientItemService.findById(17L);
+        ClientItem item3 = clientItemService.findById(18L);
 
         client.setBasket(new HashSet<>(Arrays.asList(item1, item2, item3)));
         clientService.save(client);
@@ -86,7 +87,7 @@ public class BasketControllerTest {
     @Test
     public void deleteItemFromBasketTest() throws Exception {
         mockMvc
-                .perform(get("/basket/delete/15"))
+                .perform(get("/basket/delete/16"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/basket"));
@@ -130,11 +131,11 @@ public class BasketControllerTest {
     @Test
     public void checkoutItemTest() throws Exception {
         mockMvc
-                .perform(get("/basket/checkout/15"))
+                .perform(get("/basket/checkout/16"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("checkoutPage"))
-                .andExpect(model().attribute("clientItems", Collections.singletonList(clientItemService.findById(15L))))
+                .andExpect(model().attribute("clientItems", Collections.singletonList(clientItemService.findById(16L))))
                 .andExpect(model().attributeExists("client"));
     }
 }

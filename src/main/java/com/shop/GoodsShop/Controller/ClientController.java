@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.UUID;
 
@@ -80,7 +82,8 @@ public class ClientController {
     @PreAuthorize("isAuthenticated()")
     public String changePersonalInfo(@Valid @ModelAttribute("changedPerson") Client client,
                                      BindingResult bindingResult,
-                                     Model model) {
+                                     Model model,
+                                     HttpServletRequest request) {
         logger.info("Called changePersonalInfo method");
         Client originalClient = clientService.findById(client.getId());
         Client persistentClient = clientService.findByLogin(client.getLogin());
@@ -113,6 +116,11 @@ public class ClientController {
 
             if (!client.getLogin().equals(originalClient.getLogin())) {
                 originalClient.setLogin(client.getLogin());
+
+                SecurityContextHolder.getContext().setAuthentication(null);
+                request.getSession().removeAttribute("SPRING_SECURITY_CONTEXT");
+                clientService.save(originalClient);
+                return "redirect:";
             }
 
             clientService.save(originalClient);

@@ -4,6 +4,7 @@ import com.shop.GoodsShop.Model.*;
 import com.shop.GoodsShop.Service.ClientItemService;
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.OrderService;
+import com.shop.GoodsShop.Utils.URIUtils;
 import com.shop.GoodsShop.Utils.ValidateUtil;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -170,5 +172,25 @@ public class OrderController {
         model.addAttribute("manager", manager);
 
         return "customOrders";
+    }
+
+    @GetMapping("/setManager/{id}")
+    public String setManagerToOrder(@AuthenticationPrincipal Client manager,
+                                    @PathVariable("id") Long orderId,
+                                    Model model,
+                                    RedirectAttributes redirectAttributes,
+                                    @RequestHeader(required = false) String referer) {
+        logger.info("Called setManagerToOrder method");
+        Order order = orderService.findById(orderId);
+        if (order.getManager() == null) {
+            Client persistentManager = clientService.findByLogin(manager.getLogin());
+            order.setManager(persistentManager);
+            orderService.save(order);
+        } else {
+            logger.info("Conflict, another manager has already set himself to manager");
+            model.addAttribute("conflictError", "Другой менеджер уже назначил себя менеджером!");
+        }
+
+        return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }
 }

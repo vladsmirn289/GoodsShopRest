@@ -4,6 +4,12 @@
          generalPrice = 0/>
 
 <@c.commonPage>
+    <#if conflictError??>
+        <div class="alert alert-warning" role="alert">
+            ${conflictError}
+        </div>
+    </#if>
+
     <table class="table table-striped table-bordered table-dark">
         <thead>
         <tr>
@@ -38,7 +44,7 @@
 
                 <#if !order.manager??>
                     <td>
-                        <a href="/order/setManager">Назначить себя менеджером</a>
+                        <a href="/order/setManager/${order.id}">Назначить себя менеджером</a>
                     </td>
                 <#elseif manager.login == order.manager.login>
                     <td>

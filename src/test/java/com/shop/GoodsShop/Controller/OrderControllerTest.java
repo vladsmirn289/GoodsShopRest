@@ -69,8 +69,10 @@ public class OrderControllerTest {
                 .andExpect(view().name("ordersList"))
                 .andExpect(model().attributeExists("orders"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]").string(containsString("8,000")))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[2]/td[3]").string(containsString("1,075")));
+                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]")
+                        .string(containsString("8,000")))
+                .andExpect(xpath("/html/body/div/table/tbody/tr[2]/td[3]")
+                        .string(containsString("1,075")));
     }
 
     @Test
@@ -83,7 +85,8 @@ public class OrderControllerTest {
                 .andExpect(view().name("concreteOrder"))
                 .andExpect(model().attribute("order", orderService.findById(19L)))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(1))
-                .andExpect(xpath("/html/body/div/table/tbody/tr/td[3]").string("Spring 5 для профессионалов"));
+                .andExpect(xpath("/html/body/div/table/tbody/tr/td[3]")
+                        .string("Spring 5 для профессионалов"));
     }
 
     @Test
@@ -200,7 +203,25 @@ public class OrderControllerTest {
                 .andExpect(model().attributeExists("orders"))
                 .andExpect(model().attributeExists("manager"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]").string(containsString("1,075")))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[2]/td[3]").string(containsString("850")));
+                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]")
+                        .string(containsString("1,075")))
+                .andExpect(xpath("/html/body/div/table/tbody/tr[2]/td[3]")
+                        .string(containsString("850")));
+    }
+
+    @Test
+    @WithUserDetails("manager")
+    public void setSelfToManagerOrderTest() throws Exception {
+        mockMvc
+                .perform(get("/order/setManager/21")
+                         .header("referer", "http://localhost/order/manager"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/order/manager"));
+
+        mockMvc
+                .perform(get("/order/manager"))
+                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[5]/a")
+                        .string("Редактировать заказ"));
     }
 }

@@ -9,7 +9,7 @@
             <p class="card-text">Описание: ${path} ${error}</p>
             <p class="card-text">Сообщение:
                 <#if message?contains("No message available")>
-                    Такой страницы или ресурса не существует
+                    Доступ запрещён
                 <#else>
                     ${message}
                 </#if>

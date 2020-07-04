@@ -190,6 +190,14 @@ public class ClientValidationTest {
     }
 
     @Test
+    void isMangerTest() {
+        assertThat(client.isManager()).isFalse();
+
+        client.setRoles(new HashSet<>(Arrays.asList(Role.USER, Role.MANAGER)));
+        assertThat(client.isManager()).isTrue();
+    }
+
+    @Test
     void isAdminTest() {
         assertThat(client.isAdmin()).isFalse();
 

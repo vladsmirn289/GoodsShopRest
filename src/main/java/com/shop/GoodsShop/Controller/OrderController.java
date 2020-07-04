@@ -152,11 +152,23 @@ public class OrderController {
         });
 
         if (paymentMethod.equals("Наложенный платёж")) {
+            logger.info("Method payment is C.O.D");
             //Nothing
         } else if (paymentMethod.equals("Карта")) {
+            logger.info("Method payment is Card");
             //Realization of card payment ...
         }
 
         return "messages/orderCreated";
+    }
+
+    @GetMapping("/manager")
+    public String customOrders(@AuthenticationPrincipal Client manager,
+                               Model model) {
+        logger.info("Called customOrders method");
+        model.addAttribute("orders", orderService.findOrdersForManagers());
+        model.addAttribute("manager", manager);
+
+        return "customOrders";
     }
 }

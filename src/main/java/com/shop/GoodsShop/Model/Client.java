@@ -167,6 +167,10 @@ public class Client implements UserDetails {
         this.confirmationCode = confirmationCode;
     }
 
+    public boolean isManager() {
+        return roles.contains(Role.MANAGER);
+    }
+
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
     }

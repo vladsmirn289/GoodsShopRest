@@ -179,4 +179,28 @@ public class OrderControllerTest {
                 .andExpect(model().attributeExists("contactsData"))
                 .andExpect(model().attributeExists("generalPrice"));
     }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void showCustomOrdersAccessDeniedTest() throws Exception {
+        mockMvc
+                .perform(get("/order/manager"))
+                .andDo(print())
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithUserDetails("manager")
+    public void showCustomOrdersTest() throws Exception {
+        mockMvc
+                .perform(get("/order/manager"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("customOrders"))
+                .andExpect(model().attributeExists("orders"))
+                .andExpect(model().attributeExists("manager"))
+                .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2))
+                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]").string(containsString("1,075")))
+                .andExpect(xpath("/html/body/div/table/tbody/tr[2]/td[3]").string(containsString("850")));
+    }
 }

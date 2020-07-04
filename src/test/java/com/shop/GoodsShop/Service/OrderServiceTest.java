@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +39,21 @@ public class OrderServiceTest {
         ClientItem clientItem = new ClientItem(item, 2);
         Contacts contacts = new Contacts("123456", "Russia", "Moscow", "...", "89441234567");
         this.order = new Order(new HashSet<>(Collections.singleton(clientItem)), contacts, "C.O.D");
+    }
+
+    @Test
+    public void shouldFindOrdersForManagers() {
+        Mockito
+                .doReturn(Collections.singletonList(order))
+                .when(orderRepo)
+                .findOrdersForManagers();
+
+        List<Order> orderList = orderService.findOrdersForManagers();
+
+        assertThat(orderList).isNotNull();
+        assertThat(orderList).isNotEmpty();
+        Mockito.verify(orderRepo, Mockito.times(1))
+                .findOrdersForManagers();
     }
 
     @Test

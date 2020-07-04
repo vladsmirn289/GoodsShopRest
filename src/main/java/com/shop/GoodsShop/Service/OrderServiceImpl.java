@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class OrderServiceImpl implements OrderService {
@@ -19,6 +21,12 @@ public class OrderServiceImpl implements OrderService {
     public void setOrderRepo(OrderRepo orderRepo) {
         logger.debug("Setting orderRepo");
         this.orderRepo = orderRepo;
+    }
+
+    @Override
+    public List<Order> findOrdersForManagers() {
+        logger.info("findOrdersForManagers method called");
+        return orderRepo.findOrdersForManagers();
     }
 
     @Override

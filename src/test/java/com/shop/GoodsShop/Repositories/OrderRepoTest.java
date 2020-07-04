@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,13 +45,19 @@ public class OrderRepoTest {
                 , "characteristics...", "123", book);
         ClientItem clientItem = new ClientItem(item, 2);
         Contacts contacts = new Contacts("123456", "Russia", "Moscow", "...", "89441234567");
+
         Order order = new Order(new HashSet<>(Collections.singleton(clientItem)), contacts, "C.O.D");
+        order.setOrderStatus(OrderStatus.COMPLETED);
+
+        Order order1 = new Order(new HashSet<>(Collections.singleton(clientItem)), contacts, "C.O.D");
+        order1.setOrderStatus(OrderStatus.ON_THE_WAY);
 
         categoryRepo.save(books);
         categoryRepo.save(book);
         itemRepo.save(item);
         clientItemRepo.save(clientItem);
         orderRepo.save(order);
+        orderRepo.save(order1);
     }
 
     @AfterEach
@@ -58,6 +65,14 @@ public class OrderRepoTest {
         entityManager.getEntityManager()
                 .createNativeQuery("alter sequence hibernate_sequence restart 1")
                 .executeUpdate();
+    }
+
+    @Test
+    public void shouldFindOrderByStatusIsNotCompleted() {
+        List<Order> orders = orderRepo.findOrdersForManagers();
+
+        assertThat(orders.size()).isEqualTo(1);
+        assertThat(orders.get(0).getId()).isEqualTo(6L);
     }
 
     @Test
@@ -87,8 +102,8 @@ public class OrderRepoTest {
         clientItemRepo.save(clientItem);
         orderRepo.save(order);
 
-        assertThat(orderRepo.findAll().size()).isEqualTo(2);
-        Order order1 = orderRepo.findById(10L).orElse(null);
+        assertThat(orderRepo.findAll().size()).isEqualTo(3);
+        Order order1 = orderRepo.findById(11L).orElse(null);
 
         assertThat(order).isNotNull();
         assertThat(order.getClientItems().iterator().next().getItem().getName()).isEqualTo("laptop");
@@ -102,13 +117,13 @@ public class OrderRepoTest {
         assertThat(order).isNotNull();
         orderRepo.delete(order);
 
-        assertThat(orderRepo.findAll().size()).isEqualTo(0);
+        assertThat(orderRepo.findAll().size()).isEqualTo(1);
     }
 
     @Test
     public void shouldDeleteOrderById() {
         orderRepo.deleteById(5L);
 
-        assertThat(orderRepo.findAll().size()).isEqualTo(0);
+        assertThat(orderRepo.findAll().size()).isEqualTo(1);
     }
 }

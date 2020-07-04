@@ -18,10 +18,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,28 +112,5 @@ public class BasketControllerTest {
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(0));
 
         assertThat(clientItemRepo.findAll().size()).isEqualTo(0);
-    }
-
-    @Test
-    @Transactional
-    public void checkoutAllItemsTest() throws Exception {
-        mockMvc
-                .perform(get("/basket/checkout"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("checkoutPage"))
-                .andExpect(model().attribute("clientItems", clientService.findByLogin("simpleUser").getBasket()))
-                .andExpect(model().attributeExists("client"));
-    }
-
-    @Test
-    public void checkoutItemTest() throws Exception {
-        mockMvc
-                .perform(get("/basket/checkout/16"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("checkoutPage"))
-                .andExpect(model().attribute("clientItems", Collections.singletonList(clientItemService.findById(16L))))
-                .andExpect(model().attributeExists("client"));
     }
 }

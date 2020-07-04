@@ -20,7 +20,7 @@
                 </th>
                 <th scope="col">
                     <#if basketItems?size != 0>
-                        <a href="/basket/checkout">Оформить всё</a>
+                        <a href="/order/checkout">Оформить всё</a>
                     <#else>
                         Оформить всё
                     </#if>
@@ -40,7 +40,7 @@
                         <input name="quantity" type="number" min="1" size="10" value="${basketItem.quantity}" style="width: 50px"/> шт.
                     </td>
                     <td><a href="/basket/delete/${basketItem.id}">Удалить</a></td>
-                    <td><a href="/basket/checkout/${basketItem.id}">Оформить</a></td>
+                    <td><a href="/order/checkout/${basketItem.id}">Оформить</a></td>
                 </tr>
             </#list>
         </tbody>

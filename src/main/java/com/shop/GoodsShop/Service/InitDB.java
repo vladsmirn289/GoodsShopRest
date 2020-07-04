@@ -1087,10 +1087,10 @@ public class InitDB {
 
 
         //Test user
-        Client vladislavSmirnov = new Client("vladsmirn289@gmail.com", passwordEncoder.encode("12345"), "Владислав", "Смирнов", "VladislavSmirnov");
+        Client testUser = new Client("vladsmirn289@gmail.com", passwordEncoder.encode("12345"), "test", "user", "testUser");
 
-        vladislavSmirnov.setRoles(Collections.singleton(Role.USER));
-        clientService.save(vladislavSmirnov);
+        testUser.setRoles(Collections.singleton(Role.USER));
+        clientService.save(testUser);
 
         //Manager, who manage orders and create items
         Client manager1 = new Client("bonnie99@grimes.com", passwordEncoder.encode("25oMTtm3"), "Роман", "Гусев", "RomanGusev");

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Collections;
 import java.util.Set;
 
 @Controller
@@ -83,33 +82,5 @@ public class BasketController {
         clientService.save(persistentClient);
 
         return "redirect:/basket";
-    }
-
-    @GetMapping("/checkout")
-    @Transactional
-    public String checkoutAllItems(@AuthenticationPrincipal Client client,
-                                   Model model) {
-        logger.info("Called checkoutAllItems method");
-        Client persistentClient = clientService.findByLogin(client.getLogin());
-
-        model.addAttribute("clientItems", persistentClient.getBasket());
-        model.addAttribute("client", client);
-
-        return "checkoutPage";
-    }
-
-    @GetMapping("/checkout/{itemId}")
-    @Transactional
-    public String checkoutItem(@AuthenticationPrincipal Client client,
-                                   @PathVariable("itemId") Long id,
-                                   Model model) {
-        logger.info("Called checkoutItem method");
-        Client persistentClient = clientService.findByLogin(client.getLogin());
-        ClientItem item = clientItemService.findById(id);
-
-        model.addAttribute("clientItems", Collections.singletonList(item));
-        model.addAttribute("client", persistentClient);
-
-        return "checkoutPage";
     }
 }

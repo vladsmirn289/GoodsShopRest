@@ -1,7 +1,9 @@
 package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Model.Client;
+import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Model.Order;
+import com.shop.GoodsShop.Service.ClientItemService;
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.OrderService;
 import org.hibernate.Hibernate;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Collections;
+
 @Controller
 @RequestMapping("/order")
 public class OrderController {
@@ -24,6 +28,7 @@ public class OrderController {
 
     private ClientService clientService;
     private OrderService orderService;
+    private ClientItemService clientItemService;
 
     @Autowired
     public void setClientService(ClientService clientService) {
@@ -35,6 +40,11 @@ public class OrderController {
     public void setOrderService(OrderService orderService) {
         logger.debug("Setting orderService");
         this.orderService = orderService;
+    }
+
+    @Autowired
+    public void setClientItemService(ClientItemService clientItemService) {
+        this.clientItemService = clientItemService;
     }
 
     @GetMapping
@@ -59,5 +69,35 @@ public class OrderController {
         model.addAttribute("order", order);
 
         return "concreteOrder";
+    }
+
+    @GetMapping("/checkout")
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public String checkoutAllItems(@AuthenticationPrincipal Client client,
+                                   Model model) {
+        logger.info("Called checkoutAllItems method");
+        Client persistentClient = clientService.findByLogin(client.getLogin());
+
+        model.addAttribute("clientItems", persistentClient.getBasket());
+        model.addAttribute("client", client);
+
+        return "checkoutPage";
+    }
+
+    @GetMapping("/checkout/{itemId}")
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public String checkoutItem(@AuthenticationPrincipal Client client,
+                               @PathVariable("itemId") Long id,
+                               Model model) {
+        logger.info("Called checkoutItem method");
+        Client persistentClient = clientService.findByLogin(client.getLogin());
+        ClientItem item = clientItemService.findById(id);
+
+        model.addAttribute("clientItems", Collections.singletonList(item));
+        model.addAttribute("client", persistentClient);
+
+        return "checkoutPage";
     }
 }

@@ -1,7 +1,6 @@
 package com.shop.GoodsShop.Service;
 
-import com.shop.GoodsShop.Model.Client;
-import com.shop.GoodsShop.Model.Role;
+import com.shop.GoodsShop.Model.*;
 import com.shop.GoodsShop.Repositories.ClientRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -151,6 +152,33 @@ public class ClientServiceTest {
 
         Mockito.verify(clientRepo, Mockito.times(1))
                 .deleteById(1L);
+    }
+
+    @Test
+    public void shouldDeleteBasketItems() {
+        Category books = new Category("Books");
+        Category book = new Category("Book", books);
+        Item item = new Item("item", 30L, 3D
+                , 600D, "description..."
+                , "characteristics...", "123", book);
+        ClientItem clientItem = new ClientItem(item, 3);
+
+        client.setBasket(new HashSet<>(Collections.singleton(clientItem)));
+
+        Mockito
+                .doReturn(client)
+                .when(clientRepo)
+                .findByLogin("A");
+
+        clientService.deleteBasketItems(new HashSet<>(Collections.singleton(clientItem)), "A");
+
+        assertThat(client.getBasket().size()).isEqualTo(0);
+        Mockito
+                .verify(clientRepo, Mockito.times(2))
+                .findByLogin("A");
+        Mockito
+                .verify(clientRepo, Mockito.times(1))
+                .save(client);
     }
 
     @Test

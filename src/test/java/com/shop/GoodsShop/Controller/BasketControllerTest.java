@@ -96,7 +96,7 @@ public class BasketControllerTest {
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[2]").string("Производные и интегралы"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]/input/@value").string("1"));
 
-        assertThat(clientItemRepo.findAll().size()).isEqualTo(2);
+        assertThat(clientItemRepo.findAll().size()).isEqualTo(4);
     }
 
     @Test
@@ -111,6 +111,6 @@ public class BasketControllerTest {
                 .perform(get("/basket"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(0));
 
-        assertThat(clientItemRepo.findAll().size()).isEqualTo(0);
+        assertThat(clientItemRepo.findAll().size()).isEqualTo(2);
     }
 }

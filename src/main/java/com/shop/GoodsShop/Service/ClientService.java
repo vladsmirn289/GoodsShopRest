@@ -1,8 +1,11 @@
 package com.shop.GoodsShop.Service;
 
 import com.shop.GoodsShop.Model.Client;
+import com.shop.GoodsShop.Model.ClientItem;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.util.Set;
 
 public interface ClientService extends UserDetailsService {
     void authenticateClient(String rawPassword, String login, AuthenticationManager authManager);
@@ -15,4 +18,5 @@ public interface ClientService extends UserDetailsService {
 
     void delete(Client client);
     void deleteById(Long id);
+    void deleteBasketItems(Set<ClientItem> itemSet, String login);
 }

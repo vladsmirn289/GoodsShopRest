@@ -1,11 +1,10 @@
 package com.shop.GoodsShop.Controller;
 
-import com.shop.GoodsShop.Model.Client;
-import com.shop.GoodsShop.Model.ClientItem;
-import com.shop.GoodsShop.Model.Order;
+import com.shop.GoodsShop.Model.*;
 import com.shop.GoodsShop.Service.ClientItemService;
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.OrderService;
+import com.shop.GoodsShop.Utils.ValidateUtil;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +14,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Collections;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/order")
@@ -44,6 +45,7 @@ public class OrderController {
 
     @Autowired
     public void setClientItemService(ClientItemService clientItemService) {
+        logger.debug("Setting clientItemService");
         this.clientItemService = clientItemService;
     }
 
@@ -75,12 +77,20 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     @Transactional
     public String checkoutAllItems(@AuthenticationPrincipal Client client,
-                                   Model model) {
+                                   Model model,
+                                   HttpServletRequest request) {
         logger.info("Called checkoutAllItems method");
         Client persistentClient = clientService.findByLogin(client.getLogin());
+        Set<ClientItem> basket = persistentClient.getBasket();
+        double generalPrice = basket
+                .stream()
+                .map(item -> item.getItem().getPrice() * item.getQuantity())
+                .reduce(Double::sum).orElse(0D);
 
-        model.addAttribute("clientItems", persistentClient.getBasket());
         model.addAttribute("client", client);
+        model.addAttribute("generalPrice", generalPrice);
+
+        request.getSession().setAttribute("orderedItems", basket);
 
         return "checkoutPage";
     }
@@ -90,14 +100,63 @@ public class OrderController {
     @Transactional
     public String checkoutItem(@AuthenticationPrincipal Client client,
                                @PathVariable("itemId") Long id,
-                               Model model) {
+                               Model model,
+                               HttpServletRequest request) {
         logger.info("Called checkoutItem method");
         Client persistentClient = clientService.findByLogin(client.getLogin());
         ClientItem item = clientItemService.findById(id);
 
-        model.addAttribute("clientItems", Collections.singletonList(item));
         model.addAttribute("client", persistentClient);
+        model.addAttribute("generalPrice", item.getItem().getPrice());
+
+        request.getSession().setAttribute("orderedItems", Collections.singleton(item));
 
         return "checkoutPage";
+    }
+
+    @PostMapping("/checkout")
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public String checkoutOrder(@AuthenticationPrincipal Client client,
+                                @RequestParam("payment") String paymentMethod,
+                                @RequestParam("generalPrice") String generalPrice,
+                                @Valid @ModelAttribute("orderContacts") Contacts contacts,
+                                BindingResult bindingResult,
+                                Model model,
+                                HttpServletRequest request) {
+        logger.info("Called checkoutOrder method");
+        if (bindingResult.hasErrors()) {
+            logger.warn("Form with contact data contains errors");
+            model.mergeAttributes(ValidateUtil.validate(bindingResult));
+            model.addAttribute("contactsData", contacts);
+            model.addAttribute("generalPrice", generalPrice);
+
+            return "checkoutPage";
+        }
+
+        @SuppressWarnings("unchecked")
+        Set<ClientItem> items = (Set<ClientItem>) request.getSession().getAttribute("orderedItems");
+        request.getSession().removeAttribute("orderedItems");
+        clientService.deleteBasketItems(items, client.getLogin());
+
+        Client persistentClient = clientService.findByLogin(client.getLogin());
+
+        Order newOrder = new Order(items, contacts, paymentMethod);
+        newOrder.setOrderStatus(OrderStatus.NEW);
+        newOrder.setClient(persistentClient);
+        orderService.save(newOrder);
+
+        items.forEach(i -> {
+            i.setOrder(newOrder);
+            clientItemService.save(i);
+        });
+
+        if (paymentMethod.equals("Наложенный платёж")) {
+            //Nothing
+        } else if (paymentMethod.equals("Карта")) {
+            //Realization of card payment ...
+        }
+
+        return "messages/orderCreated";
     }
 }

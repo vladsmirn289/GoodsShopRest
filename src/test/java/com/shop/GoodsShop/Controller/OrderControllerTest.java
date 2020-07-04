@@ -1,9 +1,11 @@
 package com.shop.GoodsShop.Controller;
 
+import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Service.ClientItemService;
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.InitDB;
 import com.shop.GoodsShop.Service.OrderService;
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -15,12 +17,14 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -33,7 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "classpath:db/H2/user-test.sql",
         "classpath:db/H2/item-test.sql",
         "classpath:db/H2/order-test.sql",
-        "classpath:db/H2/clientItem-test.sql"},
+        "classpath:db/H2/clientItem-test.sql",
+        "classpath:db/H2/basket-test.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {
         "classpath:db/H2/after-test.sql"},
@@ -85,24 +90,93 @@ public class OrderControllerTest {
     @WithUserDetails("simpleUser")
     @Transactional
     public void checkoutAllItemsTest() throws Exception {
-        mockMvc
+        MvcResult mvcResult = mockMvc
                 .perform(get("/order/checkout"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("checkoutPage"))
-                .andExpect(model().attribute("clientItems", clientService.findByLogin("simpleUser").getBasket()))
-                .andExpect(model().attributeExists("client"));
+                .andExpect(model().attributeExists("client"))
+                .andReturn();
+
+        Object attribute = mvcResult.getRequest().getSession(false)
+                .getAttribute("orderedItems");
+        assertThat(attribute).isNotNull();
     }
 
     @Test
     @WithUserDetails("simpleUser")
     public void checkoutItemTest() throws Exception {
-        mockMvc
+        MvcResult mvcResult = mockMvc
                 .perform(get("/order/checkout/16"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("checkoutPage"))
-                .andExpect(model().attribute("clientItems", Collections.singletonList(clientItemService.findById(16L))))
-                .andExpect(model().attributeExists("client"));
+                .andExpect(model().attributeExists("client"))
+                .andReturn();
+
+        Object attribute = mvcResult.getRequest().getSession(false)
+                .getAttribute("orderedItems");
+        assertThat(attribute).isNotNull();
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails("simpleUser")
+    public void checkoutSuccessfulOrderTest() throws Exception {
+        Client client = clientService.findByLogin("simpleUser");
+        Hibernate.initialize(client.getBasket());
+
+        MvcResult mvcResult = mockMvc
+                .perform(post("/order/checkout")
+                         .with(csrf())
+                         .sessionAttr("orderedItems", client.getBasket())
+                         .param("generalPrice", "221980")
+                         .param("city", "Moscow")
+                         .param("zipCode", "123456")
+                         .param("country", "Russia")
+                         .param("phoneNumber", "1234567890")
+                         .param("street", "testStreet")
+                         .param("payment", "Наложенный платёж"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(model().errorCount(0))
+                .andExpect(view().name("messages/orderCreated"))
+                .andReturn();
+
+        Object attribute = mvcResult.getRequest().getSession(false)
+                .getAttribute("orderedItems");
+        assertThat(attribute).isNull();
+
+        assertThat(client.getBasket()).isEmpty();
+        assertThat(clientItemService.findById(30L).getOrder()).isNotNull();
+        assertThat(clientItemService.findById(31L).getOrder()).isNotNull();
+    }
+
+    @Test
+    @WithUserDetails("simpleUser")
+    public void shouldErrorShowWhenCheckoutOrderWithWrongData() throws Exception {
+        mockMvc
+                .perform(post("/order/checkout")
+                        .with(csrf())
+                        .param("generalPrice", "221980")
+                        .param("city", "")
+                        .param("zipCode", "")
+                        .param("country", "Russia")
+                        .param("phoneNumber", "")
+                        .param("street", "")
+                        .param("payment", "Наложенный платёж"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("checkoutPage"))
+                .andExpect(model().errorCount(4))
+                .andExpect(model().attributeHasFieldErrors(
+                        "orderContacts", "city",
+                        "zipCode", "phoneNumber", "street"))
+                .andExpect(model().attributeExists("cityError"))
+                .andExpect(model().attributeExists("zipCodeError"))
+                .andExpect(model().attributeExists("phoneNumberError"))
+                .andExpect(model().attributeExists("streetError"))
+                .andExpect(model().attributeExists("contactsData"))
+                .andExpect(model().attributeExists("generalPrice"));
     }
 }

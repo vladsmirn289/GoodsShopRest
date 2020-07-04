@@ -1,6 +1,7 @@
 package com.shop.GoodsShop.Service;
 
 import com.shop.GoodsShop.Model.Client;
+import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Model.Role;
 import com.shop.GoodsShop.Repositories.ClientRepo;
 import org.slf4j.Logger;
@@ -17,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -52,6 +56,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Client findById(Long id) {
         return clientRepo.findById(id).orElse(null);
     }
@@ -63,6 +68,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Client findByConfirmationCode(String confirmationCode) {
         return clientRepo.findByConfirmationCode(confirmationCode);
     }
@@ -99,6 +105,24 @@ public class ClientServiceImpl implements ClientService {
     public void deleteById(Long id) {
         logger.info("Deleting client with id = " + id + " from database");
         clientRepo.deleteById(id);
+    }
+
+    @Override
+    public void deleteBasketItems(Set<ClientItem> itemSet, String login) {
+        Client client = clientRepo.findByLogin(login);
+
+        Set<ClientItem> basketItems = client.getBasket()
+                .stream().map(clientItem -> {
+            if (!itemSet.contains(clientItem)) {
+                return clientItem;
+            } else {
+                return null;
+            }
+        }).filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        client.setBasket(basketItems);
+        save(client);
     }
 
     @Override

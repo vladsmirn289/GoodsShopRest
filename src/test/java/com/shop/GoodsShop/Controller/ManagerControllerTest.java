@@ -103,4 +103,21 @@ public class ManagerControllerTest {
                 .andExpect(xpath("//select[@id='inputOrderStatus']/option[1]")
                         .string("ON_THE_WAY"));
     }
+
+    @Test
+    public void shouldUnpinHimself() throws Exception {
+        mockMvc
+                .perform(get("/order/unpinHimself/20")
+                         .header("referer", "http://localhost/order/manager"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/order/manager"));
+
+        mockMvc
+                .perform(get("/order/manager"))
+                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[1]/a")
+                        .string("20"))
+                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[5]/a[1]")
+                        .string("Назначить себя менеджером"));
+    }
 }

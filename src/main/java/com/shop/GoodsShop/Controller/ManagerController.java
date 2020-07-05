@@ -96,4 +96,15 @@ public class ManagerController {
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }
+
+    @GetMapping("/unpinHimself/{id}")
+    public String unpinHimself(@PathVariable("id") Long orderId,
+                               RedirectAttributes redirectAttributes,
+                               @RequestHeader(required = false) String referer) {
+        Order order = orderService.findById(orderId);
+        order.setManager(null);
+        orderService.save(order);
+
+        return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
+    }
 }

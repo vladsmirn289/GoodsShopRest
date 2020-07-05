@@ -61,7 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/client/setNewEmail/**")
                     .permitAll()
 
-                    .antMatchers("/order/manager")
+                    .antMatchers(
+                            "/order/manager",
+                            "/order/setManager/*",
+                            "/order/editOrder/*",
+                            "/order/changeOrderStatus/*")
                     .hasRole("MANAGER")
 
                     .anyRequest()

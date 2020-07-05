@@ -48,7 +48,7 @@
                     </td>
                 <#elseif manager.login == order.manager.login>
                     <td>
-                        <a href="/order/editOrder">Редактировать заказ</a>
+                        <a href="/order/editOrder/${order.id}">Редактировать заказ</a>
                     </td>
                 <#else>
                     <td>

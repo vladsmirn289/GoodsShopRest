@@ -43,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(value = {
         "classpath:db/H2/after-test.sql"},
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@WithUserDetails("simpleUser")
 public class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -60,7 +61,6 @@ public class OrderControllerTest {
     private InitDB initDB;
 
     @Test
-    @WithUserDetails("simpleUser")
     public void showOrdersListTest() throws Exception {
         mockMvc
                 .perform(get("/order"))
@@ -76,7 +76,6 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithUserDetails("simpleUser")
     public void showConcreteClientOrderTest() throws Exception {
         mockMvc
                 .perform(get("/order/19"))
@@ -90,7 +89,6 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithUserDetails("simpleUser")
     @Transactional
     public void checkoutAllItemsTest() throws Exception {
         MvcResult mvcResult = mockMvc
@@ -107,7 +105,6 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithUserDetails("simpleUser")
     public void checkoutItemTest() throws Exception {
         MvcResult mvcResult = mockMvc
                 .perform(get("/order/checkout/16"))
@@ -124,7 +121,6 @@ public class OrderControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails("simpleUser")
     public void checkoutSuccessfulOrderTest() throws Exception {
         Client client = clientService.findByLogin("simpleUser");
         Hibernate.initialize(client.getBasket());
@@ -156,7 +152,6 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithUserDetails("simpleUser")
     public void shouldErrorShowWhenCheckoutOrderWithWrongData() throws Exception {
         mockMvc
                 .perform(post("/order/checkout")
@@ -184,44 +179,10 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithUserDetails("simpleUser")
     public void showCustomOrdersAccessDeniedTest() throws Exception {
         mockMvc
                 .perform(get("/order/manager"))
                 .andDo(print())
                 .andExpect(status().is(403));
-    }
-
-    @Test
-    @WithUserDetails("manager")
-    public void showCustomOrdersTest() throws Exception {
-        mockMvc
-                .perform(get("/order/manager"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("customOrders"))
-                .andExpect(model().attributeExists("orders"))
-                .andExpect(model().attributeExists("manager"))
-                .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]")
-                        .string(containsString("1,075")))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[2]/td[3]")
-                        .string(containsString("850")));
-    }
-
-    @Test
-    @WithUserDetails("manager")
-    public void setSelfToManagerOrderTest() throws Exception {
-        mockMvc
-                .perform(get("/order/setManager/21")
-                         .header("referer", "http://localhost/order/manager"))
-                .andDo(print())
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/order/manager"));
-
-        mockMvc
-                .perform(get("/order/manager"))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[5]/a")
-                        .string("Редактировать заказ"));
     }
 }

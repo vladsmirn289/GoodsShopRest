@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -47,6 +49,13 @@ public class ClientRepoTest {
         assertThat(client.getLastName()).isEqualTo("Key");
         assertThat(client.getPatronymic()).isEqualTo("C");
         assertThat(client.getLogin()).isEqualTo("IK");
+    }
+
+    @Test
+    public void shouldFindAllClients() {
+        List<Client> clients = clientRepo.findAll();
+
+        assertThat(clients.size()).isEqualTo(1);
     }
 
     @Test

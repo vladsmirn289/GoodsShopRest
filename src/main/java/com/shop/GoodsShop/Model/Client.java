@@ -52,6 +52,7 @@ public class Client implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
     private String confirmationCode;
+    boolean isNonLocked = true;
 
 
     protected Client() {}
@@ -167,6 +168,10 @@ public class Client implements UserDetails {
         this.confirmationCode = confirmationCode;
     }
 
+    public void setNonLocked(boolean nonLocked) {
+        isNonLocked = nonLocked;
+    }
+
     public boolean isManager() {
         return roles.contains(Role.MANAGER);
     }
@@ -196,7 +201,7 @@ public class Client implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return isNonLocked;
     }
 
     @Override

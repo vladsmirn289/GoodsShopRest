@@ -20,9 +20,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="/client/personalRoom">Личный кабинет <span class="sr-only">(current)</span></a>
             </li>
-            <#if isManager == true>
+            <#if isManager>
                 <li class="nav-item">
                     <a class="nav-link" href="/order/manager">Пользовательские заказы <span class="sr-only">(current)</span></a>
+                </li>
+            </#if>
+            <#if isAdmin>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin">Функции <span class="sr-only">(current)</span></a>
                 </li>
             </#if>
         </ul>

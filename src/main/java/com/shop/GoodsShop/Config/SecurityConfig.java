@@ -68,6 +68,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             "/order/changeOrderStatus/*")
                     .hasRole("MANAGER")
 
+                    .antMatchers("/admin/**")
+                    .hasRole("ADMIN")
+
                     .anyRequest()
                     .authenticated()
 

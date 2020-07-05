@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -59,6 +60,11 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(readOnly = true)
     public Client findById(Long id) {
         return clientRepo.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Client> findAll() {
+        return clientRepo.findAll();
     }
 
     @Override

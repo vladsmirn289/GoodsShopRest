@@ -190,6 +190,13 @@ public class ClientValidationTest {
     }
 
     @Test
+    void shouldSetIsNonLocked() {
+        client.setNonLocked(false);
+
+        assertThat(client.isAccountNonLocked()).isFalse();
+    }
+
+    @Test
     void isMangerTest() {
         assertThat(client.isManager()).isFalse();
 

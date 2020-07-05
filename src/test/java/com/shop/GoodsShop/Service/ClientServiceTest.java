@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,6 +62,21 @@ public class ClientServiceTest {
         Mockito
                 .verify(clientRepo, Mockito.times(1))
                 .findById(1L);
+    }
+
+    @Test
+    public void shouldFindAllClients() {
+        Mockito
+                .doReturn(Collections.singletonList(client))
+                .when(clientRepo)
+                .findAll();
+
+        List<Client> clients = clientService.findAll();
+
+        assertThat(clients.size()).isEqualTo(1);
+        Mockito
+                .verify(clientRepo, Mockito.times(1))
+                .findAll();
     }
 
     @Test

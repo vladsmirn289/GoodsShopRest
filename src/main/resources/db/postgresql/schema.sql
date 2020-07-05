@@ -28,7 +28,8 @@ CREATE TABLE public.client (
     last_name character varying(255),
     login character varying(255),
     password character varying(255),
-    patronymic character varying(255)
+    patronymic character varying(255),
+    is_non_locked boolean DEFAULT true NOT NULL
 );
 
 --

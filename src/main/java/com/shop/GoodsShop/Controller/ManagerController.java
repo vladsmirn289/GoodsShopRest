@@ -74,6 +74,7 @@ public class ManagerController {
     @GetMapping("/editOrder/{id}")
     public String editOrder(@PathVariable("id") Long orderId,
                             Model model) {
+        logger.info("Called editOrder method");
         Order order = orderService.findById(orderId);
         model.addAttribute("order", order);
 
@@ -90,6 +91,7 @@ public class ManagerController {
                                     @RequestParam("orderStatus") String status,
                                     RedirectAttributes redirectAttributes,
                                     @RequestHeader(required = false) String referer) {
+        logger.info("Called changeOrderStatus method");
         Order order = orderService.findById(orderId);
         order.setOrderStatus(OrderStatus.valueOf(status));
         orderService.save(order);
@@ -101,6 +103,7 @@ public class ManagerController {
     public String unpinHimself(@PathVariable("id") Long orderId,
                                RedirectAttributes redirectAttributes,
                                @RequestHeader(required = false) String referer) {
+        logger.info("Called unpinHimself method");
         Order order = orderService.findById(orderId);
         order.setManager(null);
         orderService.save(order);

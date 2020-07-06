@@ -94,6 +94,14 @@ public class CategoryRepoTest {
     }
 
     @Test
+    public void shouldFindCategoryByName() {
+        Category category = categoryRepo.findByName("book1");
+
+        assertThat(category).isNotNull();
+        assertThat(category.getParent()).isEqualTo(categoryRepo.findById(1L).orElse(null));
+    }
+
+    @Test
     public void shouldSaveCategory() {
         Category category = new Category("category");
         categoryRepo.save(category);

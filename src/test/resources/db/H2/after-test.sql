@@ -8,4 +8,4 @@ DELETE FROM client;
 DELETE FROM item_additional_images;
 DELETE FROM image;
 
-ALTER SEQUENCE hibernate_sequence RESTART WITH 1;
+ALTER SEQUENCE hibernate_sequence RESTART WITH 100;

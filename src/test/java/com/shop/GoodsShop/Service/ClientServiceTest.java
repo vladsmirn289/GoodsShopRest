@@ -11,10 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -178,8 +175,9 @@ public class ClientServiceTest {
                 , 600D, "description..."
                 , "characteristics...", "123", book);
         ClientItem clientItem = new ClientItem(item, 3);
+        ClientItem clientItem1 = new ClientItem(item, 4);
 
-        client.setBasket(new HashSet<>(Collections.singleton(clientItem)));
+        client.setBasket(new HashSet<>(Arrays.asList(clientItem, clientItem1)));
 
         Mockito
                 .doReturn(client)
@@ -188,7 +186,7 @@ public class ClientServiceTest {
 
         clientService.deleteBasketItems(new HashSet<>(Collections.singleton(clientItem)), "A");
 
-        assertThat(client.getBasket().size()).isEqualTo(0);
+        assertThat(client.getBasket().size()).isEqualTo(1);
         Mockito
                 .verify(clientRepo, Mockito.times(2))
                 .findByLogin("A");

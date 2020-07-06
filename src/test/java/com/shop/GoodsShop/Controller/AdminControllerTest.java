@@ -1,5 +1,7 @@
 package com.shop.GoodsShop.Controller;
 
+import com.shop.GoodsShop.Model.Category;
+import com.shop.GoodsShop.Service.CategoryService;
 import com.shop.GoodsShop.Service.InitDB;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,13 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -23,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PropertySource(value = "classpath:application-test.properties")
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @Sql(value = {
+        "classpath:db/H2/after-test.sql",
         "classpath:db/H2/category-test.sql",
         "classpath:db/H2/user-test.sql",
         "classpath:db/H2/item-test.sql",
@@ -37,6 +45,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AdminControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @MockBean
     private InitDB initDB;
@@ -150,5 +161,76 @@ public class AdminControllerTest {
                         .string("simpleUser"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[7]")
                         .string(containsString("Заблокировать пользователя")));
+    }
+
+    @Test
+    public void showCreateCategoryPageTest() throws Exception {
+        mockMvc
+                .perform(get("/admin/createCategory"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/createCategory"))
+                .andExpect(model().attributeExists("parents"));
+    }
+
+    @Test
+    public void successCreateNewParentCategoryTest() throws Exception {
+        mockMvc
+                .perform(post("/admin/createCategory")
+                         .with(csrf())
+                         .param("category", "Родительская категория")
+                         .param("name", "Канцелярия"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages/successfulCreatedCategory"))
+                .andExpect(model().attributeDoesNotExist("nameError"));
+
+        List<Category> categories = categoryService.findByParentIsNull();
+        assertThat(categories.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void successCreateNewChildCategoryTest() throws Exception {
+        mockMvc
+                .perform(post("/admin/createCategory")
+                        .with(csrf())
+                        .param("category", "Электроника")
+                        .param("name", "Телефоны"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages/successfulCreatedCategory"))
+                .andExpect(model().attributeDoesNotExist("nameError"));
+
+        Category parent = categoryService.findByName("Электроника");
+        List<Category> categories = categoryService.findByParent(parent);
+        assertThat(categories.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldShowErrorWhenTryCreateCategoryWithBlankNameTest() throws Exception {
+        mockMvc
+                .perform(post("/admin/createCategory")
+                        .with(csrf())
+                        .param("category", "Электроника")
+                        .param("name", ""))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/createCategory"))
+                .andExpect(model().attribute("name", ""))
+                .andExpect(model().attribute("nameError", "Имя категории не может быть пустым"));
+    }
+
+    @Test
+    public void shouldShowErrorWhenTryCreateCategoryWithExistsNameTest() throws Exception {
+        mockMvc
+                .perform(post("/admin/createCategory")
+                        .with(csrf())
+                        .param("category", "Родительская категория")
+                        .param("name", "Программирование"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/createCategory"))
+                .andExpect(model().attribute("name", "Программирование"))
+                .andExpect(model().attribute("nameError", "Категория с таким именем уже существует"));
     }
 }

@@ -1,7 +1,9 @@
 package com.shop.GoodsShop.Controller;
 
+import com.shop.GoodsShop.Model.Category;
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.Role;
+import com.shop.GoodsShop.Service.CategoryService;
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Utils.URIUtils;
 import org.slf4j.Logger;
@@ -10,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -26,11 +25,17 @@ public class AdminController {
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     private ClientService clientService;
+    private CategoryService categoryService;
 
     @Autowired
     public void setClientService(ClientService clientService) {
         logger.debug("Setting clientService");
         this.clientService = clientService;
+    }
+
+    @Autowired
+    public void setCategoryService(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -108,13 +113,50 @@ public class AdminController {
 
     @GetMapping("/unlockAccount/{id}")
     public String unlockAccount(@PathVariable("id") Long userId,
-                              RedirectAttributes redirectAttributes,
-                              @RequestHeader(required = false) String referer) {
+                                RedirectAttributes redirectAttributes,
+                                @RequestHeader(required = false) String referer) {
         logger.info("Called unlockAccount method");
         Client client = clientService.findById(userId);
         client.setNonLocked(true);
         clientService.save(client);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
+    }
+
+    @GetMapping("/createCategory")
+    public String createCategoryPage(Model model) {
+        logger.info("Called createCategoryPage method");
+        model.addAttribute("parents", categoryService.getAllNamesOfCategories());
+
+        return "admin/createCategory";
+    }
+
+    @PostMapping("/createCategory")
+    public String createNewCategory(@RequestParam("category") String parent,
+                                    @RequestParam("name") String name,
+                                    Model model) {
+        logger.info("Called createNewCategory");
+        if (name.trim().equals("")) {
+            model.addAttribute("nameError", "Имя категории не может быть пустым");
+            model.addAttribute("name", name);
+            model.addAttribute("parents", categoryService.getAllNamesOfCategories());
+            return "admin/createCategory";
+        } else if (categoryService.findByName(name) != null) {
+            model.addAttribute("nameError", "Категория с таким именем уже существует");
+            model.addAttribute("name", name);
+            model.addAttribute("parents", categoryService.getAllNamesOfCategories());
+            return "admin/createCategory";
+        }
+
+        Category newCategory = new Category(name);
+
+        if (!parent.equals("Родительская категория")) {
+            Category parentCategory = categoryService.findByName(parent);
+            newCategory.setParent(parentCategory);
+        }
+
+        categoryService.save(newCategory);
+
+        return "messages/successfulCreatedCategory";
     }
 }

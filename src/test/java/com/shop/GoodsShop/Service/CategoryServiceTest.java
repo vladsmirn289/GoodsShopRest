@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -83,6 +82,41 @@ public class CategoryServiceTest {
 
         Mockito.verify(categoryRepo, Mockito.times(1))
                 .findById(1L);
+    }
+
+    @Test
+    public void shouldFindCategoryByName() {
+        Category category = new Category("ABC");
+        Mockito
+                .doReturn(category)
+                .when(categoryRepo)
+                .findByName("ABC");
+
+        Category category1 = categoryService.findByName("ABC");
+
+        assertThat(category1).isNotNull();
+        Mockito.verify(categoryRepo, Mockito.times(1))
+                .findByName("ABC");
+    }
+
+    @Test
+    public void shouldGetAllNamesOfCategories() {
+        Category books = new Category("Books");
+        Category electronics = new Category("Electronics");
+        List<Category> categories = new ArrayList<>(Arrays.asList(books, electronics));
+
+        Mockito
+                .doReturn(categories)
+                .when(categoryRepo)
+                .findByParentIsNull();
+
+        Set<String> names = categoryService.getAllNamesOfCategories();
+
+        assertThat(names.size()).isNotNull();
+        assertThat(names).contains("Books", "Electronics");
+
+        Mockito.verify(categoryRepo, Mockito.times(1))
+                .findByParentIsNull();
     }
 
     @Test

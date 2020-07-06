@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -42,6 +44,20 @@ public class CategoryServiceImpl implements CategoryService {
     public Category findById(Long id) {
         logger.info("findById method called for category with id = " + id);
         return categoryRepo.findById(id).orElseThrow(NoCategoryException::new);
+    }
+
+    @Override
+    public Category findByName(String name) {
+        logger.info("findByName method called");
+        return categoryRepo.findByName(name);
+    }
+
+    @Override
+    public Set<String> getAllNamesOfCategories() {
+        logger.info("getAllNamesOfCategories method called");
+        return categoryRepo.findByParentIsNull().stream()
+                .map(Category::getName)
+                .collect(Collectors.toSet());
     }
 
     @Override

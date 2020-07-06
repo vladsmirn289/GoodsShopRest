@@ -5,7 +5,7 @@
         <a class="btn btn-warning mb-2" href="/admin/listOfUsers">
             Список пользователей
         </a><br/>
-        <a class="btn btn-warning mb-2" href="#">
+        <a class="btn btn-warning mb-2" href="/admin/createCategory">
             Создать новую категорию
         </a><br/>
         <a class="btn btn-warning mb-2" href="#">

@@ -86,9 +86,14 @@ public class OrderController {
                 .stream()
                 .map(item -> item.getItem().getPrice() * item.getQuantity())
                 .reduce(Double::sum).orElse(0D);
+        double generalWeight = basket
+                .stream()
+                .map(item -> item.getItem().getWeight() * item.getQuantity())
+                .reduce(Double::sum).orElse(0D);
 
         model.addAttribute("client", client);
         model.addAttribute("generalPrice", generalPrice);
+        model.addAttribute("generalWeight", generalWeight);
 
         request.getSession().setAttribute("orderedItems", basket);
 
@@ -107,7 +112,8 @@ public class OrderController {
         ClientItem item = clientItemService.findById(id);
 
         model.addAttribute("client", persistentClient);
-        model.addAttribute("generalPrice", item.getItem().getPrice());
+        model.addAttribute("generalPrice", item.getItem().getPrice() * item.getQuantity());
+        model.addAttribute("generalWeight", item.getItem().getWeight() * item.getQuantity());
 
         request.getSession().setAttribute("orderedItems", Collections.singleton(item));
 
@@ -120,6 +126,7 @@ public class OrderController {
     public String checkoutOrder(@AuthenticationPrincipal Client client,
                                 @RequestParam("payment") String paymentMethod,
                                 @RequestParam("generalPrice") String generalPrice,
+                                @RequestParam("generalWeight") String generalWeight,
                                 @Valid @ModelAttribute("orderContacts") Contacts contacts,
                                 BindingResult bindingResult,
                                 Model model,
@@ -130,6 +137,7 @@ public class OrderController {
             model.mergeAttributes(ValidateUtil.validate(bindingResult));
             model.addAttribute("contactsData", contacts);
             model.addAttribute("generalPrice", generalPrice);
+            model.addAttribute("generalWeight", generalWeight);
 
             return "checkoutPage";
         }

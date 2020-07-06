@@ -129,6 +129,7 @@ public class OrderControllerTest {
                 .perform(post("/order/checkout")
                          .with(csrf())
                          .sessionAttr("orderedItems", client.getBasket())
+                         .param("generalWeight", "11")
                          .param("generalPrice", "221980")
                          .param("city", "Moscow")
                          .param("zipCode", "123456")
@@ -156,6 +157,7 @@ public class OrderControllerTest {
         mockMvc
                 .perform(post("/order/checkout")
                         .with(csrf())
+                        .param("generalWeight", "11")
                         .param("generalPrice", "221980")
                         .param("city", "")
                         .param("zipCode", "")

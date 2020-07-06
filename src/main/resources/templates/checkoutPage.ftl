@@ -4,12 +4,14 @@
     <div class="mx-auto bg-dark text-white" style="padding: 15px; width: 50%; border-radius: 10px;">
 
         <div class="alert alert-success text-center" role="alert">
-            Итоговая стоимость вашего заказа составит: ${generalPrice} рублей
+            Итоговая стоимость вашего заказа составит: ${generalPrice} рублей<br/>
+            Общий вес вашего заказа: ${generalWeight} кг
         </div>
 
         <form action="/order/checkout" name="orderContacts" method="post">
             <div class="form-row">
                 <input type="hidden" name="generalPrice" value="${generalPrice}"/>
+                <input type="hidden" name="generalWeight" value="${generalWeight}"/>
                 <div class="form-group col-md-8">
                     <label for="inputCity">Город</label>
                     <input type="text" class="form-control ${(cityError??)?string('is-invalid', '')}" id="inputCity" name="city"

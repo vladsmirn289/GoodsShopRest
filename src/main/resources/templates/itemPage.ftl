@@ -15,6 +15,7 @@
             <div class="col-md-2">
                 <div class="card-body">
                     <p class="card-text">Цена: ${item.price}</p>
+                    <p class="card-text">Вес: ${item.weight} кг</p>
 
                     <form action="/item/${item.id}/addToBasket" method="post">
                         <input name="quantity" type="number" size="10" value="1" style="width: 50px" /> шт.<br/> <br/>

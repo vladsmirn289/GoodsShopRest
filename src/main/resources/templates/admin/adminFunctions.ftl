@@ -8,7 +8,7 @@
         <a class="btn btn-warning mb-2" href="/admin/createCategory">
             Создать новую категорию
         </a><br/>
-        <a class="btn btn-warning mb-2" href="#">
+        <a class="btn btn-warning mb-2" href="/admin/createItem">
             Создать новый товар
         </a><br/>
     </div>

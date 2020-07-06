@@ -8,9 +8,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public class FileUtil {
-    Logger logger = LoggerFactory.getLogger(FileUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
+    private final Set<String> extensions = new HashSet<>(Arrays.asList(
+            "jpg", "bmp", "jpeg", "png" //another extension...
+    ));
 
     public byte[] fileToBytes(File file) {
         logger.info("Converting file to bytes...");
@@ -35,5 +42,21 @@ public class FileUtil {
 
         logger.info("Converting successful");
         return bytes;
+    }
+
+    public boolean hasInvalidExtension(String filename) {
+        logger.info("Start checking to valid extension");
+        String ext;
+        try {
+            logger.debug("Try to split filename");
+            ext = filename.split(Pattern.quote("."))[1];
+        } catch (Exception e) {
+            logger.debug("Fail split");
+            logger.error(e.toString());
+            return true;
+        }
+        logger.debug("Split successful");
+
+        return !extensions.contains(ext);
     }
 }

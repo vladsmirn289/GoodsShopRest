@@ -1,8 +1,11 @@
 package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Model.Category;
+import com.shop.GoodsShop.Model.Item;
 import com.shop.GoodsShop.Service.CategoryService;
 import com.shop.GoodsShop.Service.InitDB;
+import com.shop.GoodsShop.Service.ItemService;
+import com.shop.GoodsShop.Utils.FileUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -11,17 +14,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.io.File;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,6 +53,9 @@ public class AdminControllerTest {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private ItemService itemService;
 
     @MockBean
     private InitDB initDB;
@@ -232,5 +240,129 @@ public class AdminControllerTest {
                 .andExpect(view().name("admin/createCategory"))
                 .andExpect(model().attribute("name", "Программирование"))
                 .andExpect(model().attribute("nameError", "Категория с таким именем уже существует"));
+    }
+
+    @Test
+    public void showCreateItemPageTest() throws Exception {
+        mockMvc
+                .perform(get("/admin/createItem"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/createItem"))
+                .andExpect(model().attributeExists("categories"));
+    }
+
+    @Test
+    public void showUpdateItemPageTest() throws Exception {
+        mockMvc
+                .perform(get("/admin/updateItem/6"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/createItem"))
+                .andExpect(model().attributeExists("categories"))
+                .andExpect(model().attributeExists("item"));
+    }
+
+    @Test
+    public void shouldSuccessCreateNewItem() throws Exception {
+        FileUtil fileUtil = new FileUtil();
+        File testFile = new File("src/test/resources/images/proGit.jpg");
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "file", "proGit.jpg", "image/jpg", fileUtil.fileToBytes(testFile));
+
+        MockHttpServletRequestBuilder builder = multipart("/admin/createOrUpdateItem")
+                .file(multipartFile)
+                .with(csrf())
+                .param("name", "newItem")
+                .param("count", "30")
+                .param("weight", "0.4")
+                .param("price", "56")
+                .param("description", "This is test description")
+                .param("characteristics", "This is test characteristics")
+                .param("category", "Программирование");
+
+        mockMvc
+                .perform(builder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages/successfulItemCreated"));
+
+        mockMvc
+                .perform(get("/category/3"))
+                .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(3));
+    }
+
+    @Test
+    public void shouldShowErrorsWhenTryToCreateNewItem() throws Exception {
+        FileUtil fileUtil = new FileUtil();
+        File testFile = new File("src/test/resources/images/proGit.jpg");
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "file", "proGit", "image/jpg", fileUtil.fileToBytes(testFile));
+
+        MockHttpServletRequestBuilder builder = multipart("/admin/createOrUpdateItem")
+                .file(multipartFile)
+                .with(csrf())
+                .param("name", "")
+                .param("count", "0")
+                .param("weight", "1")
+                .param("price", "1")
+                .param("description", "desc...")
+                .param("characteristics", "")
+                .param("category", "Программирование");
+
+        mockMvc
+                .perform(builder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/createItem"))
+                .andExpect(model().attributeExists("nameError"))
+                .andExpect(model().attributeExists("descriptionError"))
+                .andExpect(model().attributeExists("characteristicsError"))
+                .andExpect(model().attributeExists("fileExtError"))
+                .andExpect(model().attributeExists("item"))
+                .andExpect(model().attributeExists("categories"));
+    }
+
+    @Test
+    public void shouldSuccessUpdateItem() throws Exception {
+        FileUtil fileUtil = new FileUtil();
+        File testFile = new File("src/test/resources/images/proGit.jpg");
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "file", "proGit.jpg", "image/jpg", fileUtil.fileToBytes(testFile));
+
+        MockHttpServletRequestBuilder builder = multipart("/admin/createOrUpdateItem")
+                .file(multipartFile)
+                .with(csrf())
+                .param("id", "6")
+                .param("name", "newItem")
+                .param("count", "30")
+                .param("weight", "0.4")
+                .param("price", "56")
+                .param("description", "This is test description")
+                .param("characteristics", "This is test characteristics")
+                .param("category", "Научная литература");
+
+        mockMvc
+                .perform(builder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages/successfulItemUpdated"));
+
+        mockMvc
+                .perform(get("/category/3"))
+                .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(1));
+
+        mockMvc
+                .perform(get("/category/2"))
+                .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(3));
+
+        Item item = itemService.findById(6L);
+        assertThat(item.getName()).isEqualTo("newItem");
+        assertThat(item.getCount()).isEqualTo(30);
+        assertThat(item.getWeight()).isEqualTo(0.4);
+        assertThat(item.getPrice()).isEqualTo(56);
+        assertThat(item.getDescription()).isEqualTo("This is test description");
+        assertThat(item.getCharacteristics()).isEqualTo("This is test characteristics");
+        assertThat(item.getCategory().getName()).isEqualTo("Научная литература");
     }
 }

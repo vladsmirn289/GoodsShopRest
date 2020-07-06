@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,21 +42,35 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Category findById(Long id) {
         logger.info("findById method called for category with id = " + id);
         return categoryRepo.findById(id).orElseThrow(NoCategoryException::new);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Category findByName(String name) {
         logger.info("findByName method called");
         return categoryRepo.findByName(name);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<String> getAllNamesOfCategories() {
         logger.info("getAllNamesOfCategories method called");
         return categoryRepo.findByParentIsNull().stream()
+                .map(Category::getName)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<String> getAllNamesOfChildren() {
+        logger.info("getAllNamesOfChildren method called");
+        return categoryRepo.findByParentIsNull().parallelStream()
+                .map(categoryRepo::findByParent)
+                .flatMap(Collection::stream)
                 .map(Category::getName)
                 .collect(Collectors.toSet());
     }

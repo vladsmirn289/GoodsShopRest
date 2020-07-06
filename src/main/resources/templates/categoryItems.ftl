@@ -1,5 +1,6 @@
 <#import "parts/common.ftl" as c>
 <#import "parts/customMessage.ftl" as m>
+<#include "parts/security.ftl">
 
 <@c.commonPage>
     <#if items?size == 0>
@@ -26,6 +27,9 @@
                                 </p>
                                 <hr/>
                                 <p class="card-text"><small>${item.price} руб.</small></p>
+                                <#if isAdmin>
+                                    <p class="card-text"><a href="/admin/updateItem/${item.id}">Изменить</a></p>
+                                </#if>
                             </div>
                         </div>
                     </div>

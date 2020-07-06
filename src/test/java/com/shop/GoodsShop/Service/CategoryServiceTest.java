@@ -112,11 +112,40 @@ public class CategoryServiceTest {
 
         Set<String> names = categoryService.getAllNamesOfCategories();
 
-        assertThat(names.size()).isNotNull();
+        assertThat(names).isNotNull();
         assertThat(names).contains("Books", "Electronics");
 
         Mockito.verify(categoryRepo, Mockito.times(1))
                 .findByParentIsNull();
+    }
+
+    @Test
+    public void shouldGetAllNamesOfChildren() {
+        Category books = new Category("Books");
+        Category book1 = new Category("Book1", books);
+        Category book2 = new Category("Book2", books);
+        List<Category> parent = new ArrayList<>(Collections.singletonList(books));
+        List<Category> children = new ArrayList<>(Arrays.asList(book1, book2));
+
+        Mockito
+                .doReturn(parent)
+                .when(categoryRepo)
+                .findByParentIsNull();
+
+        Mockito
+                .doReturn(children)
+                .when(categoryRepo)
+                .findByParent(books);
+
+        Set<String> names = categoryService.getAllNamesOfChildren();
+
+        assertThat(names).isNotNull();
+        assertThat(names).contains("Book1", "Book2");
+
+        Mockito.verify(categoryRepo, Mockito.times(1))
+                .findByParentIsNull();
+        Mockito.verify(categoryRepo, Mockito.times(1))
+                .findByParent(books);
     }
 
     @Test

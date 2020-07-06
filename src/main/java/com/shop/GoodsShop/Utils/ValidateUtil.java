@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import javax.validation.ConstraintViolation;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ValidateUtil {
@@ -29,5 +31,14 @@ public class ValidateUtil {
         }
 
         return errors;
+    }
+
+    public static <T> Map<String, String> validate(Set<ConstraintViolation<T>> violations) {
+        logger.info("Called validate method");
+        return violations.stream()
+                .collect(Collectors.toMap(
+                        v -> v.getPropertyPath() + "Error",
+                        ConstraintViolation::getMessage
+                ));
     }
 }

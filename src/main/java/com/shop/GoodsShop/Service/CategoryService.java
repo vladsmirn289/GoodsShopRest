@@ -11,6 +11,7 @@ public interface CategoryService {
     Category findById(Long id);
     Category findByName(String name);
     Set<String> getAllNamesOfCategories();
+    Set<String> getAllNamesOfChildren();
 
     void save(Category category);
 

@@ -8,12 +8,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 public class ClientServiceTest {
@@ -29,11 +31,31 @@ public class ClientServiceTest {
     @MockBean
     private ClientRepo clientRepo;
 
+    @MockBean
+    private AuthenticationManager authManager;
+
     private Client client;
 
     @BeforeEach
     public void init() {
         this.client = new Client("f@f","123456", "ABC", "DEF", "A");
+    }
+
+    @Test
+    public void shouldAuthenticateClient() {
+        Mockito
+                .doReturn(client)
+                .when(clientRepo)
+                .findByLogin("A");
+
+        clientService.authenticateClient("123456", "A", authManager);
+
+        Mockito
+                .verify(clientRepo, Mockito.times(1))
+                .findByLogin("A");
+        Mockito
+                .verify(authManager, Mockito.times(1))
+                .authenticate(any());
     }
 
     @Test

@@ -7,13 +7,14 @@ import com.shop.GoodsShop.Service.ItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/category")
@@ -37,11 +38,13 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public String showCategoryItems(@PathVariable("id") Long id,
-                                Model model) {
+                                    Model model,
+                                    @PageableDefault(sort = {"name"}) Pageable pageable) {
         logger.info("showCategoryItems method called for category with id = " + id);
         Category category = categoryService.findById(id);
-        List<Item> items = itemService.findByCategory(category);
+        Page<Item> items = itemService.findByCategory(category, pageable);
 
+        model.addAttribute("url", "/category/" + id + "?");
         model.addAttribute("items", items);
 
         return "item/categoryItems";

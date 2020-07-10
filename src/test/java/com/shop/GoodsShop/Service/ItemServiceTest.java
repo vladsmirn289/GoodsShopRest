@@ -10,6 +10,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -71,30 +75,34 @@ public class ItemServiceTest {
 
     @Test
     public void shouldFindByCategory() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Item> page = new PageImpl<>(Collections.singletonList(item));
         Mockito
-                .doReturn(Collections.singletonList(item))
+                .doReturn(page)
                 .when(itemRepo)
-                .findByCategory(book);
+                .findByCategory(book, pageable);
 
-        Item item = itemService.findByCategory(book).get(0);
+        Item item = itemService.findByCategory(book, pageable).getContent().get(0);
 
         assertThat(item.getCategory().getName()).isEqualTo("Book");
         Mockito.verify(itemRepo, Mockito.times(1))
-                .findByCategory(book);
+                .findByCategory(book, pageable);
     }
 
     @Test
     public void shouldFindBySearch() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Item> page = new PageImpl<>(Collections.singletonList(item));
         Mockito
-                .doReturn(Collections.singletonList(item))
+                .doReturn(page)
                 .when(itemRepo)
-                .findBySearch("tE");
+                .findBySearch("tE", pageable);
 
-        Item item = itemService.findBySearch("tE").get(0);
+        Item item = itemService.findBySearch("tE", pageable).getContent().get(0);
 
         assertThat(item.getName()).isEqualTo("item");
         Mockito.verify(itemRepo, Mockito.times(1))
-                .findBySearch("tE");
+                .findBySearch("tE", pageable);
     }
 
     @Test

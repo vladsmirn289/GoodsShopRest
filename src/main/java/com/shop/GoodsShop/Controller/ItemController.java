@@ -9,6 +9,9 @@ import com.shop.GoodsShop.Utils.URIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -19,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 @Controller
 @RequestMapping("/item")
@@ -46,9 +48,11 @@ public class ItemController {
 
     @GetMapping
     public String searchItems(@RequestParam("keyword") String keyword,
-                              Model model) {
+                              Model model,
+                              @PageableDefault(sort = {"name"}) Pageable pageable) {
         logger.info("Called searchItems method");
-        List<Item> items = itemService.findBySearch(keyword);
+        Page<Item> items = itemService.findBySearch(keyword, pageable);
+        model.addAttribute("url", "/item?keyword=" + keyword);
         model.addAttribute("keyword", keyword);
         model.addAttribute("items", items);
 

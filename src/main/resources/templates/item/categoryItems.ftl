@@ -1,14 +1,17 @@
 <#import "../parts/common.ftl" as c>
 <#import "../parts/customMessage.ftl" as m>
+<#import "../parts/pager.ftl" as p>
 <#include "../parts/security.ftl">
 
 <@c.commonPage>
-    <#if items?size == 0>
+    <#if items.content?size == 0>
         <@m.customMessage "Предметов, удовлетворяющих данному запросу, не найдено!"/>
+    <#else>
+        <@p.pager url items/>
     </#if>
 
     <div class="row row-cols-1 row-cols-md-2" id="itemsBlock">
-        <#list items as item>
+        <#list items.content as item>
             <div class="col-md-6">
                 <div class="card mb-3 bg-secondary border-dark text-white">
                     <div class="row no-gutters">
@@ -37,4 +40,9 @@
             </div>
         </#list>
     </div>
+
+    <#if items.content?size != 0>
+        <@p.pager url items/>
+    </#if>
 </@c.commonPage>
+

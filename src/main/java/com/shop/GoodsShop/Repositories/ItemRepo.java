@@ -2,6 +2,8 @@ package com.shop.GoodsShop.Repositories;
 
 import com.shop.GoodsShop.Model.Category;
 import com.shop.GoodsShop.Model.Item;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,9 +15,9 @@ import java.util.List;
 public interface ItemRepo extends JpaRepository<Item, Long> {
     List<Item> findByName(String name);
     List<Item> findByPrice(Double price);
-    List<Item> findByCategory(Category category);
+    Page<Item> findByCategory(Category category, Pageable pageable);
     Item findByCode(String code);
 
     @Query("SELECT i FROM Item i WHERE lower(i.name) LIKE lower(concat('%', :keyword, '%'))")
-    List<Item> findBySearch(@Param("keyword") String keyword);
+    Page<Item> findBySearch(@Param("keyword") String keyword, Pageable pageable);
 }

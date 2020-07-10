@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -98,7 +101,10 @@ public class ItemRepoTest {
     public void shouldFindItemsByCategory() {
         Category category = categoryRepo.findById(2L).orElse(null);
         assertThat(category).isNotNull();
-        List<Item> items = itemRepo.findByCategory(category);
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Item> itemsPage = itemRepo.findByCategory(category, pageable);
+        List<Item> items = itemsPage.getContent();
 
         assertThat(items.size()).isEqualTo(1);
         Item item = items.get(0);
@@ -169,7 +175,9 @@ public class ItemRepoTest {
 
     @Test
     public void shouldFindBySearch() {
-        List<Item> items = itemRepo.findBySearch("tE");
+        Pageable pageable = PageRequest.of(0, 10).first();
+        Page<Item> itemsPage = itemRepo.findBySearch("tE", pageable);
+        List<Item> items = itemsPage.getContent();
 
         assertThat(items.size()).isEqualTo(1);
     }

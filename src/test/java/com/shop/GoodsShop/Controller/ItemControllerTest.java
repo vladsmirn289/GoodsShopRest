@@ -63,13 +63,17 @@ public class ItemControllerTest {
     public void testSearchItemsByKeyword() throws Exception {
         mockMvc
                 .perform(get("/item")
-                        .param("keyword", "фес"))
+                        .param("keyword", "фес")
+                        .param("size", "1")
+                        .param("page", "1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("item/categoryItems"))
                 .andExpect(model().attribute("keyword", "фес"))
                 .andExpect(model().attributeExists("items"))
-                .andExpect(xpath("//div[@id=\"itemsBlock\"]/div").nodeCount(2));
+                .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(1))
+                .andExpect(xpath("//div[@id='itemsBlock']/div[1]/div/div/div[2]/div/h4/a")
+                        .string("Spring 5 для профессионалов"));
     }
 
     @Test

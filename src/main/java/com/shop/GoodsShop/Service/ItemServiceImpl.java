@@ -7,6 +7,8 @@ import com.shop.GoodsShop.Repositories.ItemRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,15 +43,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Item> findByCategory(Category category) {
+    public Page<Item> findByCategory(Category category, Pageable pageable) {
         logger.info("findByCategory method called");
-        return itemRepo.findByCategory(category);
+        return itemRepo.findByCategory(category, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Item> findBySearch(String keyword) {
-        return itemRepo.findBySearch(keyword);
+    public Page<Item> findBySearch(String keyword, Pageable pageable) {
+        return itemRepo.findBySearch(keyword, pageable);
     }
 
     @Override

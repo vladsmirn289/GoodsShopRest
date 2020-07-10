@@ -66,7 +66,7 @@ public class ItemControllerTest {
                         .param("keyword", "фес"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("categoryItems"))
+                .andExpect(view().name("item/categoryItems"))
                 .andExpect(model().attribute("keyword", "фес"))
                 .andExpect(model().attributeExists("items"))
                 .andExpect(xpath("//div[@id=\"itemsBlock\"]/div").nodeCount(2));
@@ -111,7 +111,7 @@ public class ItemControllerTest {
                 .perform(get("/item/6"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("itemPage"))
+                .andExpect(view().name("item/itemPage"))
                 .andExpect(model().size(1))
                 .andExpect(model().attributeExists("item"))
                 .andExpect(xpath("/html/body/div/div[1]/div/div[2]/div/h5")

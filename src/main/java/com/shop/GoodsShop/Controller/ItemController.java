@@ -52,7 +52,7 @@ public class ItemController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("items", items);
 
-        return "categoryItems";
+        return "item/categoryItems";
     }
 
     @GetMapping("{id}/image")
@@ -77,7 +77,7 @@ public class ItemController {
         Item item = itemService.findById(id);
         model.addAttribute("item", item);
 
-        return "itemPage";
+        return "item/itemPage";
     }
 
     @PostMapping("/{itemId}/addToBasket")

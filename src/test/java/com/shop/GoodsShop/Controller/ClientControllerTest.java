@@ -95,7 +95,7 @@ public class ClientControllerTest {
                 .perform(get("/client/personalRoom"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("personalRoom"))
+                .andExpect(view().name("client/personalRoom"))
                 .andExpect(model().attribute("client", clientService.findByLogin("simpleUser")));
     }
 
@@ -113,7 +113,7 @@ public class ClientControllerTest {
                         .param("email", "g@g"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("personalRoom"))
+                .andExpect(view().name("client/personalRoom"))
                 .andExpect(model().attributeExists("client"));
 
         Client client = clientService.findByLogin("simpleUser");
@@ -157,7 +157,7 @@ public class ClientControllerTest {
                         .param("email", "g"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("personalRoom"))
+                .andExpect(view().name("client/personalRoom"))
                 .andExpect(model().errorCount(4))
                 .andExpect(model().attributeHasFieldErrors(
                         "changedPerson", "firstName",
@@ -184,7 +184,7 @@ public class ClientControllerTest {
                         .param("email", "g@g"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("personalRoom"))
+                .andExpect(view().name("client/personalRoom"))
                 .andExpect(model().attributeExists("userExistsError"));
     }
 
@@ -195,7 +195,7 @@ public class ClientControllerTest {
                 .perform(get("/client/changePassword"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("changePassword"));
+                .andExpect(view().name("client/changePassword"));
     }
 
     @Test
@@ -209,7 +209,7 @@ public class ClientControllerTest {
                          .param("retypePassword", "2"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("changePassword"))
+                .andExpect(view().name("client/changePassword"))
                 .andExpect(model().attribute("currentPasswordError", "Неверный пароль"))
                 .andExpect(model().attribute("lengthPasswordError", "Пароль должен состоять из как минимум 5 символов"))
                 .andExpect(model().attribute("retypePasswordError", "Пароли не совпадают!"));
@@ -242,7 +242,7 @@ public class ClientControllerTest {
                 .perform(get("/client/changeEmail"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("changeEmailPage"));
+                .andExpect(view().name("client/changeEmailPage"));
     }
 
     @Test
@@ -284,7 +284,7 @@ public class ClientControllerTest {
                         .param("email", "g@g"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("changeEmailPage"))
+                .andExpect(view().name("client/changeEmailPage"))
                 .andExpect(model().attributeExists("mailError"));
 
         Client client = clientService.findByLogin("simpleUser");

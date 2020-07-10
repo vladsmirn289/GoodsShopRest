@@ -48,7 +48,7 @@ public class RegistrationControllerTest {
         mockMvc
                 .perform(get("/registration"))
                 .andDo(print())
-                .andExpect(view().name("registration"))
+                .andExpect(view().name("security/registration"))
                 .andExpect(status().isOk());
     }
 
@@ -96,7 +96,7 @@ public class RegistrationControllerTest {
                         .param("passwordRepeat", "12345"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("registration"))
+                .andExpect(view().name("security/registration"))
                 .andExpect(model().attributeExists("mailError"));
 
         assertThat(clientService.findByLogin("tU")).isNull();
@@ -121,7 +121,7 @@ public class RegistrationControllerTest {
                         .param("passwordRepeat", "123"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("registration"))
+                .andExpect(view().name("security/registration"))
                 .andExpect(model().errorCount(5))
                 .andExpect(model().attributeHasFieldErrors(
                         "newClient", "firstName",
@@ -156,7 +156,7 @@ public class RegistrationControllerTest {
                         .param("passwordRepeat", "12345"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("registration"))
+                .andExpect(view().name("security/registration"))
                 .andExpect(model().attributeExists("userExistsError"));
     }
 }

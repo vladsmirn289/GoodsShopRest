@@ -66,7 +66,7 @@ public class OrderControllerTest {
                 .perform(get("/order"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("ordersList"))
+                .andExpect(view().name("order/ordersList"))
                 .andExpect(model().attributeExists("orders"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]")
@@ -81,7 +81,7 @@ public class OrderControllerTest {
                 .perform(get("/order/19"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("concreteOrder"))
+                .andExpect(view().name("order/concreteOrder"))
                 .andExpect(model().attribute("order", orderService.findById(19L)))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(1))
                 .andExpect(xpath("/html/body/div/table/tbody/tr/td[3]")
@@ -95,7 +95,7 @@ public class OrderControllerTest {
                 .perform(get("/order/checkout"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("checkoutPage"))
+                .andExpect(view().name("order/checkoutPage"))
                 .andExpect(model().attributeExists("client"))
                 .andReturn();
 
@@ -110,7 +110,7 @@ public class OrderControllerTest {
                 .perform(get("/order/checkout/16"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("checkoutPage"))
+                .andExpect(view().name("order/checkoutPage"))
                 .andExpect(model().attributeExists("client"))
                 .andReturn();
 
@@ -168,7 +168,7 @@ public class OrderControllerTest {
                         .param("payment", "Наложенный платёж"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("checkoutPage"))
+                .andExpect(view().name("order/checkoutPage"))
                 .andExpect(model().errorCount(4))
                 .andExpect(model().attributeHasFieldErrors(
                         "orderContacts", "city",

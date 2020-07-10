@@ -1,6 +1,6 @@
-<#import "parts/common.ftl" as c>
-<#import "parts/customMessage.ftl" as m>
-<#include "parts/security.ftl">
+<#import "../parts/common.ftl" as c>
+<#import "../parts/customMessage.ftl" as m>
+<#include "../parts/security.ftl">
 
 <@c.commonPage>
     <#if items?size == 0>

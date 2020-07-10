@@ -75,7 +75,7 @@ public class BasketControllerTest {
                 .perform(get("/basket"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("basket"))
+                .andExpect(view().name("basket/basket"))
                 .andExpect(model().attributeExists("basketItems"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(3))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[2]").string("Spring 5 для профессионалов"))

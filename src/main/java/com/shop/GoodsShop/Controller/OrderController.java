@@ -67,7 +67,7 @@ public class OrderController {
         Hibernate.initialize(persistentClient.getOrders());
         model.addAttribute("orders", persistentClient.getOrders());
 
-        return "ordersList";
+        return "order/ordersList";
     }
 
     @GetMapping("/{id}")
@@ -78,7 +78,7 @@ public class OrderController {
         Order order = orderService.findById(orderId);
         model.addAttribute("order", order);
 
-        return "concreteOrder";
+        return "order/concreteOrder";
     }
 
     @GetMapping("/checkout")
@@ -105,7 +105,7 @@ public class OrderController {
 
         request.getSession().setAttribute("orderedItems", basket);
 
-        return "checkoutPage";
+        return "order/checkoutPage";
     }
 
     @GetMapping("/checkout/{itemId}")
@@ -125,7 +125,7 @@ public class OrderController {
 
         request.getSession().setAttribute("orderedItems", Collections.singleton(item));
 
-        return "checkoutPage";
+        return "order/checkoutPage";
     }
 
     @PostMapping("/checkout")
@@ -147,7 +147,7 @@ public class OrderController {
             model.addAttribute("generalPrice", generalPrice);
             model.addAttribute("generalWeight", generalWeight);
 
-            return "checkoutPage";
+            return "order/checkoutPage";
         }
 
         @SuppressWarnings("unchecked")

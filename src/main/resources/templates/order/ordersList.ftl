@@ -1,15 +1,9 @@
-<#import "parts/common.ftl" as c>
+<#import "../parts/common.ftl" as c>
 
 <#assign counter = 1
          generalPrice = 0/>
 
 <@c.commonPage>
-    <#if conflictError??>
-        <div class="alert alert-warning" role="alert">
-            ${conflictError}
-        </div>
-    </#if>
-
     <table class="table table-striped table-bordered table-dark">
         <thead>
         <tr>
@@ -18,7 +12,6 @@
             <th scope="col">Дата оформления</th>
             <th scope="col">Общая стоимость</th>
             <th scope="col">Состояние заказа</th>
-            <th scope="col">Действие</th>
         </tr>
         </thead>
 
@@ -41,21 +34,6 @@
                 <#assign generalPrice = 0/>
 
                 <td>${order.orderStatus.name()}</td>
-
-                <#if !order.manager??>
-                    <td>
-                        <a href="/order/setManager/${order.id}">Назначить себя менеджером</a>
-                    </td>
-                <#elseif manager.login == order.manager.login>
-                    <td>
-                        <a href="/order/editOrder/${order.id}">Редактировать заказ</a><br/>
-                        <a href="/order/unpinHimself/${order.id}">Открепить себя</a>
-                    </td>
-                <#else>
-                    <td>
-                        Данный заказ обрабатывается менеджером ${order.manager.login}
-                    </td>
-                </#if>
             </tr>
         </#list>
         </tbody>

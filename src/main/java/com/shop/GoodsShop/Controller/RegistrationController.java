@@ -38,7 +38,7 @@ public class RegistrationController {
     @GetMapping
     public String showRegistrationPage() {
         logger.debug("Called showRegistrationPage method");
-        return "registration";
+        return "security/registration";
     }
 
     @PostMapping
@@ -65,7 +65,7 @@ public class RegistrationController {
             }
 
             model.addAttribute("client", client);
-            return "registration";
+            return "security/registration";
         } else {
             logger.info("Registration successful");
         }
@@ -83,7 +83,7 @@ public class RegistrationController {
             model.addAttribute("client", client);
             model.addAttribute("mailError", "Не удалось отправить письмо");
 
-            return "registration";
+            return "security/registration";
         }
 
         clientService.save(client);

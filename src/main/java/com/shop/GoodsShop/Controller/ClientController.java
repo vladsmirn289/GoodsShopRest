@@ -75,7 +75,7 @@ public class ClientController {
         logger.info("Called personalRoomPage method");
         model.addAttribute("client", clientService.findByLogin(client.getLogin()));
 
-        return "personalRoom";
+        return "client/personalRoom";
     }
 
     @PostMapping("/personalRoom")
@@ -100,7 +100,7 @@ public class ClientController {
             }
 
             model.addAttribute("client", client);
-            return "personalRoom";
+            return "client/personalRoom";
         } else {
             if (!client.getFirstName().equals(originalClient.getFirstName())) {
                 originalClient.setFirstName(client.getFirstName());
@@ -128,7 +128,7 @@ public class ClientController {
         }
 
         model.addAttribute("client", originalClient);
-        return "personalRoom";
+        return "client/personalRoom";
     }
 
     @GetMapping("/changePassword")
@@ -136,7 +136,7 @@ public class ClientController {
     public String changePasswordPage() {
         logger.info("Called changePasswordPage method");
 
-        return "changePassword";
+        return "client/changePassword";
     }
 
     @PostMapping("/changePassword")
@@ -168,7 +168,7 @@ public class ClientController {
         }
 
         if (hasErrors) {
-            return "changePassword";
+            return "client/changePassword";
         } else {
             Client persistentClient = clientService.findByLogin(client.getLogin());
             persistentClient.setPassword(passwordEncoder.encode(newPassword));
@@ -183,7 +183,7 @@ public class ClientController {
     public String changeEmailPage() {
         logger.info("Called changeEmailPage method");
 
-        return "changeEmailPage";
+        return "client/changeEmailPage";
     }
 
     @PostMapping("/changeEmail")
@@ -204,7 +204,7 @@ public class ClientController {
             logger.error(e.toString());
             model.addAttribute("mailError", "Не удалось отправить письмо");
 
-            return "changeEmailPage";
+            return "client/changeEmailPage";
         }
 
         clientService.save(client);

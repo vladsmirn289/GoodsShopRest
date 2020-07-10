@@ -44,6 +44,6 @@ public class CategoryController {
 
         model.addAttribute("items", items);
 
-        return "categoryItems";
+        return "item/categoryItems";
     }
 }

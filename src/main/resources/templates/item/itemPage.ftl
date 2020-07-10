@@ -1,4 +1,4 @@
-<#import "parts/common.ftl" as c>
+<#import "../parts/common.ftl" as c>
 
 <@c.commonPage>
     <div class="card mb-3 bg-secondary text-white">

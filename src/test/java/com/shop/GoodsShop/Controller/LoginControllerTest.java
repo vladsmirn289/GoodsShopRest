@@ -29,7 +29,7 @@ public class LoginControllerTest {
                 .perform(get("/login"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("loginPage"))
+                .andExpect(view().name("security/loginPage"))
                 .andExpect(content().string(not(containsString("Неверный логин или пароль!"))));
     }
 
@@ -39,7 +39,7 @@ public class LoginControllerTest {
                 .perform(get("/login").param("error", ""))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("loginPage"))
+                .andExpect(view().name("security/loginPage"))
                 .andExpect(content().string(containsString("Неверный логин или пароль!")));
     }
 }

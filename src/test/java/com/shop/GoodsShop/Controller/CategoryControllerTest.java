@@ -54,7 +54,7 @@ public class CategoryControllerTest {
                 .perform(get("/category/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("categoryItems"))
+                .andExpect(view().name("item/categoryItems"))
                 .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(0));
     }
 
@@ -67,7 +67,7 @@ public class CategoryControllerTest {
                 .perform(get("/category/3"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("categoryItems"))
+                .andExpect(view().name("item/categoryItems"))
                 .andExpect(model().size(1))
                 .andExpect(model().attributeExists("items"))
                 .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(2))

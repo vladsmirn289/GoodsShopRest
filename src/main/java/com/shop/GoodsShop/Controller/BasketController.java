@@ -52,7 +52,7 @@ public class BasketController {
 
         model.addAttribute("basketItems", persistentClient.getBasket());
 
-        return "basket";
+        return "basket/basket";
     }
 
     @GetMapping("/delete/{itemId}")

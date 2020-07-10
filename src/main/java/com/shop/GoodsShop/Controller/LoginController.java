@@ -23,6 +23,6 @@ public class LoginController {
             request.getSession().setAttribute("url_prior_login", referer);
         }
 
-        return "loginPage";
+        return "security/loginPage";
     }
 }

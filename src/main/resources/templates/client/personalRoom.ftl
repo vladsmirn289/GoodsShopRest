@@ -1,4 +1,4 @@
-<#import "parts/common.ftl" as c>
+<#import "../parts/common.ftl" as c>
 
 <@c.commonPage>
     <div class="mx-auto bg-dark" style="padding: 15px; width: 40%; border-radius: 10px;">

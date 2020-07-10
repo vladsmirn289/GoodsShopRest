@@ -48,7 +48,7 @@ public class ManagerController {
         model.addAttribute("orders", orderService.findOrdersForManagers());
         model.addAttribute("manager", manager);
 
-        return "customOrders";
+        return "manager/customOrders";
     }
 
     @GetMapping("/setManager/{id}")
@@ -83,7 +83,7 @@ public class ManagerController {
                 .collect(Collectors.toSet());
         model.addAttribute("statuses", statuses);
 
-        return "editOrderPage";
+        return "manager/editOrderPage";
     }
 
     @PostMapping("/changeOrderStatus/{id}")

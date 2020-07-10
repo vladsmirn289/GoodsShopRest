@@ -3,9 +3,11 @@
 <@c.commonPage>
     <div class="mx-auto bg-dark text-center text-white" style="padding: 15px; width: 50%; border-radius: 10px;">
         <#if item??>
-            <div class="alert alert-warning">
-                Для того, чтобы обновить товар, вам необходимо заново указать цену, вес, изображение и категорию!
-            </div>
+            <#if item.id??>
+                <div class="alert alert-warning">
+                    Для того, чтобы обновить товар, вам необходимо заново указать цену, вес, изображение и категорию!
+                </div>
+            </#if>
         </#if>
 
         <form action="/admin/createOrUpdateItem" enctype="multipart/form-data" method="post">
@@ -46,7 +48,7 @@
             <div class="form-group">
                 <label for="inputWeight">Вес одного товара в кг</label>
                 <input type="number" class="form-control ${(weightError??)?string('is-invalid', '')}"
-                       id="inputWeight" name="weight" min="1" step="any" required="required"
+                       id="inputWeight" name="weight" min="0" step="any" required="required"
                         <#if item??>
                             value="${item.weight?double}"
                         </#if>/>
@@ -130,7 +132,7 @@
 
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             <div class="row justify-content-md-center mb-2">
-                <#if item??>
+                <#if item?? && item.id??>
                     <button type="submit" class="btn btn-success">Обновить товар</button>
                 <#else>
                     <button type="submit" class="btn btn-success">Создать товар</button>

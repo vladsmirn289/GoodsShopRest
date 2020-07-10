@@ -3,6 +3,7 @@ package com.shop.GoodsShop.Controller;
 import com.shop.GoodsShop.Model.*;
 import com.shop.GoodsShop.Service.ClientItemService;
 import com.shop.GoodsShop.Service.ClientService;
+import com.shop.GoodsShop.Service.ItemService;
 import com.shop.GoodsShop.Service.OrderService;
 import com.shop.GoodsShop.Utils.ValidateUtil;
 import org.hibernate.Hibernate;
@@ -30,6 +31,7 @@ public class OrderController {
     private ClientService clientService;
     private OrderService orderService;
     private ClientItemService clientItemService;
+    private ItemService itemService;
 
     @Autowired
     public void setClientService(ClientService clientService) {
@@ -47,6 +49,12 @@ public class OrderController {
     public void setClientItemService(ClientItemService clientItemService) {
         logger.debug("Setting clientItemService");
         this.clientItemService = clientItemService;
+    }
+
+    @Autowired
+    public void setItemService(ItemService itemService) {
+        logger.debug("Setting itemService");
+        this.itemService = itemService;
     }
 
     @GetMapping
@@ -156,6 +164,8 @@ public class OrderController {
 
         items.forEach(i -> {
             i.setOrder(newOrder);
+            i.getItem().setCount(i.getItem().getCount()-i.getQuantity());
+            itemService.save(i.getItem());
             clientItemService.save(i);
         });
 

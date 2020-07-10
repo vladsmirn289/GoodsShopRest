@@ -79,7 +79,7 @@ public class BasketControllerTest {
                 .andExpect(model().attributeExists("basketItems"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(3))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[2]").string("Spring 5 для профессионалов"))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]/input/@value").string("2"));
+                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]").string("2 шт."));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class BasketControllerTest {
                 .perform(get("/basket"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[2]").string("Производные и интегралы"))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]/input/@value").string("1"));
+                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]").string("1 шт."));
 
         assertThat(clientItemRepo.findAll().size()).isEqualTo(4);
     }

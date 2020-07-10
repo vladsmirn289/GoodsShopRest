@@ -1,10 +1,7 @@
 package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Model.Client;
-import com.shop.GoodsShop.Service.ClientItemService;
-import com.shop.GoodsShop.Service.ClientService;
-import com.shop.GoodsShop.Service.InitDB;
-import com.shop.GoodsShop.Service.OrderService;
+import com.shop.GoodsShop.Service.*;
 import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +53,9 @@ public class OrderControllerTest {
 
     @Autowired
     private ClientItemService clientItemService;
+
+    @Autowired
+    private ItemService itemService;
 
     @MockBean
     private InitDB initDB;
@@ -150,6 +150,7 @@ public class OrderControllerTest {
         assertThat(client.getBasket()).isEmpty();
         assertThat(clientItemService.findById(30L).getOrder()).isNotNull();
         assertThat(clientItemService.findById(31L).getOrder()).isNotNull();
+        assertThat(itemService.findById(11L).getCount()).isEqualTo(197);
     }
 
     @Test

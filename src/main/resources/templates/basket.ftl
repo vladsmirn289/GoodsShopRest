@@ -36,9 +36,7 @@
                     <td><img src="/item/${basketItem.item.id}/image" alt="${basketItem.item.name}"/></td>
                     <td>${basketItem.item.name}</td>
                     <td>${basketItem.item.price} рублей</td>
-                    <td>
-                        <input name="quantity" type="number" min="1" size="10" value="${basketItem.quantity}" style="width: 50px"/> шт.
-                    </td>
+                    <td>${basketItem.quantity} шт.</td>
                     <td><a href="/basket/delete/${basketItem.id}">Удалить</a></td>
                     <td><a href="/order/checkout/${basketItem.id}">Оформить</a></td>
                 </tr>

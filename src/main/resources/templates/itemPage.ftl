@@ -18,9 +18,17 @@
                     <p class="card-text">Вес: ${item.weight} кг</p>
 
                     <form action="/item/${item.id}/addToBasket" method="post">
-                        <input name="quantity" type="number" size="10" value="1" style="width: 50px" /> шт.<br/> <br/>
+                        <input name="quantity" type="number" size="10" min="1"
+                               max="${item.count?c}" value="1" style="width: 60px" /> шт.<br/> <br/>
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                        <input class="btn btn-primary" type="submit" value="В корзину" />
+
+                        <#if item.count == 0>
+                            <div class="text-danger">
+                                Нет в наличии
+                            </div>
+                        <#else>
+                            <input class="btn btn-primary" type="submit" value="В корзину" />
+                        </#if>
                     </form>
                 </div>
             </div>

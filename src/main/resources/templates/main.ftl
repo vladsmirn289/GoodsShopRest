@@ -1,10 +1,10 @@
 <#import "parts/common.ftl" as c>
 
 <@c.commonPage>
-    <div class="mx-auto" style="width: 20%" id="categoryBlock">
+    <div class="row row-cols-3">
         <#list treeOfCategories as parent, value>
 
-            <div class="mb-4">
+            <div class="mb-4 col">
                 <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#collapseExample${parent.getId()}" aria-expanded="false" aria-controls="collapseExample">
                     ${parent.getName()}
                 </button> <br/>

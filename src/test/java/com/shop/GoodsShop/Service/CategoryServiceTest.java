@@ -1,6 +1,6 @@
 package com.shop.GoodsShop.Service;
 
-import com.shop.GoodsShop.Excepton.NoCategoryException;
+import com.shop.GoodsShop.Exception.NoCategoryException;
 import com.shop.GoodsShop.Model.Category;
 import com.shop.GoodsShop.Repositories.CategoryRepo;
 import org.junit.jupiter.api.Test;

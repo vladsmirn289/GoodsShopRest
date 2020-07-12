@@ -1,6 +1,6 @@
 package com.shop.GoodsShop.Service;
 
-import com.shop.GoodsShop.Excepton.NoItemException;
+import com.shop.GoodsShop.Exception.NoItemException;
 import com.shop.GoodsShop.Model.Category;
 import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Model.Item;

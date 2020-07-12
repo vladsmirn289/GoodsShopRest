@@ -19,6 +19,7 @@
 		<webJars.jQuery.version>3.5.1</webJars.jQuery.version>
 		<jacoco.plugin.version>0.8.5</jacoco.plugin.version>
 		<maven-surfire.plugin.version>3.0.0-M5</maven-surfire.plugin.version>
+		<jasypt.version>3.0.3</jasypt.version>
 	</properties>
 
 	<parent>
@@ -58,6 +59,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot-starter</artifactId>
+			<version>${jasypt.version}</version>
 		</dependency>
 
 		<!-- Spring Mail -->

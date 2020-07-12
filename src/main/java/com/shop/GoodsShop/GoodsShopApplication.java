@@ -1,6 +1,7 @@
 package com.shop.GoodsShop;
 
 import com.shop.GoodsShop.Service.InitDB;
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,8 +11,9 @@ import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
 @PropertySource(value = "classpath:application.properties")
+@EnableEncryptableProperties
 public class GoodsShopApplication implements InitializingBean {
-	@Value("#{${init}}")
+	@Value("${init}")
 	private boolean needInit;
 
 	private InitDB initDB;

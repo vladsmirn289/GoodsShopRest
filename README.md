@@ -1,6 +1,6 @@
 # Goods Shop
 
-##About
+## About
 This is the pet-project, that represents the Russian online shop of various **items**,
 which is written by java using spring, hibernate and freemarker.
 All *items*, *images*, descriptions, characteristics in this
@@ -19,11 +19,14 @@ Some images:
 
 ![img](./src/main/resources/static/images/docs/ListOfUsers.png)
 
+## If you find a bug or you have any suggestions
+You can follow the next link and describe your problem/suggestion: https://github.com/vladsmirn289/GoodsShop/issues
+
 ## How to run goods shop application
 Firstly, you need to clone the git project:
 ```shell script
-git clone ...
-cd ...
+git clone https://github.com/vladsmirn289/GoodsShop.git
+cd GoodsShop
 ```
 Next you can use two variants:
 
@@ -75,7 +78,7 @@ For example, the following scripts launches an application with an initialized *
     ./mvnw spring-boot:run -Dspring-boot.run.arguments="--db_url=jdbc:postgresql://localhost:5432/shop_db --init=true"
     ```
 
-##Mail configuration
+## Mail configuration
 Goods shop uses the new mail.ru account, it uses to send emails when you create a new account
 and managers can use it for sending some information about orders.
 
@@ -95,7 +98,7 @@ Parameter name | Alternative parameter | By default
 
 Last three parameters you can use for gmail.
 
-##Database structure
+## Database structure
 This is the relationship between tables in the database:
 
 ![img](./src/main/resources/static/images/docs/shop_db.jpg)
@@ -113,7 +116,7 @@ Another main entity is the **client**, which can be a **simple user**, **manager
 Finally, the database contains the **client_items** table, it serves for only one purpose:
 to save the item quantity when it changes state (add to basket or make the order).
 
-##Package structure
+## Package structure
 The diagram of the package structure:
 
 *   GoodsShop
@@ -172,7 +175,7 @@ The diagram of the package structure:
                 *   [images][testImages] (Images for tests)
                 *   [application-test.properties] (Various properties for test environment)
 
-##Security
+## Security
 This project support basic authentication and registration.
 If you are not authenticated, then on the navbar you can see the "Войти" (Log in) button, otherwise "Выйти" (Log out) button.
 After clicking on the "Войти" (Log in) button or if you try to access the secure URL
@@ -226,18 +229,17 @@ After entering the registration data, you need to confirm your email address, if
 will be automatically logged in, and you can continue the session in a new tab.
 Otherwise, if you not confirm your email, you will not be able to log in.
 
-##Validation
+## Validation
 This project also supports validation of the entered data. Therefore, if you leave some fields empty, after clicking the button
 you will see the red labels below these fields:
 
 ![img](./src/main/resources/static/images/docs/Validation.png)
 
-##Internationalization
-
+## Internationalization
 Internationalization is not supported for the reason that the project is a parody on a Russian shop and
 all descriptions, characteristics is written in Russian, and how to create item in many languages...
 
-##Frameworks and technologies used
+## Frameworks and technologies used
 *   Java SE 8
 *   Spring Boot
 *   Spring MVC
@@ -256,7 +258,7 @@ all descriptions, characteristics is written in Russian, and how to create item 
 *   Maven
 *   Log4j2
 
-##License
+## License
 GoodsShop is the pet-project released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
 
 [my-shop]: https://my-shop.ru/

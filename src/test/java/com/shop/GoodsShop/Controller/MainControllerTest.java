@@ -42,7 +42,7 @@ public class MainControllerTest {
                 .andExpect(view().name("main"))
                 .andExpect(model().size(1))
                 .andExpect(model().attributeExists("treeOfCategories"))
-                .andExpect(xpath("//div[@id='categoryBlock']/div").nodeCount(2))
+                .andExpect(xpath("/html/body/div/div/div").nodeCount(2))
                 .andExpect(xpath("//div[@id='collapseExample1']/a").nodeCount(2))
                 .andExpect(xpath("//*[@id='collapseExample4']/a").nodeCount(1));
     }

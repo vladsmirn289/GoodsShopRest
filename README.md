@@ -256,6 +256,9 @@ all descriptions, characteristics is written in Russian, and how to create item 
 *   Maven
 *   Log4j2
 
+##License
+GoodsShop is the pet-project released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+
 [my-shop]: https://my-shop.ru/
 
 [main]: ./src/main

@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/vladsmirn289/GoodsShop.svg?branch=master)](https://travis-ci.org/github/vladsmirn289/GoodsShop) [![codecov](https://codecov.io/gh/vladsmirn289/GoodsShop/branch/master/graph/badge.svg)](https://codecov.io/gh/vladsmirn289/GoodsShop)
 # Goods Shop
 
 ## About
@@ -173,7 +174,7 @@ The diagram of the package structure:
                 *   [db][testDb]
                     *   [H2] (H2 scripts for tests)
                 *   [images][testImages] (Images for tests)
-                *   [application-test.properties] (Various properties for test environment)
+                *   [application.properties][application-test.properties] (Various properties for test environment)
 
 ## Security
 This project support basic authentication and registration.
@@ -306,7 +307,7 @@ GoodsShop is the pet-project released under version 2.0 of the [Apache License](
 [testDb]: ./src/test/resources/db
 [H2]: ./src/test/resources/db/H2
 [testImages]: ./src/test/resources/images
-[application-test.properties]: ./src/test/resources/application-test.properties
+[application-test.properties]: ./src/test/resources/application.properties
 [java2]: ./src/test/java
 [comInTest]: ./src/test/java/com/shop/GoodsShop
 [ControllerTest]: ./src/test/java/com/shop/GoodsShop/Controller

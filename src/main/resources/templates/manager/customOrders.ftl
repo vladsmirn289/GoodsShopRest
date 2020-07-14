@@ -1,9 +1,12 @@
 <#import "../parts/common.ftl" as c>
-
-<#assign counter = 1
-         generalPrice = 0/>
+<#import "../parts/pager.ftl" as p>
 
 <@c.commonPage>
+    <@p.pager url orders/>
+
+    <#assign counter = 1 + orders.getSize() * orders.getNumber()
+             generalPrice = 0/>
+
     <#if conflictError??>
         <div class="alert alert-warning" role="alert">
             ${conflictError}
@@ -23,7 +26,7 @@
         </thead>
 
         <tbody>
-        <#list orders as order>
+        <#list orders.getContent() as order>
             <tr>
                 <th scope="row">${counter}</th>
                 <#assign counter = counter + 1>
@@ -60,4 +63,6 @@
         </#list>
         </tbody>
     </table>
+
+    <@p.pager url orders/>
 </@c.commonPage>

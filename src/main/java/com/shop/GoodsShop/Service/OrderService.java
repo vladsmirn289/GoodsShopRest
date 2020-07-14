@@ -1,11 +1,11 @@
 package com.shop.GoodsShop.Service;
 
 import com.shop.GoodsShop.Model.Order;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
-    List<Order> findOrdersForManagers();
+    Page<Order> findOrdersForManagers(Pageable pageable);
     Order findById(Long id);
 
     void save(Order order);

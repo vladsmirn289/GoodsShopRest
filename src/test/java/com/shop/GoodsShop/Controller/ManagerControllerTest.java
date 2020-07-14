@@ -46,17 +46,20 @@ public class ManagerControllerTest {
     @Test
     public void showCustomOrdersTest() throws Exception {
         mockMvc
-                .perform(get("/order/manager"))
+                .perform(get("/order/manager")
+                         .param("size", "1")
+                         .param("page", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("manager/customOrders"))
                 .andExpect(model().attributeExists("orders"))
                 .andExpect(model().attributeExists("manager"))
-                .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]")
-                        .string(containsString("1,075")))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[2]/td[3]")
-                        .string(containsString("850")));
+                .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(1));
+
+        mockMvc
+                .perform(get("/order/manager")
+                        .param("size", "1")
+                        .param("page", "1"));
     }
 
     @Test

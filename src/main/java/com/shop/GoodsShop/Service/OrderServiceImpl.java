@@ -5,10 +5,10 @@ import com.shop.GoodsShop.Repositories.OrderRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -24,12 +24,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findOrdersForManagers() {
+    @Transactional(readOnly = true)
+    public Page<Order> findOrdersForManagers(Pageable pageable) {
         logger.info("findOrdersForManagers method called");
-        return orderRepo.findOrdersForManagers();
+        return orderRepo.findOrdersForManagers(pageable);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Order findById(Long id) {
         logger.info("findById method called for order with id = " + id);
         return orderRepo.findById(id).orElse(null);

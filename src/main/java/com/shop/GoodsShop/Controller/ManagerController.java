@@ -9,6 +9,10 @@ import com.shop.GoodsShop.Utils.URIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -43,9 +47,13 @@ public class ManagerController {
 
     @GetMapping("/manager")
     public String customOrders(@AuthenticationPrincipal Client manager,
-                               Model model) {
+                               Model model,
+                               @PageableDefault(sort = {"createdOn"}, direction = Sort.Direction.DESC) Pageable pageable) {
         logger.info("Called customOrders method");
-        model.addAttribute("orders", orderService.findOrdersForManagers());
+        Page<Order> orders = orderService.findOrdersForManagers(pageable);
+
+        model.addAttribute("url", "/order/manager?");
+        model.addAttribute("orders", orders);
         model.addAttribute("manager", manager);
 
         return "manager/customOrders";

@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -69,7 +72,9 @@ public class OrderRepoTest {
 
     @Test
     public void shouldFindOrderByStatusIsNotCompleted() {
-        List<Order> orders = orderRepo.findOrdersForManagers();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Order> ordersPage = orderRepo.findOrdersForManagers(pageable);
+        List<Order> orders = ordersPage.getContent();
 
         assertThat(orders.size()).isEqualTo(1);
         assertThat(orders.get(0).getId()).isEqualTo(6L);

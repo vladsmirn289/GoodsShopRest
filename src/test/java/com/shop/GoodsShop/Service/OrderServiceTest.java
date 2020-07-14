@@ -8,6 +8,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,17 +47,20 @@ public class OrderServiceTest {
 
     @Test
     public void shouldFindOrdersForManagers() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Order> orders = new PageImpl<>(Collections.singletonList(order));
         Mockito
-                .doReturn(Collections.singletonList(order))
+                .doReturn(orders)
                 .when(orderRepo)
-                .findOrdersForManagers();
+                .findOrdersForManagers(pageable);
 
-        List<Order> orderList = orderService.findOrdersForManagers();
+        Page<Order> orderListPage = orderService.findOrdersForManagers(pageable);
+        List<Order> orderList = orderListPage.getContent();
 
         assertThat(orderList).isNotNull();
         assertThat(orderList).isNotEmpty();
         Mockito.verify(orderRepo, Mockito.times(1))
-                .findOrdersForManagers();
+                .findOrdersForManagers(pageable);
     }
 
     @Test

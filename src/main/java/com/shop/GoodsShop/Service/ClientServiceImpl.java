@@ -7,6 +7,8 @@ import com.shop.GoodsShop.Repositories.ClientRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -63,8 +64,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> findAll() {
-        return clientRepo.findAll();
+    @Transactional(readOnly = true)
+    public Page<Client> findAll(Pageable pageable) {
+        return clientRepo.findAll(pageable);
     }
 
     @Override

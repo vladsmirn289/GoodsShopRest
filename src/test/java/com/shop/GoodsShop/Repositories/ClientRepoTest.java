@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -53,7 +56,9 @@ public class ClientRepoTest {
 
     @Test
     public void shouldFindAllClients() {
-        List<Client> clients = clientRepo.findAll();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Client> clientsPage = clientRepo.findAll(pageable);
+        List<Client> clients = clientsPage.getContent();
 
         assertThat(clients.size()).isEqualTo(1);
     }

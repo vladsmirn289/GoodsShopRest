@@ -81,12 +81,20 @@ public class AdminControllerTest {
     @Test
     public void showListOfUsersTest() throws Exception {
         mockMvc
-                .perform(get("/admin/listOfUsers"))
+                .perform(get("/admin/listOfUsers")
+                         .param("size", "2")
+                         .param("page", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/listOfUsers"))
                 .andExpect(model().attributeExists("users"))
-                .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(4));
+                .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2));
+
+        mockMvc
+                .perform(get("/admin/listOfUsers")
+                         .param("size", "2")
+                         .param("page", "1"))
+                .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2));
     }
 
     @Test

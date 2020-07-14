@@ -8,6 +8,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -85,17 +89,20 @@ public class ClientServiceTest {
 
     @Test
     public void shouldFindAllClients() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Client> page = new PageImpl<>(Collections.singletonList(client));
         Mockito
-                .doReturn(Collections.singletonList(client))
+                .doReturn(page)
                 .when(clientRepo)
-                .findAll();
+                .findAll(pageable);
 
-        List<Client> clients = clientService.findAll();
+        Page<Client> clientsPage = clientService.findAll(pageable);
+        List<Client> clients = clientsPage.getContent();
 
         assertThat(clients.size()).isEqualTo(1);
         Mockito
                 .verify(clientRepo, Mockito.times(1))
-                .findAll();
+                .findAll(pageable);
     }
 
     @Test

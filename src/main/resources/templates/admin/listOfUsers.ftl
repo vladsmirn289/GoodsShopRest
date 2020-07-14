@@ -1,8 +1,10 @@
 <#import "../parts/common.ftl" as c>
-
-<#assign counter = 1/>
+<#import "../parts/pager.ftl" as p>
 
 <@c.commonPage>
+    <@p.pager url users/>
+    <#assign counter = 1 + users.getSize() * users.getNumber()/>
+
     <table class="table table-striped table-bordered table-dark">
         <thead>
         <tr>
@@ -18,7 +20,7 @@
         </thead>
 
         <tbody>
-        <#list users as usr>
+        <#list users.content as usr>
             <tr>
                 <th scope="row">${counter}</th>
                 <#assign counter = counter + 1>
@@ -64,4 +66,6 @@
         </#list>
         </tbody>
     </table>
+
+    <@p.pager url users/>
 </@c.commonPage>

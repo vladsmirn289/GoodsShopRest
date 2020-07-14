@@ -119,7 +119,7 @@ public class ManagerControllerTest {
         mockMvc
                 .perform(get("/order/manager"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[1]/a")
-                        .string("20"))
+                        .string("21"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[5]/a[1]")
                         .string("Назначить себя менеджером"));
     }

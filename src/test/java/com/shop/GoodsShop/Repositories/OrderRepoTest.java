@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,6 +33,9 @@ public class OrderRepoTest {
 
     @Autowired
     private ClientItemRepo clientItemRepo;
+
+    @Autowired
+    private ClientRepo clientRepo;
 
     @MockBean
     private InitDB initDB;
@@ -78,6 +82,23 @@ public class OrderRepoTest {
 
         assertThat(orders.size()).isEqualTo(1);
         assertThat(orders.get(0).getId()).isEqualTo(6L);
+    }
+
+    @Test
+    @Sql(value = {
+            "classpath:db/H2/user-test.sql",
+            "classpath:db/H2/order-test.sql"
+    }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void shouldFindOrdersByClient() {
+        Client client = clientRepo.findById(12L).get();
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Order> ordersPage = orderRepo.findOrdersByClient(client, pageable);
+        List<Order> orders = ordersPage.getContent();
+
+        assertThat(orders.size()).isEqualTo(2);
+        assertThat(orders.get(0).getId()).isEqualTo(19);
+        assertThat(orders.get(1).getId()).isEqualTo(20);
     }
 
     @Test

@@ -63,15 +63,22 @@ public class OrderControllerTest {
     @Test
     public void showOrdersListTest() throws Exception {
         mockMvc
-                .perform(get("/order"))
+                .perform(get("/order")
+                         .param("size", "1")
+                         .param("page", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("order/ordersList"))
                 .andExpect(model().attributeExists("orders"))
-                .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2))
+                .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(1))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]")
-                        .string(containsString("8,000")))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[2]/td[3]")
+                        .string(containsString("8,000")));
+
+        mockMvc
+                .perform(get("/order")
+                        .param("size", "1")
+                        .param("page", "1"))
+                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]")
                         .string(containsString("1,075")));
     }
 

@@ -6,10 +6,13 @@ import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.ItemService;
 import com.shop.GoodsShop.Service.OrderService;
 import com.shop.GoodsShop.Utils.ValidateUtil;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -58,14 +61,16 @@ public class OrderController {
     }
 
     @GetMapping
-    @Transactional
     @PreAuthorize("isAuthenticated()")
     public String clientOrders(@AuthenticationPrincipal Client client,
-                               Model model) {
+                               Model model,
+                               @PageableDefault(sort = {"createdOn"}, direction = Sort.Direction.DESC) Pageable pageable) {
         logger.info("Called clientOrders method");
         Client persistentClient = clientService.findByLogin(client.getLogin());
-        Hibernate.initialize(persistentClient.getOrders());
-        model.addAttribute("orders", persistentClient.getOrders());
+
+        Page<Order> orders = orderService.findOrdersByClient(persistentClient, pageable);
+        model.addAttribute("url", "/order?");
+        model.addAttribute("orders", orders);
 
         return "order/ordersList";
     }

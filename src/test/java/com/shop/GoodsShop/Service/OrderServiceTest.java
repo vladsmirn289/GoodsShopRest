@@ -64,6 +64,26 @@ public class OrderServiceTest {
     }
 
     @Test
+    public void shouldFindOrdersByClient() {
+        Client client = new Client("w@w", "12345", "firstName", "lastName", "login");
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Order> orders = new PageImpl<>(Collections.singletonList(order));
+        Mockito
+                .doReturn(orders)
+                .when(orderRepo)
+                .findOrdersByClient(client, pageable);
+
+        Page<Order> orderListPage = orderService.findOrdersByClient(client, pageable);
+        List<Order> orderList = orderListPage.getContent();
+
+        assertThat(orderList).isNotNull();
+        assertThat(orderList).isNotEmpty();
+        Mockito.verify(orderRepo, Mockito.times(1))
+                .findOrdersByClient(client, pageable);
+    }
+
+    @Test
     public void shouldFindOrderById() {
         Mockito
                 .doReturn(Optional.of(order))

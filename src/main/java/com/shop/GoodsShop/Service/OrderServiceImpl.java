@@ -1,5 +1,6 @@
 package com.shop.GoodsShop.Service;
 
+import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.Order;
 import com.shop.GoodsShop.Repositories.OrderRepo;
 import org.slf4j.Logger;
@@ -28,6 +29,12 @@ public class OrderServiceImpl implements OrderService {
     public Page<Order> findOrdersForManagers(Pageable pageable) {
         logger.info("findOrdersForManagers method called");
         return orderRepo.findOrdersForManagers(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Order> findOrdersByClient(Client client, Pageable pageable) {
+        return orderRepo.findOrdersByClient(client, pageable);
     }
 
     @Override

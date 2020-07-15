@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/vladsmirn289/GoodsShop.svg?branch=master)](https://travis-ci.org/github/vladsmirn289/GoodsShop) [![codecov](https://codecov.io/gh/vladsmirn289/GoodsShop/branch/master/graph/badge.svg)](https://codecov.io/gh/vladsmirn289/GoodsShop)
+[![Build Status](https://travis-ci.org/vladsmirn289/GoodsShop.svg?branch=master)](https://travis-ci.org/github/vladsmirn289/GoodsShop)
+[![codecov](https://codecov.io/gh/vladsmirn289/GoodsShop/branch/master/graph/badge.svg)](https://codecov.io/gh/vladsmirn289/GoodsShop)
+[![BCH compliance](https://bettercodehub.com/edge/badge/vladsmirn289/GoodsShop?branch=master)](https://bettercodehub.com/)
 # Goods Shop
 
 ## About

@@ -20,12 +20,8 @@ public class ImageValidationTest {
     }
 
     @Test
-    public void shouldGetId() {
+    public void getterTests() {
         assertThat(image.getId()).isEqualTo(1L);
-    }
-
-    @Test
-    public void shouldGetImage() {
         assertThat(image.getImage()).isEqualTo("123".getBytes());
     }
 

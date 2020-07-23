@@ -7,7 +7,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,35 +54,10 @@ public class CategoryValidationTest {
     }
 
     @Test
-    public void shouldGetId() {
+    public void getterTests() {
         assertThat(category.getId()).isEqualTo(1L);
-    }
-
-    @Test
-    public void shouldGetParent() {
         assertThat(category.getParent()).isEqualTo(parent);
-    }
-
-    @Test
-    public void shouldGetName() {
         assertThat(category.getName()).isEqualTo("Book");
-    }
-
-    @Test
-    public void shouldGetItems() {
         assertThat(category.getItems()).isEqualTo(Collections.singleton(item));
-    }
-
-    @Test
-    public void shouldEqualsTrue() {
-        Category category = new Category("Book");
-
-        assertThat(this.category.equals(category)).isTrue();
-    }
-
-    @Test
-    public void hashCodeTest() {
-        assertThat(this.category.hashCode())
-                .isEqualTo(Objects.hash("Book"));
     }
 }

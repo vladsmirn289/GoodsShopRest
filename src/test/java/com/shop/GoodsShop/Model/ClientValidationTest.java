@@ -135,57 +135,17 @@ public class ClientValidationTest {
     }
 
     @Test
-    void shouldGetId() {
+    public void getterTests() {
         assertThat(client.getId()).isEqualTo(1L);
-    }
-
-    @Test
-    void shouldGetFirstName() {
         assertThat(client.getFirstName()).isEqualTo("Igor");
-    }
-
-    @Test
-    void shouldGetLastName() {
         assertThat(client.getLastName()).isEqualTo("Key");
-    }
-
-    @Test
-    void shouldGetLogin() {
         assertThat(client.getLogin()).isEqualTo("IK");
-    }
-
-    @Test
-    void shouldGetPassword() {
         assertThat(client.getPassword()).isEqualTo("12345");
-    }
-
-    @Test
-    void shouldGetEmail() {
         assertThat(client.getEmail()).isEqualTo("i@gmail.com");
-    }
-
-    @Test
-    void shouldGetPatronymic() {
         assertThat(client.getPatronymic()).isEqualTo("P");
-    }
-
-    @Test
-    void shouldGetBasket() {
         assertThat(client.getBasket()).isEqualTo(Collections.singleton(new ClientItem(item, 1)));
-    }
-
-    @Test
-    void shouldGetOrders() {
         assertThat(client.getOrders()).isEqualTo(Collections.singleton(order));
-    }
-
-    @Test
-    void shouldGetRoles() {
         assertThat(client.getRoles()).isEqualTo(Collections.singleton(Role.USER));
-    }
-
-    @Test
-    void shouldGetConfirmationCode() {
         assertThat(client.getConfirmationCode()).isEqualTo("123");
     }
 

@@ -89,63 +89,15 @@ public class OrderValidationTest {
     }
 
     @Test
-    public void shouldGetId() {
+    public void getterTests() {
         assertThat(order.getId()).isEqualTo(1L);
-    }
-
-    @Test
-    public void shouldGetClientItems() {
         assertThat(order.getClientItems()).isEqualTo(Collections.singleton(clientItem));
-    }
-
-    @Test
-    public void shouldGetContacts() {
         assertThat(order.getContacts()).isEqualTo(contacts);
-    }
-
-    @Test
-    public void shouldGetOrderStatus() {
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETED);
-    }
-
-    @Test
-    public void shouldGetPaymentMethod() {
         assertThat(order.getPaymentMethod()).isEqualTo("C.O.D");
-    }
-
-    @Test
-    public void shouldGetTrackNumber() {
         assertThat(order.getTrackNumber()).isEqualTo("123456789101");
-    }
-
-    @Test
-    public void shouldGetClient() {
         assertThat(order.getClient()).isEqualTo(client);
-    }
-
-    @Test
-    public void shouldGetCreatedOn() {
         assertThat(order.getCreatedOn()).isEqualTo(new Date(2020, Calendar.JUNE, 24));
-    }
-
-    @Test
-    public void shouldGetLastUpdate() {
         assertThat(order.getLastUpdate()).isEqualTo(new Date(2020, Calendar.JUNE, 24));
-    }
-
-    @Test
-    public void shouldEqualsIsTrue() {
-        Order order = new Order(Collections.singleton(clientItem), contacts, "C.O.D");
-
-        assertThat(this.order.equals(order)).isTrue();
-    }
-
-    @Test
-    public void hashCodeTest() {
-        assertThat(order.hashCode())
-                .isEqualTo(Objects.hash(
-                        Collections.singleton(clientItem),
-                        contacts,
-                        "C.O.D"));
     }
 }

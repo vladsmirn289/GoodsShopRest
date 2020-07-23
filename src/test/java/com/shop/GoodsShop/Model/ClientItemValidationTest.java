@@ -7,7 +7,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,39 +79,10 @@ public class ClientItemValidationTest {
     }
 
     @Test
-    public void shouldGetId() {
+    public void getterTests() {
         assertThat(clientItem.getId()).isEqualTo(1L);
-    }
-
-    @Test
-    public void shouldGetItem() {
         assertThat(clientItem.getItem()).isEqualTo(item);
-    }
-
-    @Test
-    public void shouldGetOrder() {
         assertThat(clientItem.getOrder()).isEqualTo(order);
-    }
-
-    @Test
-    public void shouldGetQuantity() {
         assertThat(clientItem.getQuantity()).isEqualTo(1);
-    }
-
-    @Test
-    public void shouldEqualsTrue() {
-        Item item = new Item("Spring 5", 50L, 1.592D, 3300D,
-                "..........", "....", "1234567", books);
-        ClientItem clientItem = new ClientItem(item, 1);
-
-        assertThat(this.clientItem.equals(clientItem)).isTrue();
-    }
-
-    @Test
-    public void hashCodeTest() {
-        assertThat(this.clientItem.hashCode())
-                .isEqualTo(Objects.hash(
-                        item,
-                        1));
     }
 }

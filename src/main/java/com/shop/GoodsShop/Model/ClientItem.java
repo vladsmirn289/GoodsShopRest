@@ -72,11 +72,11 @@ public class ClientItem {
         if (o == null || getClass() != o.getClass()) return false;
         ClientItem that = (ClientItem) o;
         return quantity == that.quantity &&
-                item.equals(that.item);
+                item.getCode().equals(that.item.getCode());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(item, quantity);
+        return Objects.hash(item.getCode(), quantity);
     }
 }

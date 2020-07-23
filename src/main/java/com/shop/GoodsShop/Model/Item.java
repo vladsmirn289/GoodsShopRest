@@ -177,18 +177,11 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return name.equals(item.name) &&
-                count.equals(item.count) &&
-                weight.equals(item.weight) &&
-                price.equals(item.price) &&
-                description.equals(item.description) &&
-                characteristics.equals(item.characteristics) &&
-                code.equals(item.code) &&
-                category.equals(item.category);
+        return code.equals(item.code);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, count, weight, price, description, characteristics, code);
+        return Objects.hash(code);
     }
 }

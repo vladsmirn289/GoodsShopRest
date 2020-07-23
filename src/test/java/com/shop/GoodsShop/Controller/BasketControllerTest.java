@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -73,8 +74,12 @@ public class BasketControllerTest {
                 .andExpect(view().name("basket/basket"))
                 .andExpect(model().attributeExists("basketItems"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(3))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[2]").string("Spring 5 для профессионалов"))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]").string("2 шт."));
+                .andExpect(xpath("/html/body/div/table/tbody")
+                        .string(containsString("Spring 5 для профессионалов")))
+                .andExpect(xpath("/html/body/div/table/tbody")
+                        .string(containsString("Производные и интегралы")))
+                .andExpect(xpath("/html/body/div/table/tbody")
+                        .string(containsString("Git для профессионального программиста")));
     }
 
     @Test

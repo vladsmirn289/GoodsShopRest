@@ -124,7 +124,6 @@ public class OrderRepoTest {
         orderRepo.save(order);
 
         assertThat(orderRepo.findAll().size()).isEqualTo(3);
-        Order order1 = orderRepo.findById(11L).orElse(null);
 
         assertThat(order).isNotNull();
         assertThat(order.getClientItems().iterator().next().getItem().getName()).isEqualTo("laptop");

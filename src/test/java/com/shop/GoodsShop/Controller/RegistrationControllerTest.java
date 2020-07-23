@@ -134,12 +134,8 @@ public class RegistrationControllerTest {
 
     @Test
     @Sql(value = {
-            "classpath:db/H2/after-test.sql",
             "classpath:db/H2/user-test.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = {
-            "classpath:db/H2/after-test.sql"},
-            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void shouldErrorUserExists() throws Exception {
         mockMvc
                 .perform(post("/registration")

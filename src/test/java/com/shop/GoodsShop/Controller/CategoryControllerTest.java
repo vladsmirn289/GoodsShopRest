@@ -1,7 +1,5 @@
 package com.shop.GoodsShop.Controller;
 
-import com.shop.GoodsShop.Service.CategoryService;
-import com.shop.GoodsShop.Service.ItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -23,19 +21,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PropertySource(value = "classpath:application.properties")
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @Sql(value = {
+        "classpath:db/H2/after-test.sql",
         "classpath:db/H2/category-test.sql",
         "classpath:db/H2/item-test.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value = {
-        "classpath:db/H2/after-test.sql"},
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class CategoryControllerTest {
-    @Autowired
-    private ItemService itemService;
-
-    @Autowired
-    private CategoryService categoryService;
-
     @Autowired
     private MockMvc mockMvc;
 

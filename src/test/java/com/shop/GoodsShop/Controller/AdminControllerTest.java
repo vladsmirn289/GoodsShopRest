@@ -41,9 +41,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "classpath:db/H2/clientItem-test.sql",
         "classpath:db/H2/basket-test.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value = {
-        "classpath:db/H2/after-test.sql"},
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @WithUserDetails("admin")
 public class AdminControllerTest {
     @Autowired

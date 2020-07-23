@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PropertySource(value = "classpath:application.properties")
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @Sql(value = {
+        "classpath:db/H2/after-test.sql",
         "classpath:db/H2/category-test.sql",
         "classpath:db/H2/user-test.sql",
         "classpath:db/H2/item-test.sql",
@@ -30,9 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "classpath:db/H2/clientItem-test.sql",
         "classpath:db/H2/basket-test.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value = {
-        "classpath:db/H2/after-test.sql"},
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @WithUserDetails("manager")
 public class ManagerControllerTest {
     @Autowired

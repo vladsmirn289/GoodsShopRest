@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -27,9 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class LoginTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Test
     public void notAuthenticatedTest() throws Exception {
@@ -55,9 +51,6 @@ public class LoginTest {
     @Sql(value = {
             "classpath:db/H2/user-test.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = {
-            "classpath:db/H2/after-test.sql"},
-            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void correctCredentialsTest() throws Exception {
         mockMvc
                 .perform(formLogin().user("simpleUser").password("12345"))

@@ -27,9 +27,6 @@ public class ItemServiceTest {
     private ItemService itemService;
 
     @MockBean
-    private InitDB initDB;
-
-    @MockBean
     private ItemRepo itemRepo;
 
     private Category book;

@@ -47,7 +47,7 @@ CREATE TABLE item (
     count bigint,
     created_on timestamp without time zone,
     description character varying(50000),
-    image oid,
+    image bytea,
     name character varying(255),
     price double precision,
     weight double precision,

@@ -1,14 +1,12 @@
 package com.shop.GoodsShop.Repositories;
 
 import com.shop.GoodsShop.Model.*;
-import com.shop.GoodsShop.Service.InitDB;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,9 +34,6 @@ public class OrderRepoTest {
 
     @Autowired
     private ClientRepo clientRepo;
-
-    @MockBean
-    private InitDB initDB;
 
     @Autowired
     private TestEntityManager entityManager;

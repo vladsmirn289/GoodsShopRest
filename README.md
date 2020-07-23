@@ -61,24 +61,24 @@ Parameter name | Alternative parameter | By default | Meaning
 --spring.datasource.url | --db_url | jdbc:postgresql://localhost:5432/shop_db | This parameter is means that database is used in local machine and its name is **shop_db**
 --spring.datasource.username | --username | postgres | PostgreSQL database username
 --spring.datasource.password | --password | postgres | PostgreSQL database password
---init | - | false | Serves to initialize the database by default data
 
 Parameter name and alternative parameter is identical, except length.
 
 Before run the application you need to create the **shop_db** database by default, or use the other name
 (but you need to use **--db_url** parameter for change name at start),
-and after run JPA will automatically create tables, but they will be empty.
-For initialize the database you need to use **--init** parameter.
+and after run flyway will automatically create tables, but they will be empty, except one (in the client table
+will be an admin user).
+For initialize the database you need to execute the [data.sql] script.
 
-For example, the following scripts launches an application with an initialized *testDB* database:
+For example, the following scripts launches an application which uses *test_shop* database:
 *   Using `java -jar`:
     ```shell script
     ./mvnw package
-    java -jar target/*.jar --db_url=jdbc:postgresql://localhost:5432/testshop --init=true
+    java -jar target/*.jar --db_url=jdbc:postgresql://localhost:5432/test_shop
     ```
 *   Using spring boot plugin:
     ```shell script
-    ./mvnw spring-boot:run -Dspring-boot.run.arguments="--db_url=jdbc:postgresql://localhost:5432/shop_db --init=true"
+    ./mvnw spring-boot:run -Dspring-boot.run.arguments="--db_url=jdbc:postgresql://localhost:5432/test_shop"
     ```
 
 ## Mail configuration
@@ -119,6 +119,26 @@ Another main entity is the **client**, which can be a **simple user**, **manager
 Finally, the database contains the **client_items** table, it serves for only one purpose:
 to save the item quantity when it changes state (add to basket or make the order).
 
+## Test users
+If you initialize your database with the [data.sql] script, you maybe will need the logins, and the passwords of test users,
+in this table you can find it all:
+
+Login | Password | Role | State
+:---: | :---:    | :---:| :---:
+YakovMaurov | 25oMTtm3 | USER | Without all
+ProkofiyKravchuk | 1Rhm47zO | USER | Without all
+TimofeyBarshev | Yn865FbJ | USER | Without all
+EgorSolomonov | 92zoKcG5 | USER | With items in basket
+VladislavPutilin | 2s1L8lPC | USER | With items in basket
+BorislavPotemkin | UBq9H13C | USER | With items in basket
+LianaKraevska | Z1BY5O6c | USER | With orders
+AlbinaBudanova | v7gIe11t | USER | With orders
+testUser | 12345 | USER | Without all
+RomanGusev | 25oMTtm3 | MANAGER | Without all
+ReginaRudova | 25oMTtm3 | MANAGER | Without all
+VyacheslavYunkin | 25oMTtm3 | MANAGER | Without all
+CemenBukov | 25oMTtm3 | ADMIN | Without all
+
 ## Package structure
 The diagram of the package structure:
 
@@ -140,7 +160,9 @@ The diagram of the package structure:
                     *   [GoodsShopApplication.java] (Main class for, Spring Boot)
             *   [resources]
                 *   [db]
-                    *   [postgresql] (Stores DDL script for postgreSQL for the future, *at this moment useless*)
+                    *   [migration] (This is the flyway migrations)
+                    *   [postgresql] (Stores the data.sql script for initialize database)
+                        *   [data.sql]
                 *   [static]
                     *   [css] (Background settings)
                     *   [images]
@@ -280,7 +302,9 @@ GoodsShop is the pet-project released under version 2.0 of the [Apache License](
 
 [resources]: ./src/main/resources
 [db]: ./src/main/resources/db
+[migration]: ./src/main/resources/db/migration
 [postgresql]: ./src/main/resources/db/postgresql
+[data.sql]: ./src/main/resources/db/postgresql/data.sql
 [static]: ./src/main/resources/static
 [css]: ./src/main/resources/static/css
 [images]: ./src/main/resources/static/images

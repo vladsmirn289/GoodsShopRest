@@ -5,7 +5,6 @@ import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Repositories.ClientItemRepo;
 import com.shop.GoodsShop.Service.ClientItemService;
 import com.shop.GoodsShop.Service.ClientService;
-import com.shop.GoodsShop.Service.InitDB;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
@@ -54,9 +52,6 @@ public class BasketControllerTest {
 
     @Autowired
     private ClientService clientService;
-
-    @MockBean
-    private InitDB initDB;
 
     @BeforeEach
     public void init() {

@@ -30,9 +30,6 @@ public class ClientServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @MockBean
-    private InitDB initDB;
-
-    @MockBean
     private ClientRepo clientRepo;
 
     @MockBean

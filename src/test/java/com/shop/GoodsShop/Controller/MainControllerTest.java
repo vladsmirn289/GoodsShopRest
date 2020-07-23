@@ -1,13 +1,11 @@
 package com.shop.GoodsShop.Controller;
 
-import com.shop.GoodsShop.Service.InitDB;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,9 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MainControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private InitDB initDB;
 
     @Test
     public void showMainPageTest() throws Exception {

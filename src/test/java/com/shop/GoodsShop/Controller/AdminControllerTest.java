@@ -3,7 +3,6 @@ package com.shop.GoodsShop.Controller;
 import com.shop.GoodsShop.Model.Category;
 import com.shop.GoodsShop.Model.Item;
 import com.shop.GoodsShop.Service.CategoryService;
-import com.shop.GoodsShop.Service.InitDB;
 import com.shop.GoodsShop.Service.ItemService;
 import com.shop.GoodsShop.Utils.FileUtil;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,6 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -56,9 +54,6 @@ public class AdminControllerTest {
 
     @Autowired
     private ItemService itemService;
-
-    @MockBean
-    private InitDB initDB;
 
     @Test
     @WithUserDetails("simpleUser")

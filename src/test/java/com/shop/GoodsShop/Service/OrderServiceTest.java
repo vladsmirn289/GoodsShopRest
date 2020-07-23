@@ -26,9 +26,6 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     @MockBean
-    private InitDB initDB;
-
-    @MockBean
     private OrderRepo orderRepo;
 
     private Order order;

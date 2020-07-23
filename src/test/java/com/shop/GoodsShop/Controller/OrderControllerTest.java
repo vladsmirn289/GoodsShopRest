@@ -1,7 +1,10 @@
 package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Model.Client;
-import com.shop.GoodsShop.Service.*;
+import com.shop.GoodsShop.Service.ClientItemService;
+import com.shop.GoodsShop.Service.ClientService;
+import com.shop.GoodsShop.Service.ItemService;
+import com.shop.GoodsShop.Service.OrderService;
 import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +12,6 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
@@ -56,9 +58,6 @@ public class OrderControllerTest {
 
     @Autowired
     private ItemService itemService;
-
-    @MockBean
-    private InitDB initDB;
 
     @Test
     public void showOrdersListTest() throws Exception {

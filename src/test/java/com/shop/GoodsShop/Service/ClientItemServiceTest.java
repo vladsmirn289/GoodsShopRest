@@ -25,9 +25,6 @@ public class ClientItemServiceTest {
     private ClientItemService clientItemService;
 
     @MockBean
-    private InitDB initDB;
-
-    @MockBean
     private ClientItemRepo clientItemRepo;
 
     private ClientItem clientItem;

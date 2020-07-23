@@ -2,7 +2,6 @@ package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Service.ClientService;
-import com.shop.GoodsShop.Service.InitDB;
 import com.shop.GoodsShop.Utils.MailSenderUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -51,9 +50,6 @@ public class ClientControllerTest {
 
     @MockBean
     private MailSenderUtil mailSenderUtil;
-
-    @MockBean
-    private InitDB initDB;
 
     @Test
     @SuppressWarnings("deprecation")

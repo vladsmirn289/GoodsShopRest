@@ -34,7 +34,7 @@ public class Item {
     @Size(max = 50_000)
     private String characteristics;
 
-    @Lob
+    @Column(columnDefinition = "bytea")
     private byte[] image;
 
     @OneToMany(fetch = FetchType.EAGER,

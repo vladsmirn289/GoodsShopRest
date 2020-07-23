@@ -3,14 +3,12 @@ package com.shop.GoodsShop.Repositories;
 import com.shop.GoodsShop.Model.Category;
 import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Model.Item;
-import com.shop.GoodsShop.Service.InitDB;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,9 +22,6 @@ public class ClientItemRepoTest {
 
     @Autowired
     private CategoryRepo categoryRepo;
-
-    @MockBean
-    private InitDB initDB;
 
     @Autowired
     private TestEntityManager entityManager;

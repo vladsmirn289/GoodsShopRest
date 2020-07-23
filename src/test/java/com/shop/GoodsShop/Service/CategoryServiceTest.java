@@ -20,9 +20,6 @@ public class CategoryServiceTest {
     private CategoryService categoryService;
 
     @MockBean
-    private InitDB initDB;
-
-    @MockBean
     private CategoryRepo categoryRepo;
 
     @Test

@@ -31,7 +31,7 @@
                 <th scope="row">${counter}</th>
                 <#assign counter = counter + 1>
                 <td><a href="/order/${order.id}">${order.id}</a></td>
-                <td>${order.createdOn?datetime}</td>
+                <td>${order.createdOn}</td>
 
                 <#list order.getClientItems() as cItem>
                     <#assign generalPrice += (cItem.quantity * cItem.item.price)/>

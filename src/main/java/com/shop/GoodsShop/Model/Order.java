@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -43,13 +43,11 @@ public class Order {
     private Client manager;
 
     @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
-    private Date createdOn;
+    private LocalDateTime createdOn;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
-    private Date lastUpdate;
+    private LocalDateTime lastUpdate;
 
 
     protected Order() {}
@@ -127,19 +125,19 @@ public class Order {
         this.manager = manager;
     }
 
-    public Date getCreatedOn() {
+    public LocalDateTime getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
     }
 
-    public Date getLastUpdate() {
+    public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(Date lastUpdate) {
+    public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

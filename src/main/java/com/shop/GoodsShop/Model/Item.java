@@ -4,7 +4,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -50,9 +50,8 @@ public class Item {
     private Category category;
 
     @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
-    private Date createdOn;
+    private LocalDateTime createdOn;
 
 
     protected Item() {}
@@ -164,11 +163,11 @@ public class Item {
         this.category = category;
     }
 
-    public Date getCreatedOn() {
+    public LocalDateTime getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
     }
 

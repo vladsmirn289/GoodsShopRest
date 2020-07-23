@@ -6,14 +6,13 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SuppressWarnings("deprecation")
 public class ItemValidationTest {
     private Validator validator;
     private Item item;
@@ -33,7 +32,7 @@ public class ItemValidationTest {
         item.setId(1L);
         item.setImage("123".getBytes());
         item.setAdditionalImages(Collections.singleton(image));
-        item.setCreatedOn(new Date(2020, Calendar.JUNE, 24));
+        item.setCreatedOn(LocalDateTime.of(2020, Month.JUNE, 24, 1, 1));
         this.item = item;
     }
 
@@ -167,6 +166,6 @@ public class ItemValidationTest {
                 .isEqualTo("1234".getBytes());
         assertThat(item.getCode()).isEqualTo("1234567");
         assertThat(item.getCategory()).isEqualTo(books);
-        assertThat(item.getCreatedOn()).isEqualTo(new Date(2020, Calendar.JUNE, 24));
+        assertThat(item.getCreatedOn()).isEqualTo(LocalDateTime.of(2020, Month.JUNE, 24, 1, 1));
     }
 }

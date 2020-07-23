@@ -6,11 +6,15 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SuppressWarnings("deprecation")
 public class OrderValidationTest {
     private Validator validator;
     private Order order;
@@ -41,8 +45,8 @@ public class OrderValidationTest {
         order.setTrackNumber("123456789101");
         order.setOrderStatus(OrderStatus.COMPLETED);
         order.setClient(client);
-        order.setCreatedOn(new Date(2020, Calendar.JUNE, 24));
-        order.setLastUpdate(new Date(2020, Calendar.JUNE, 24));
+        order.setCreatedOn(LocalDateTime.of(2020, Month.JUNE, 24, 1, 1));
+        order.setLastUpdate(LocalDateTime.of(2020, Month.JUNE, 24, 1, 2));
         this.order = order;
     }
 
@@ -97,7 +101,7 @@ public class OrderValidationTest {
         assertThat(order.getPaymentMethod()).isEqualTo("C.O.D");
         assertThat(order.getTrackNumber()).isEqualTo("123456789101");
         assertThat(order.getClient()).isEqualTo(client);
-        assertThat(order.getCreatedOn()).isEqualTo(new Date(2020, Calendar.JUNE, 24));
-        assertThat(order.getLastUpdate()).isEqualTo(new Date(2020, Calendar.JUNE, 24));
+        assertThat(order.getCreatedOn()).isEqualTo(LocalDateTime.of(2020, Month.JUNE, 24, 1, 1));
+        assertThat(order.getLastUpdate()).isEqualTo(LocalDateTime.of(2020, Month.JUNE, 24, 1, 2));
     }
 }

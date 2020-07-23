@@ -49,6 +49,7 @@ public class LoginTest {
 
     @Test
     @Sql(value = {
+            "classpath:db/H2/after-test.sql",
             "classpath:db/H2/user-test.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void correctCredentialsTest() throws Exception {

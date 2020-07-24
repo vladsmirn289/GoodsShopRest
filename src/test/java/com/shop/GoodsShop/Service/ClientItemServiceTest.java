@@ -41,6 +41,18 @@ public class ClientItemServiceTest {
     }
 
     @Test
+    public void shouldCalculateGeneralPrice() {
+        double price = clientItemService.generalPrice(Collections.singleton(clientItem));
+        assertThat(price).isEqualTo(1800D);
+    }
+
+    @Test
+    public void shouldCalculateGeneralWeight() {
+        double weight = clientItemService.generalWeight(Collections.singleton(clientItem));
+        assertThat(weight).isEqualTo(9D);
+    }
+
+    @Test
     public void shouldFindClientItemById() {
         Mockito
                 .doReturn(Optional.of(clientItem))

@@ -167,15 +167,17 @@ public class AdminController {
                                     @RequestParam("name") String name,
                                     Model model) {
         logger.info("Called createNewCategory");
-        if (name.trim().equals("")) {
-            logger.error("Name is blank");
-            model.addAttribute("nameError", "Имя категории не может быть пустым");
-            model.addAttribute("name", name);
-            model.addAttribute("parents", categoryService.getAllNamesOfCategories());
-            return "admin/createCategory";
-        } else if (categoryService.findByName(name) != null) {
-            logger.error("Category with this name is already exists");
-            model.addAttribute("nameError", "Категория с таким именем уже существует");
+
+        Category foundByName = categoryService.findByName(name);
+        if (name.trim().equals("") || foundByName != null) {
+            if (foundByName != null) {
+                logger.error("Category with this name is already exists");
+                model.addAttribute("nameError", "Категория с таким именем уже существует");
+            } else {
+                logger.error("Name is blank");
+                model.addAttribute("nameError", "Имя категории не может быть пустым");
+            }
+
             model.addAttribute("name", name);
             model.addAttribute("parents", categoryService.getAllNamesOfCategories());
             return "admin/createCategory";
@@ -215,36 +217,17 @@ public class AdminController {
     }
 
     @PostMapping("/createOrUpdateItem")
-    public String createOrUpdateItem(@RequestParam(value = "id", required = false) Long id,
-                                     @RequestParam("name") String itemName,
-                                     @RequestParam("count") long count,
-                                     @RequestParam("weight") double weight,
-                                     @RequestParam("price") double price,
-                                     @RequestParam("description") String description,
-                                     @RequestParam("characteristics") String characteristics,
-                                     @RequestParam("file") MultipartFile file,
-                                     @RequestParam("category") String categoryName,
+    public String createOrUpdateItem(@ModelAttribute("newItem") Item item,
+                                     @RequestParam("fileImage") MultipartFile file,
+                                     @RequestParam("categoryName") String categoryName,
                                      Model model) throws IOException {
         logger.info("Called createOrUpdateItem method");
-        Item item = null;
-        if (id == null) {
-            item = new Item(itemName, count, weight, price, description,
-                    characteristics, UUID.randomUUID().toString().substring(0, 8), categoryService.findByName(categoryName));
-            item.setImage(file.getBytes());
-        } else {
-            item = itemService.findById(id);
-            item.setName(itemName);
-            item.setCount(count);
-            item.setWeight(weight);
-            item.setPrice(price);
-            item.setDescription(description);
-            item.setCharacteristics(characteristics);
-            item.setImage(file.getBytes());
-
-            if (!item.getCategory().getName().equals(categoryName)) {
-                item.setCategory(categoryService.findByName(categoryName));
-            }
+        if (item.getId() == null) {
+            item.setCode(UUID.randomUUID().toString());
         }
+
+        item.setImage(file.getBytes());
+        item.setCategory(categoryService.findByName(categoryName));
 
         FileUtil fileUtil = new FileUtil();
         boolean isExtWrong = fileUtil.hasInvalidExtension(file.getOriginalFilename());
@@ -263,11 +246,14 @@ public class AdminController {
             return "admin/createItem";
         }
 
+        Long id = item.getId();
         itemService.save(item);
 
         if (id == null) {
+            logger.info("Item successful created");
             return "messages/successfulItemCreated";
         } else {
+            logger.info("Item successful updated");
             return "messages/successfulItemUpdated";
         }
     }

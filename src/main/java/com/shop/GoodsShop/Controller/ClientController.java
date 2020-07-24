@@ -73,22 +73,21 @@ public class ClientController {
     public String personalRoomPage(@AuthenticationPrincipal Client client,
                                    Model model) {
         logger.info("Called personalRoomPage method");
-        model.addAttribute("client", clientService.findByLogin(client.getLogin()));
+        model.addAttribute("client", client);
 
         return "client/personalRoom";
     }
 
     @PostMapping("/personalRoom")
     @PreAuthorize("isAuthenticated()")
-    public String changePersonalInfo(@Valid @ModelAttribute("changedPerson") Client client,
+    public String changePersonalInfo(@AuthenticationPrincipal Client originalClient,
+                                     @Valid @ModelAttribute("changedPerson") Client client,
                                      BindingResult bindingResult,
                                      Model model,
                                      HttpServletRequest request) {
         logger.info("Called changePersonalInfo method");
-        Client originalClient = clientService.findById(client.getId());
-        Client persistentClient = clientService.findByLogin(client.getLogin());
-        boolean clientExists = (!originalClient.getLogin().equals(client.getLogin()))
-                && (persistentClient != null);
+        boolean clientExists = !originalClient.getLogin().equals(client.getLogin())
+                && clientService.findByLogin(client.getLogin()) != null;
 
         if ( bindingResult.hasErrors() || clientExists ) {
             logger.warn("Personal room page has errors!");
@@ -101,33 +100,19 @@ public class ClientController {
 
             model.addAttribute("client", client);
             return "client/personalRoom";
-        } else {
-            if (!client.getFirstName().equals(originalClient.getFirstName())) {
-                originalClient.setFirstName(client.getFirstName());
-            }
-
-            if (!client.getLastName().equals(originalClient.getLastName())) {
-                originalClient.setLastName(client.getLastName());
-            }
-
-            if (!client.getPatronymic().equals(originalClient.getPatronymic())) {
-                originalClient.setPatronymic(client.getPatronymic());
-            }
-
-            if (!client.getLogin().equals(originalClient.getLogin())) {
-                originalClient.setLogin(client.getLogin());
-
-                SecurityContextHolder.getContext().setAuthentication(null);
-                request.getSession().removeAttribute("SPRING_SECURITY_CONTEXT");
-                clientService.save(originalClient);
-                return "redirect:";
-            }
-
-            clientService.save(originalClient);
-            logger.info("Change info successful");
         }
 
-        model.addAttribute("client", originalClient);
+        if (!originalClient.getLogin().equals(client.getLogin())) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+            request.getSession().removeAttribute("SPRING_SECURITY_CONTEXT");
+            clientService.save(client);
+            return "redirect:";
+        }
+
+        clientService.save(client);
+        logger.info("Change info successful");
+
+        model.addAttribute("client", client);
         return "client/personalRoom";
     }
 
@@ -170,9 +155,8 @@ public class ClientController {
         if (hasErrors) {
             return "client/changePassword";
         } else {
-            Client persistentClient = clientService.findByLogin(client.getLogin());
-            persistentClient.setPassword(passwordEncoder.encode(newPassword));
-            clientService.save(persistentClient);
+            client.setPassword(passwordEncoder.encode(newPassword));
+            clientService.save(client);
 
             return "messages/passwordSuccessfulChanged";
         }
@@ -189,8 +173,8 @@ public class ClientController {
     @PostMapping("/changeEmail")
     @PreAuthorize("isAuthenticated()")
     public String sendCodeForSetNewEmail(@AuthenticationPrincipal Client client,
-                              @RequestParam("email") String email,
-                              Model model) {
+                                         @RequestParam("email") String email,
+                                         Model model) {
         logger.info("Called changeEmail method");
         String code = UUID.randomUUID().toString();
         client.setConfirmationCode(code);

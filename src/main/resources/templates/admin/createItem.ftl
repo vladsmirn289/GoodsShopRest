@@ -10,10 +10,11 @@
             </#if>
         </#if>
 
-        <form action="/admin/createOrUpdateItem" enctype="multipart/form-data" method="post">
+        <form action="/admin/createOrUpdateItem" name="newItem" enctype="multipart/form-data" method="post">
             <#if item??>
                 <#if item.id??>
                     <input type="hidden" name="id" value="${item.id}"/>
+                    <input type="hidden" name="code" value="${item.code}"/>
                 </#if>
             </#if>
 
@@ -112,7 +113,7 @@
             <div class="form-group">
                 <div class="custom-file">
                     <label for="customFile">Изображение товара</label>
-                    <input type="file" id="customFile" name="file"/>
+                    <input type="file" id="customFile" name="fileImage"/>
                 </div>
                 <#if fileExtError??>
                     <div class="text-danger">
@@ -123,7 +124,7 @@
 
             <div class="form-group">
                 <label for="inputCategory">Выберите категорию товара</label>
-                <select id="inputCategory" name="category" class="form-control">
+                <select id="inputCategory" name="categoryName" class="form-control">
                     <#list categories as category>
                         <option>${category}</option>
                     </#list>

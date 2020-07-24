@@ -95,14 +95,8 @@ public class OrderController {
         logger.info("Called checkoutAllItems method");
         Client persistentClient = clientService.findByLogin(client.getLogin());
         Set<ClientItem> basket = persistentClient.getBasket();
-        double generalPrice = basket
-                .stream()
-                .map(item -> item.getItem().getPrice() * item.getQuantity())
-                .reduce(Double::sum).orElse(0D);
-        double generalWeight = basket
-                .stream()
-                .map(item -> item.getItem().getWeight() * item.getQuantity())
-                .reduce(Double::sum).orElse(0D);
+        double generalPrice = clientItemService.generalPrice(basket);
+        double generalWeight = clientItemService.generalWeight(basket);
 
         model.addAttribute("client", client);
         model.addAttribute("generalPrice", generalPrice);
@@ -138,13 +132,16 @@ public class OrderController {
     @Transactional
     public String checkoutOrder(@AuthenticationPrincipal Client client,
                                 @RequestParam("payment") String paymentMethod,
-                                @RequestParam("generalPrice") String generalPrice,
-                                @RequestParam("generalWeight") String generalWeight,
                                 @Valid @ModelAttribute("orderContacts") Contacts contacts,
                                 BindingResult bindingResult,
                                 Model model,
                                 HttpServletRequest request) {
         logger.info("Called checkoutOrder method");
+        @SuppressWarnings("unchecked")
+        Set<ClientItem> items = (Set<ClientItem>) request.getSession().getAttribute("orderedItems");
+        double generalPrice = clientItemService.generalPrice(items);
+        double generalWeight = clientItemService.generalWeight(items);
+
         if (bindingResult.hasErrors()) {
             logger.warn("Form with contact data contains errors");
             model.mergeAttributes(ValidateUtil.validate(bindingResult));
@@ -155,8 +152,6 @@ public class OrderController {
             return "order/checkoutPage";
         }
 
-        @SuppressWarnings("unchecked")
-        Set<ClientItem> items = (Set<ClientItem>) request.getSession().getAttribute("orderedItems");
         request.getSession().removeAttribute("orderedItems");
         clientService.deleteBasketItems(items, client.getLogin());
 
@@ -177,10 +172,7 @@ public class OrderController {
         if (paymentMethod.equals("Наложенный платёж")) {
             logger.info("Method payment is C.O.D");
             //Nothing
-        } else if (paymentMethod.equals("Карта")) {
-            logger.info("Method payment is Card");
-            //Realization of card payment ...
-        }
+        } // Another methods...
 
         return "messages/orderCreated";
     }

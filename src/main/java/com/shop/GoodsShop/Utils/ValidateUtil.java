@@ -22,6 +22,7 @@ public class ValidateUtil {
             errors = bindingResult
                         .getFieldErrors()
                         .stream()
+                        .peek(b -> logger.debug(b.getField() + "Error: " + b.getDefaultMessage()))
                         .collect(Collectors.toMap(
                                 fieldError -> fieldError.getField() + "Error",
                                 FieldError::getDefaultMessage));
@@ -36,6 +37,7 @@ public class ValidateUtil {
     public static <T> Map<String, String> validate(Set<ConstraintViolation<T>> violations) {
         logger.info("Called validate method");
         return violations.stream()
+                .peek(v -> logger.debug(v.getPropertyPath() + "Error: " + v.getMessage()))
                 .collect(Collectors.toMap(
                         v -> v.getPropertyPath() + "Error",
                         ConstraintViolation::getMessage

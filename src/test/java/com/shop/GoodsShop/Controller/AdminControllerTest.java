@@ -268,7 +268,7 @@ public class AdminControllerTest {
         FileUtil fileUtil = new FileUtil();
         File testFile = new File("src/test/resources/images/proGit.jpg");
         MockMultipartFile multipartFile = new MockMultipartFile(
-                "file", "proGit.jpg", "image/jpg", fileUtil.fileToBytes(testFile));
+                "fileImage", "proGit.jpg", "image/jpg", fileUtil.fileToBytes(testFile));
 
         MockHttpServletRequestBuilder builder = multipart("/admin/createOrUpdateItem")
                 .file(multipartFile)
@@ -279,7 +279,7 @@ public class AdminControllerTest {
                 .param("price", "56")
                 .param("description", "This is test description")
                 .param("characteristics", "This is test characteristics")
-                .param("category", "Программирование");
+                .param("categoryName", "Программирование");
 
         mockMvc
                 .perform(builder)
@@ -297,7 +297,7 @@ public class AdminControllerTest {
         FileUtil fileUtil = new FileUtil();
         File testFile = new File("src/test/resources/images/proGit.jpg");
         MockMultipartFile multipartFile = new MockMultipartFile(
-                "file", "proGit", "image/jpg", fileUtil.fileToBytes(testFile));
+                "fileImage", "proGit", "image/jpg", fileUtil.fileToBytes(testFile));
 
         MockHttpServletRequestBuilder builder = multipart("/admin/createOrUpdateItem")
                 .file(multipartFile)
@@ -308,7 +308,7 @@ public class AdminControllerTest {
                 .param("price", "1")
                 .param("description", "desc...")
                 .param("characteristics", "")
-                .param("category", "Программирование");
+                .param("categoryName", "Программирование");
 
         mockMvc
                 .perform(builder)
@@ -328,7 +328,7 @@ public class AdminControllerTest {
         FileUtil fileUtil = new FileUtil();
         File testFile = new File("src/test/resources/images/proGit.jpg");
         MockMultipartFile multipartFile = new MockMultipartFile(
-                "file", "proGit.jpg", "image/jpg", fileUtil.fileToBytes(testFile));
+                "fileImage", "proGit.jpg", "image/jpg", fileUtil.fileToBytes(testFile));
 
         MockHttpServletRequestBuilder builder = multipart("/admin/createOrUpdateItem")
                 .file(multipartFile)
@@ -338,9 +338,10 @@ public class AdminControllerTest {
                 .param("count", "30")
                 .param("weight", "0.4")
                 .param("price", "56")
+                .param("code", "e43a71c7")
                 .param("description", "This is test description")
                 .param("characteristics", "This is test characteristics")
-                .param("category", "Научная литература");
+                .param("categoryName", "Научная литература");
 
         mockMvc
                 .perform(builder)

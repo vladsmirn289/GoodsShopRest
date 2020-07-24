@@ -10,8 +10,6 @@
 
         <form action="/order/checkout" name="orderContacts" method="post">
             <div class="form-row">
-                <input type="hidden" name="generalPrice" value="${generalPrice}"/>
-                <input type="hidden" name="generalWeight" value="${generalWeight}"/>
                 <div class="form-group col-md-8">
                     <label for="inputCity">Город</label>
                     <input type="text" class="form-control ${(cityError??)?string('is-invalid', '')}" id="inputCity" name="city"

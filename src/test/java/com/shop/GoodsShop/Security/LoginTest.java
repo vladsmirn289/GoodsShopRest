@@ -10,7 +10,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -52,9 +51,29 @@ public class LoginTest {
             "classpath:db/H2/after-test.sql",
             "classpath:db/H2/user-test.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void correctCredentialsTest() throws Exception {
+    public void correctCredentialsTestWithSessionAttribute() throws Exception {
         mockMvc
-                .perform(formLogin().user("simpleUser").password("12345"))
+                .perform(post("/login")
+                        .with(csrf())
+                        .param("username", "simpleUser")
+                        .param("password", "12345")
+                        .sessionAttr("url_prior_login", "http://localhost/basket"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/basket"));
+    }
+
+    @Test
+    @Sql(value = {
+            "classpath:db/H2/after-test.sql",
+            "classpath:db/H2/user-test.sql"},
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void correctCredentialsTestWithoutSessionAttribute() throws Exception {
+        mockMvc
+                .perform(post("/login")
+                        .with(csrf())
+                        .param("username", "simpleUser")
+                        .param("password", "12345"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));

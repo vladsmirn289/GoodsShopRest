@@ -23,6 +23,20 @@ public class ClientItemServiceImpl implements ClientItemService {
     }
 
     @Override
+    public double generalPrice(Set<ClientItem> basket) {
+        return basket.stream()
+                .map(item -> item.getItem().getPrice() * item.getQuantity())
+                .reduce(Double::sum).orElse(0D);
+    }
+
+    @Override
+    public double generalWeight(Set<ClientItem> basket) {
+        return basket.stream()
+                .map(item -> item.getItem().getWeight() * item.getQuantity())
+                .reduce(Double::sum).orElse(0D);
+    }
+
+    @Override
     public ClientItem findById(Long id) {
         logger.info("Finding client item by id = " + id);
         return clientItemRepo.findById(id).orElseThrow(NoItemException::new);

@@ -158,12 +158,15 @@ public class OrderControllerTest {
     }
 
     @Test
+    @Transactional
     public void shouldErrorShowWhenCheckoutOrderWithWrongData() throws Exception {
+        Client client = clientService.findByLogin("simpleUser");
+        Hibernate.initialize(client.getBasket());
+
         mockMvc
                 .perform(post("/order/checkout")
                         .with(csrf())
-                        .param("generalWeight", "11")
-                        .param("generalPrice", "221980")
+                        .sessionAttr("orderedItems", client.getBasket())
                         .param("city", "")
                         .param("zipCode", "")
                         .param("country", "Russia")
@@ -182,7 +185,8 @@ public class OrderControllerTest {
                 .andExpect(model().attributeExists("phoneNumberError"))
                 .andExpect(model().attributeExists("streetError"))
                 .andExpect(model().attributeExists("contactsData"))
-                .andExpect(model().attributeExists("generalPrice"));
+                .andExpect(model().attributeExists("generalPrice"))
+                .andExpect(model().attributeExists("generalWeight"));
     }
 
     @Test

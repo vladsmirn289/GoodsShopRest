@@ -116,10 +116,53 @@ public class ClientController {
         return "client/personalRoom";
     }
 
-    @GetMapping("/changePassword")
+    @GetMapping("/resetPasswordRequest")
     @PreAuthorize("isAuthenticated()")
-    public String changePasswordPage() {
+    public String resetPasswordRequest() {
+        logger.info("Called changePasswordRequest method");
+
+        return "client/resetPassword";
+    }
+
+    @PostMapping("/resetPassword")
+    @PreAuthorize("isAuthenticated()")
+    public String resetPassword(@AuthenticationPrincipal Client client,
+                                @RequestParam("email") String email,
+                                Model model) {
+        logger.info("Called sendChangePasswordRequest");
+
+        String login = client.getLogin();
+        try {
+            mailSenderUtil.sendMessage(
+                    email,
+                    "Сброс пароля",
+                    "Здравствуйте " + login + "," +
+                            "чтобы сбросить пароль, перейдите по" +
+                            "данной ссылке: http://localhost:8080/client/setNewPassword/" +
+                            login + ".\nПосле перехода, ваш пароль автоматически изменится на \"12345\"");
+        } catch (Exception e) {
+            logger.error(e.toString());
+            model.addAttribute("mailError", "Не удалось отправить письмо");
+            model.addAttribute("email", email);
+
+            return "client/resetPassword";
+        }
+
+        model.addAttribute("client", client);
+        return "client/personalRoom";
+    }
+
+    @GetMapping("/setNewPassword/{login}")
+    @PreAuthorize("isAuthenticated()")
+    public String changePasswordPage(@PathVariable("login") String login,
+                                     @AuthenticationPrincipal Client client) {
         logger.info("Called changePasswordPage method");
+        if (login.equals(client.getLogin())) {
+            client.setPassword(passwordEncoder.encode("12345"));
+            clientService.save(client);
+        } else {
+            return "messages/sessionExpired";
+        }
 
         return "client/changePassword";
     }
@@ -127,18 +170,11 @@ public class ClientController {
     @PostMapping("/changePassword")
     @PreAuthorize("isAuthenticated()")
     public String changePassword(@AuthenticationPrincipal Client client,
-                                 @RequestParam("currentPassword") String currentPassword,
                                  @RequestParam("newPassword") String newPassword,
                                  @RequestParam("retypePassword") String retypePassword,
                                  Model model) {
         logger.info("Called changePassword method");
         boolean hasErrors = false;
-
-        if (!passwordEncoder.matches(currentPassword, client.getPassword())) {
-            logger.error("Wrong password");
-            model.addAttribute("currentPasswordError", "Неверный пароль");
-            hasErrors = true;
-        }
 
         if (newPassword.length() < 5) {
             logger.error("Small password");
@@ -154,12 +190,12 @@ public class ClientController {
 
         if (hasErrors) {
             return "client/changePassword";
-        } else {
-            client.setPassword(passwordEncoder.encode(newPassword));
-            clientService.save(client);
-
-            return "messages/passwordSuccessfulChanged";
         }
+
+        client.setPassword(passwordEncoder.encode(newPassword));
+        clientService.save(client);
+
+        return "messages/passwordSuccessfulChanged";
     }
 
     @GetMapping("/changeEmail")

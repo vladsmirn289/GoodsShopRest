@@ -182,50 +182,119 @@ public class ClientControllerTest {
     }
 
     @Test
-    @WithUserDetails("simpleUser")
-    public void showChangePasswordPageTest() throws Exception {
+    @WithUserDetails("manager")
+    public void showResetPasswordPage() throws Exception {
         mockMvc
-                .perform(get("/client/changePassword"))
+                .perform(get("/client/resetPasswordRequest"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("client/changePassword"));
+                .andExpect(view().name("client/resetPassword"));
     }
 
     @Test
-    @WithUserDetails("simpleUser")
-    public void shouldShowErrorWhenTryChangePasswordWithIncorrectData() throws Exception {
+    @WithUserDetails("manager")
+    public void shouldSuccessSendResetPasswordRequest() throws Exception {
+        mockMvc
+                .perform(post("/client/resetPassword")
+                        .with(csrf())
+                        .param("email", "g@g")
+                        .header("referer", "http://localhost/personalRoom"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("client/personalRoom"));
+
+        Mockito
+                .verify(mailSenderUtil, Mockito.times(1))
+                .sendMessage(eq("g@g"),
+                        eq("Сброс пароля"),
+                        contains("http://localhost:8080/client/setNewPassword/manager."));
+    }
+
+    @Test
+    @WithUserDetails("manager")
+    @SuppressWarnings("deprecation")
+    public void shouldRaiseExceptionWhenTryToSendResetPasswordRequest() throws Exception {
+        Mockito
+                .doThrow(RuntimeException.class)
+                .when(mailSenderUtil)
+                .sendMessage(eq("g@g"), eq("Сброс пароля"), anyObject());
+
+        mockMvc
+                .perform(post("/client/resetPassword")
+                        .with(csrf())
+                        .param("email", "g@g")
+                        .header("referer", "http://localhost/personalRoom"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("client/resetPassword"))
+                .andExpect(model().attributeExists("mailError"))
+                .andExpect(model().attributeExists("email"));
+
+        Mockito
+                .verify(mailSenderUtil, Mockito.times(1))
+                .sendMessage(eq("g@g"),
+                        eq("Сброс пароля"),
+                        contains("http://localhost:8080/client/setNewPassword/manager."));
+    }
+
+    @Test
+    @WithUserDetails("manager")
+    public void showChangePasswordPageTest() throws Exception {
+        mockMvc
+                .perform(get("/client/setNewPassword/manager"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("client/changePassword"));
+
+        Client client = clientService.findByLogin("manager");
+        assertThat(passwordEncoder.matches("12345", client.getPassword()));
+    }
+
+    @Test
+    @WithUserDetails("manager")
+    public void shouldShowErrorWhenTryChangePassword() throws Exception {
+        mockMvc
+                .perform(get("/client/setNewPassword/simpleUser"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages/sessionExpired"));
+
+        Client client = clientService.findByLogin("manager");
+        assertThat(passwordEncoder.matches("67891", client.getPassword()));
+    }
+
+    @Test
+    @WithUserDetails("manager")
+    public void shouldSuccessfulChangePassword() throws Exception {
+        mockMvc
+                .perform(post("/client/changePassword")
+                        .with(csrf())
+                        .param("newPassword", "helloWorld")
+                        .param("retypePassword", "helloWorld"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages/passwordSuccessfulChanged"));
+
+        Client client = clientService.findByLogin("manager");
+        assertThat(passwordEncoder.matches("helloWorld", client.getPassword()));
+    }
+
+    @Test
+    @WithUserDetails("manager")
+    public void shouldShowErrorsWhenTryChangePasswordWithIncorrectData() throws Exception {
         mockMvc
                 .perform(post("/client/changePassword")
                          .with(csrf())
-                         .param("currentPassword", "67890")
                          .param("newPassword", "1")
                          .param("retypePassword", "2"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("client/changePassword"))
-                .andExpect(model().attribute("currentPasswordError", "Неверный пароль"))
                 .andExpect(model().attribute("lengthPasswordError", "Пароль должен состоять из как минимум 5 символов"))
                 .andExpect(model().attribute("retypePasswordError", "Пароли не совпадают!"));
-    }
 
-    @Test
-    @WithUserDetails("simpleUser")
-    public void shouldCorrectChangePassword() throws Exception {
-        mockMvc
-                .perform(post("/client/changePassword")
-                        .with(csrf())
-                        .param("currentPassword", "12345")
-                        .param("newPassword", "1234567890")
-                        .param("retypePassword", "1234567890"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("messages/passwordSuccessfulChanged"))
-                .andExpect(model().attributeDoesNotExist("currentPasswordError"))
-                .andExpect(model().attributeDoesNotExist("lengthPasswordError"))
-                .andExpect(model().attributeDoesNotExist("retypePasswordError"));
-
-        Client client = clientService.findByLogin("simpleUser");
-        assertThat(passwordEncoder.matches("1234567890", client.getPassword()));
+        Client client = clientService.findByLogin("manager");
+        assertThat(passwordEncoder.matches("67891", client.getPassword()));
     }
 
     @Test

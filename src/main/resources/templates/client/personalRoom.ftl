@@ -62,7 +62,7 @@
             </div>
 
             <div class="form-group">
-                <a class="btn btn-primary" href="/client/changePassword">Сменить пароль</a>
+                <a class="btn btn-primary" href="/client/resetPasswordRequest">Сменить пароль</a>
             </div>
 
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>

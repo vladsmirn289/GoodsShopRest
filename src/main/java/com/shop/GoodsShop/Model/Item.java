@@ -60,18 +60,12 @@ public class Item {
                 Long count,
                 Double weight,
                 Double price,
-                String description,
-                String characteristics,
-                String code,
-                Category category) {
+                String code) {
         this.name = name;
         this.count = count;
         this.weight = weight;
         this.price = price;
-        this.description = description;
-        this.characteristics = characteristics;
         this.code = code;
-        this.category = category;
     }
 
 

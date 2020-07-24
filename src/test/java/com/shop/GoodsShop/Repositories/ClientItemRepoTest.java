@@ -31,8 +31,10 @@ public class ClientItemRepoTest {
         Category books = new Category("Books");
         Category book = new Category("Book", books);
         Item item = new Item("item", 30L, 3D
-                , 600D, "description..."
-                , "characteristics...", "123", book);
+                , 600D, "123");
+        item.setDescription("description...");
+        item.setCharacteristics("characteristics...");
+        item.setCategory(book);
         ClientItem clientItem = new ClientItem(item, 2);
 
         categoryRepo.save(books);
@@ -62,8 +64,10 @@ public class ClientItemRepoTest {
         Category laptops = new Category("Laptops");
         Category laptop = new Category("Laptop", laptops);
         Item item = new Item("laptop", 40L, 2D
-                , 56000D, "LaptopDescription..."
-                , "LaptopCharacteristics...", "567", laptop);
+                , 56000D, "567");
+        item.setDescription("LaptopDescription...");
+        item.setCharacteristics("LaptopCharacteristics...");
+        item.setCategory(laptop);
         ClientItem clientItem = new ClientItem(item, 1);
 
         categoryRepo.save(laptops);

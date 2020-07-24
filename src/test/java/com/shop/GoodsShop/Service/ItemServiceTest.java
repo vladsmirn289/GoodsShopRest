@@ -37,8 +37,10 @@ public class ItemServiceTest {
         Category books = new Category("Books");
         this.book = new Category("Book", books);
         this.item = new Item("item", 30L, 3D
-                , 600D, "description..."
-                , "characteristics...", "123", book);
+                , 600D, "123");
+        item.setDescription("description...");
+        item.setCharacteristics("characteristics...");
+        item.setCategory(book);
         item.setId(1L);
     }
 

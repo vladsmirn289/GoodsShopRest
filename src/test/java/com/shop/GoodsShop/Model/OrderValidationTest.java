@@ -29,8 +29,11 @@ public class OrderValidationTest {
         this.validator = localValidatorFactoryBean;
 
         Category books = new Category("Books");
-        Item item = new Item("Spring 5", 50L, 1.592D, 3300D,
-                "..........", "...", UUID.randomUUID().toString(), books);
+        Item item = new Item("Spring 5", 50L, 1.592D, 3300D, UUID.randomUUID().toString());
+        item.setDescription("..........");
+        item.setCharacteristics("....");
+        item.setCategory(books);
+
         this.clientItem = new ClientItem(item, 1);
         Set<ClientItem> clientItems = new HashSet<>();
         clientItems.add(clientItem);

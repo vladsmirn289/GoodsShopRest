@@ -26,8 +26,10 @@ public class ClientValidationTest {
         this.validator = localValidatorFactoryBean;
 
         Category books = new Category("Books");
-        this.item = new Item("Spring 5", 50L, 1.592D, 3300D,
-                "..........", "....", "1234567", books);
+        this.item = new Item("Spring 5", 50L, 1.592D, 3300D, "1234567");
+        this.item.setDescription("..........");
+        this.item.setCharacteristics("....");
+        this.item.setCategory(books);
         ClientItem clientItem = new ClientItem(item, 1);
         Contacts contacts = new Contacts("123456", "Russia",
                 "Moscow", "Bolotnaya street", "+7-499-123-45-67");

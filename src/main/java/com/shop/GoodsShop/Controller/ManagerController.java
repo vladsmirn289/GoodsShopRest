@@ -68,8 +68,7 @@ public class ManagerController {
         logger.info("Called setManagerToOrder method");
         Order order = orderService.findById(orderId);
         if (order.getManager() == null) {
-            Client persistentManager = clientService.findByLogin(manager.getLogin());
-            order.setManager(persistentManager);
+            order.setManager(manager);
             orderService.save(order);
         } else {
             logger.info("Conflict, another manager has already set himself to manager");

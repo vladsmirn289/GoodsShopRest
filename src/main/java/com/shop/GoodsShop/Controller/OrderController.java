@@ -66,9 +66,8 @@ public class OrderController {
                                Model model,
                                @PageableDefault(sort = {"createdOn"}, direction = Sort.Direction.DESC) Pageable pageable) {
         logger.info("Called clientOrders method");
-        Client persistentClient = clientService.findByLogin(client.getLogin());
 
-        Page<Order> orders = orderService.findOrdersByClient(persistentClient, pageable);
+        Page<Order> orders = orderService.findOrdersByClient(client, pageable);
         model.addAttribute("url", "/order?");
         model.addAttribute("orders", orders);
 
@@ -98,7 +97,7 @@ public class OrderController {
         double generalPrice = clientItemService.generalPrice(basket);
         double generalWeight = clientItemService.generalWeight(basket);
 
-        model.addAttribute("client", client);
+        model.addAttribute("client", persistentClient);
         model.addAttribute("generalPrice", generalPrice);
         model.addAttribute("generalWeight", generalWeight);
 
@@ -115,10 +114,9 @@ public class OrderController {
                                Model model,
                                HttpServletRequest request) {
         logger.info("Called checkoutItem method");
-        Client persistentClient = clientService.findByLogin(client.getLogin());
         ClientItem item = clientItemService.findById(id);
 
-        model.addAttribute("client", persistentClient);
+        model.addAttribute("client", client);
         model.addAttribute("generalPrice", item.getItem().getPrice() * item.getQuantity());
         model.addAttribute("generalWeight", item.getItem().getWeight() * item.getQuantity());
 
@@ -155,11 +153,9 @@ public class OrderController {
         request.getSession().removeAttribute("orderedItems");
         clientService.deleteBasketItems(items, client.getLogin());
 
-        Client persistentClient = clientService.findByLogin(client.getLogin());
-
         Order newOrder = new Order(items, contacts, paymentMethod);
         newOrder.setOrderStatus(OrderStatus.NEW);
-        newOrder.setClient(persistentClient);
+        newOrder.setClient(client);
         orderService.save(newOrder);
 
         items.forEach(i -> {

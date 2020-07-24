@@ -26,8 +26,10 @@ public class CategoryValidationTest {
         this.parent = new Category("Books");
         Category category = new Category("Book", parent);
 
-        this.item = new Item("Spring 5", 50L, 1.592D, 3300D,
-                "..........", "....", "1234567", category);
+        this.item = new Item("Spring 5", 50L, 1.592D, 3300D, "1234567");
+        item.setDescription("..........");
+        item.setCharacteristics("....");
+        item.setCategory(category);
 
         category.setId(1L);
         category.setItems(Collections.singleton(item));

@@ -25,8 +25,11 @@ public class ItemValidationTest {
         this.validator = localValidatorFactoryBean;
 
         this.books = new Category("Books");
-        Item item = new Item("Spring 5", 50L, 1.592D, 3300D,
-                "..........", "....", "1234567", books);
+        Item item = new Item("Spring 5", 50L, 1.592D, 3300D, "1234567");
+        item.setDescription("..........");
+        item.setCharacteristics("....");
+        item.setCategory(books);
+
         Image image = new Image();
         image.setImage("1234".getBytes());
         item.setId(1L);

@@ -25,8 +25,10 @@ public class ClientItemValidationTest {
         this.validator = localValidatorFactoryBean;
 
         this.books = new Category("Books");
-        this.item = new Item("Spring 5", 50L, 1.592D, 3300D,
-                "..........", "....", "1234567", books);
+        this.item = new Item("Spring 5", 50L, 1.592D, 3300D, "1234567");
+        item.setDescription("..........");
+        item.setCharacteristics("....");
+        item.setCategory(books);
 
         ClientItem clientItem = new ClientItem(item, 1);
         clientItem.setId(1L);

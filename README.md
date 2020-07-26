@@ -12,15 +12,15 @@ emails, addresses has random generated.
 
 Some images:
 
-![img](./src/main/resources/static/images/docs/MainPage.png)
+![img](https://raw.githubusercontent.com/vladsmirn289/Images/master/MainPage.png)
 
-![img](./src/main/resources/static/images/docs/ProgrammingBooks.png)
+![img](https://raw.githubusercontent.com/vladsmirn289/Images/master/ProgrammingBooks.png)
 
-![img](./src/main/resources/static/images/docs/Orders.png)
+![img](https://raw.githubusercontent.com/vladsmirn289/Images/master/Orders.png)
 
-![img](./src/main/resources/static/images/docs/ManagerOrders.png)
+![img](https://raw.githubusercontent.com/vladsmirn289/Images/master/ManagerOrders.png)
 
-![img](./src/main/resources/static/images/docs/ListOfUsers.png)
+![img](https://raw.githubusercontent.com/vladsmirn289/Images/master/ListOfUsers.png)
 
 ## If you find a bug or you have any suggestions
 You can follow the next link and describe your problem/suggestion: https://github.com/vladsmirn289/GoodsShop/issues
@@ -104,7 +104,7 @@ Last three parameters you can use for gmail.
 ## Database structure
 This is the relationship between tables in the database:
 
-![img](./src/main/resources/static/images/docs/shop_db.jpg)
+![img](https://raw.githubusercontent.com/vladsmirn289/Images/master/shop_db.jpg)
 
 All **items** have grouped by **categories**, and the parent category can have child categories, but
 the child category cannot have other categories.
@@ -161,12 +161,9 @@ The diagram of the package structure:
             *   [resources]
                 *   [db]
                     *   [migration] (This is the flyway migrations)
-                    *   [postgresql] (Stores the data.sql script for initialize database)
-                        *   [data.sql]
                 *   [static]
                     *   [css] (Background settings)
                     *   [images]
-                        *   [docs] (Images for documentation)
                         *   [InitBooks] (Images for books initialization)
                         *   [InitElectronics] (Images for electronics initialization)
                         *   [InitStationery] (Images for stationery initialization)
@@ -207,12 +204,12 @@ After clicking on the "Войти" (Log in) button or if you try to access the s
 (for example, /basket or /admin), you will be automatically
 redirected to the login page:
 
-![img](./src/main/resources/static/images/docs/LoginPage.png)
+![img](https://raw.githubusercontent.com/vladsmirn289/Images/master/LoginPage.png)
 
 Also, if you log in as **simple user**, you will not be able to access some URLs such as */admin* or */order/manager*,
 instead of this you get this error page with 403 error:
 
-![img](./src/main/resources/static/images/docs/Forbidden.png)
+![img](https://raw.githubusercontent.com/vladsmirn289/Images/master/Forbidden.png)
 
 This occurs because Spring Security supports roles. If you are a **simple user**, you have the role **ROLE_USER**, else if you
 are a manager, then you have the role **ROLE_MANAGER**, otherwise, if you are an admin, then you have the role **ROLE_ADMIN**.
@@ -248,7 +245,7 @@ So, many URLs has mapping in the [SecurityConfig.java] file, that allows limit a
 
 Finally, from login page you can redirect to the registration page:
 
-![img](./src/main/resources/static/images/docs/RegistrationPage.png)
+![img](https://raw.githubusercontent.com/vladsmirn289/Images/master/RegistrationPage.png)
 
 After entering the registration data, you need to confirm your email address, if you follow the link from the email, you
 will be automatically logged in, and you can continue the session in a new tab.
@@ -258,7 +255,7 @@ Otherwise, if you not confirm your email, you will not be able to log in.
 This project also supports validation of the entered data. Therefore, if you leave some fields empty, after clicking the button
 you will see the red labels below these fields:
 
-![img](./src/main/resources/static/images/docs/Validation.png)
+![img](https://raw.githubusercontent.com/vladsmirn289/Images/master/Validation.png)
 
 ## Internationalization
 Internationalization is not supported for the reason that the project is a parody on a Russian shop and
@@ -303,8 +300,6 @@ GoodsShop is the pet-project released under version 2.0 of the [Apache License](
 [resources]: ./src/main/resources
 [db]: ./src/main/resources/db
 [migration]: ./src/main/resources/db/migration
-[postgresql]: ./src/main/resources/db/postgresql
-[data.sql]: ./src/main/resources/db/postgresql/data.sql
 [static]: ./src/main/resources/static
 [css]: ./src/main/resources/static/css
 [images]: ./src/main/resources/static/images

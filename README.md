@@ -26,6 +26,10 @@ Some images:
 You can follow the next link and describe your problem/suggestion: https://github.com/vladsmirn289/GoodsShop/issues
 
 ## How to run goods shop application
+For this purpose you can use several variants:
+1. By standard: clone repository and run project from command line. This variant is discussed in this section.
+2. Or use docker-compose. This variant is discussed below.
+
 Firstly, you need to clone the git project:
 ```shell script
 git clone https://github.com/vladsmirn289/GoodsShop.git
@@ -64,22 +68,29 @@ Parameter name | Alternative parameter | By default | Meaning
 
 Parameter name and alternative parameter is identical, except length.
 
-Before run the application you need to create the **shop_db** database by default, or use the other name
+For generate the database you can use several variants:
+1. Manually create the **shop_db** database (by default), or use the other name
 (but you need to use **--db_url** parameter for change name at start),
-and after run flyway will automatically create tables, but they will be empty, except one (in the client table
-will be an admin user).
-For initialize the database you need to execute the [data.sql] script.
-
+and after run flyway will automatically create tables and initialize them.<br/>
 For example, the following scripts launches an application which uses *test_shop* database:
-*   Using `java -jar`:
-    ```shell script
-    ./mvnw package
-    java -jar target/*.jar --db_url=jdbc:postgresql://localhost:5432/test_shop
-    ```
-*   Using spring boot plugin:
-    ```shell script
-    ./mvnw spring-boot:run -Dspring-boot.run.arguments="--db_url=jdbc:postgresql://localhost:5432/test_shop"
-    ```
+    *   Using `java -jar`:
+        ```shell script
+        ./mvnw package
+        java -jar target/*.jar --db_url=jdbc:postgresql://localhost:5432/test_shop
+        ```
+    *   Using spring boot plugin:
+        ```shell script
+        ./mvnw spring-boot:run -Dspring-boot.run.arguments="--db_url=jdbc:postgresql://localhost:5432/test_shop"
+        ```
+2. Alternatively, you can use docker for this purpose.<br/>
+This script allows run the postgreSQL database in the docker container:
+    * ```shell script
+      docker run -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=shop_db -p 5432:5432 -d postgres
+      ```
+    This script uses this container: [postgres](https://hub.docker.com/_/postgres). If you already have running the postgresql
+    service on 5432 port, you can stop this process using **systemctl** or **system** command, depending on the distribution, or
+    map the port differently (use -p parameter differently, for example -p 9999:5432). ***In the second case, you must also specify
+    the port in the --db_url parameter when you launch the application***.
 
 ## Mail configuration
 Goods shop uses the new mail.ru account, it uses to send emails when you create a new account
@@ -100,6 +111,31 @@ Parameter name | Alternative parameter | By default
 --spring.mail.properties.transport.protocol | - | -
 
 Last three parameters you can use for gmail.
+
+## Docker
+Alternatively, for launch this application with the necessary dependencies you can use docker-compose.
+This project contains [docker-compose.yml] and [Dockerfile] files. Dockerfile serves to build the base image of
+this project, and it locates in the dockerhub repository on this url: https://hub.docker.com/r/vladsmirn289/goodsshop.
+
+But running of the base image still require the running postgreSQL database, otherwise the application will be crash.
+For simultaneously run several services such as postgreSQL, flyway and the application, you can use docker-compose,
+which can be started with the following command:
+```shell script
+docker-compose up
+```
+*But before that you must be in the root directory of this project (the **pwd** command must be show GoodsShop directory)*.
+
+If you run command in this view, you will see the logs in console, and cannot use it without stopping the server (ctrl+C).
+In order to run the container in background, you can use -d parameter. And if you will want to see the logs in further,
+run this command:
+```shell script
+docker-compose logs
+```
+Or
+```shell script
+docker-compose logs -f
+```
+To follow the logs.
 
 ## Database structure
 This is the relationship between tables in the database:
@@ -261,6 +297,15 @@ you will see the red labels below these fields:
 Internationalization is not supported for the reason that the project is a parody on a Russian shop and
 all descriptions, characteristics is written in Russian, and how to create item in many languages...
 
+## Logging
+Logging configured in [log4j2.xml] file. All logs are divided into 4 groups according to their levels
+and writes in the corresponding files in the logs directory, which will be automatically created
+in a root directory after the first launch of this project:
+*   DEBUG (app-debug.log)
+*   INFO (app-info.log)
+*   WARN (app-warnings.log)
+*   ERROR (app-error.log)
+
 ## Frameworks and technologies used
 *   Java SE 8
 *   Spring Boot
@@ -339,3 +384,6 @@ GoodsShop is the pet-project released under version 2.0 of the [Apache License](
 [ServiceTest]: ./src/test/java/com/shop/GoodsShop/Service
 [UtilsTest]: ./src/test/java/com/shop/GoodsShop/Utils
 [GoodsShopApplicationTests.java]: ./src/test/java/com/shop/GoodsShop/GoodsShopApplicationTests.java
+
+[Dockerfile]: ./Dockerfile
+[docker-compose.yml]: ./docker-compose.yml

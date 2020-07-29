@@ -10,4 +10,5 @@ RUN mvn package
 FROM openjdk:8-jre-alpine
 WORKDIR /home/app
 COPY --from=build /home/app/target/*.jar .
-CMD java -jar *.jar --db_url=jdbc:postgresql://db:5432/shop_db
+COPY --from=build /home/app/src/main/resources/static/images ./images
+CMD java -jar *.jar --db_url=jdbc:postgresql://db:5432/shop_db --uploadPath=/home/app/images/

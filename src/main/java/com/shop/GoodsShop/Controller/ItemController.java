@@ -59,21 +59,6 @@ public class ItemController {
         return "item/categoryItems";
     }
 
-    @GetMapping("{id}/image")
-    @ResponseBody
-    public byte[] downloadImage(@PathVariable("id") Long id) {
-        logger.info("downloadPhoto method called");
-        Item item = itemService.findById(id);
-
-        if (item.getImage() != null) {
-            logger.info("Download image for item with id = " + id);
-        } else {
-            logger.warn("Image is null");
-        }
-
-        return item.getImage();
-    }
-
     @GetMapping("/{id}")
     public String itemPage(@PathVariable("id") Long id,
                            Model model) {

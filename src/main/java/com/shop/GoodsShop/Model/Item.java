@@ -34,8 +34,7 @@ public class Item {
     @Size(max = 50_000)
     private String characteristics;
 
-    @Column(columnDefinition = "bytea")
-    private byte[] image;
+    private String image;
 
     @OneToMany(fetch = FetchType.EAGER,
                cascade = {CascadeType.REMOVE})
@@ -125,11 +124,11 @@ public class Item {
         this.characteristics = characteristics;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

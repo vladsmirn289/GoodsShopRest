@@ -22,7 +22,7 @@
                 <th scope="row">${counter}</th>
                 <#assign counter = counter + 1>
                 <td><a href="/item/${cItem.item.id}">${cItem.item.id}</a></td>
-                <td><img src="/item/${cItem.item.id}/image" alt="${cItem.item.id}"/></td>
+                <td><img src="/images/${cItem.item.image}" alt="${cItem.item.id}"/></td>
                 <td>${cItem.item.name}</td>
                 <td>${cItem.item.price}</td>
                 <td>${cItem.quantity}</td>

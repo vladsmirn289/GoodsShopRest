@@ -7,6 +7,7 @@ import com.shop.GoodsShop.Service.ItemService;
 import com.shop.GoodsShop.Utils.FileUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,6 +54,9 @@ public class AdminControllerTest {
 
     @Autowired
     private ItemService itemService;
+
+    @Value("${uploadPath}")
+    private String path;
 
     @Test
     @WithUserDetails("simpleUser")
@@ -290,6 +296,9 @@ public class AdminControllerTest {
         mockMvc
                 .perform(get("/category/3"))
                 .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(3));
+
+        String originalName = itemService.findByName("newItem").get(0).getImage();
+        Files.delete(Paths.get(path + originalName));
     }
 
     @Test
@@ -365,5 +374,8 @@ public class AdminControllerTest {
         assertThat(item.getDescription()).isEqualTo("This is test description");
         assertThat(item.getCharacteristics()).isEqualTo("This is test characteristics");
         assertThat(item.getCategory().getName()).isEqualTo("Научная литература");
+
+        String originalName = itemService.findByName("newItem").get(0).getImage();
+        Files.delete(Paths.get(path + originalName));
     }
 }

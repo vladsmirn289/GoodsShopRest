@@ -4,7 +4,7 @@
     <div class="card mb-3 bg-secondary text-white">
         <div class="row no-gutters">
             <div class="col-md-4">
-                <img src="/item/${item.id}/image" class="card-img" alt="${item.name}"/>
+                <img src="/images/${item.image}" class="card-img" alt="${item.name}"/>
             </div>
             <div class="col-md-6">
                 <div class="card-body">

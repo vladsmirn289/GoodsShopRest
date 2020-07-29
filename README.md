@@ -65,6 +65,7 @@ Parameter name | Alternative parameter | By default | Meaning
 --spring.datasource.url | --db_url | jdbc:postgresql://localhost:5432/shop_db | This parameter is means that database is used in local machine and its name is **shop_db**
 --spring.datasource.username | --username | postgres | PostgreSQL database username
 --spring.datasource.password | --password | postgres | PostgreSQL database password
+--uploadPath | - | ${user.dir}/src/main/resources/static/images/ | Place where files will be uploaded
 
 Parameter name and alternative parameter is identical, except length.
 

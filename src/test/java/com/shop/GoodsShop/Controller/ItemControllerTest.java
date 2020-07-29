@@ -47,7 +47,7 @@ public class ItemControllerTest {
         Item proGit = itemService.findById(7L);
         File image = new File("src/test/resources/images/proGit.jpg");
         FileUtil fileUtil = new FileUtil();
-        proGit.setImage(fileUtil.fileToBytes(image));
+        proGit.setImage("proGit.jpg");
 
         itemService.save(proGit);
     }
@@ -70,39 +70,6 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void testFailDownloadImage() throws Exception {
-        mockMvc
-                .perform(get("/item/6/image"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(""));
-    }
-
-    @Test
-    public void testDownloadImage() throws Exception {
-        File image = new File("src/test/resources/images/proGit.jpg");
-        FileUtil fileUtil = new FileUtil();
-        mockMvc
-                .perform(get("/item/7/image"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().bytes(fileUtil.fileToBytes(image)));
-    }
-
-    @Test
-    public void testNoItemError() throws Exception {
-        MvcResult result = mockMvc
-                .perform(get("/item/100/image"))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn();
-
-        Exception exception = result.getResolvedException();
-        assertThat(exception).isNotNull();
-        assertThat(exception.getMessage()).isEqualTo("Такого предмета не существует!");
-    }
-
-    @Test
     public void testGetItemPage() throws Exception {
         mockMvc
                 .perform(get("/item/6"))
@@ -113,6 +80,18 @@ public class ItemControllerTest {
                 .andExpect(model().attributeExists("item"))
                 .andExpect(xpath("/html/body/div/div[1]/div/div[2]/div/h5")
                         .string("Spring 5 для профессионалов"));
+    }
+
+    @Test
+    public void shouldShowErrorWhenTryFindByInvalidId() throws Exception {
+        MvcResult mvcResult = mockMvc
+                .perform(get("/item/100"))
+                .andDo(print())
+                .andReturn();
+
+        Exception exception = mvcResult.getResolvedException();
+        assertThat(exception).isNotNull();
+        assertThat(exception.getMessage()).isEqualTo("Такого предмета не существует!");
     }
 
     @Test

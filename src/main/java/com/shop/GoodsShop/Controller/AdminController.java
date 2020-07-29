@@ -13,6 +13,7 @@ import com.shop.GoodsShop.Utils.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +43,9 @@ public class AdminController {
     private CategoryService categoryService;
     private ItemService itemService;
     private final Validator validator;
+
+    @Value("${uploadPath}")
+    private String uploadPath;
 
     public AdminController() {
         logger.debug("Called constructor of AdminController class");
@@ -226,7 +231,6 @@ public class AdminController {
             item.setCode(UUID.randomUUID().toString());
         }
 
-        item.setImage(file.getBytes());
         item.setCategory(categoryService.findByName(categoryName));
 
         FileUtil fileUtil = new FileUtil();
@@ -245,6 +249,10 @@ public class AdminController {
             model.addAttribute("categories", categoryService.getAllNamesOfChildren());
             return "admin/createItem";
         }
+
+        String filename = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+        file.transferTo(new File(uploadPath + filename));
+        item.setImage(filename);
 
         Long id = item.getId();
         itemService.save(item);

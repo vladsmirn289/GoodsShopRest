@@ -33,7 +33,7 @@
                 <tr>
                     <th scope="row">${counter}</th>
                     <#assign counter = counter + 1>
-                    <td><img src="/item/${basketItem.item.id}/image" alt="${basketItem.item.name}"/></td>
+                    <td><img src="/images/${basketItem.item.image}" alt="${basketItem.item.name}"/></td>
                     <td>${basketItem.item.name}</td>
                     <td>${basketItem.item.price} рублей</td>
                     <td>${basketItem.quantity} шт.</td>

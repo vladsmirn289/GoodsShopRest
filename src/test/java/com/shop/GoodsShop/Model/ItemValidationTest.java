@@ -33,7 +33,7 @@ public class ItemValidationTest {
         Image image = new Image();
         image.setImage("1234".getBytes());
         item.setId(1L);
-        item.setImage("123".getBytes());
+        item.setImage("123");
         item.setAdditionalImages(Collections.singleton(image));
         item.setCreatedOn(LocalDateTime.of(2020, Month.JUNE, 24, 1, 1));
         this.item = item;
@@ -164,7 +164,7 @@ public class ItemValidationTest {
         assertThat(item.getPrice()).isEqualTo(3300D);
         assertThat(item.getDescription()).isEqualTo("..........");
         assertThat(item.getCharacteristics()).isEqualTo("....");
-        assertThat(item.getImage()).isEqualTo("123".getBytes());
+        assertThat(item.getImage()).isEqualTo("123");
         assertThat(item.getAdditionalImages().iterator().next().getImage())
                 .isEqualTo("1234".getBytes());
         assertThat(item.getCode()).isEqualTo("1234567");

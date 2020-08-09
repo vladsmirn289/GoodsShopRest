@@ -42,7 +42,7 @@ public class CategoryController {
                                     @PageableDefault(sort = {"name"}) Pageable pageable) {
         logger.info("showCategoryItems method called for category with id = " + id);
         Category category = categoryService.findById(id);
-        Page<Item> items = itemService.findByCategory(category, pageable);
+        Page<Item> items = categoryService.getAllItemsByCategory(category, pageable);
 
         model.addAttribute("url", "/category/" + id + "?");
         model.addAttribute("items", items);

@@ -2,35 +2,38 @@ package com.shop.GoodsShop.Service;
 
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.ClientItem;
-import com.shop.GoodsShop.Model.Role;
-import com.shop.GoodsShop.Repositories.ClientRepo;
+import com.shop.GoodsShop.Model.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
-import java.util.Objects;
+import javax.servlet.http.Cookie;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class ClientServiceImpl implements ClientService {
     private static final Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
 
+    private RestTemplate restTemplate;
     private ClientRepo clientRepo;
-    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        logger.debug("Setting restTemplate");
+        this.restTemplate = restTemplate;
+    }
 
     @Autowired
     public void setClientRepo(ClientRepo clientRepo) {
@@ -38,110 +41,173 @@ public class ClientServiceImpl implements ClientService {
         this.clientRepo = clientRepo;
     }
 
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    @Override
+    public Client findById(Long clientId, Cookie jwtCookie) {
+        logger.info("Find client by id - " + clientId);
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        return restTemplate
+                .exchange(
+                        "/api/clients/" + clientId,
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        Client.class).getBody();
     }
 
+    @Override
+    public Page<Client> findAll(Pageable pageable, Cookie jwtCookie) {
+        logger.info("Find all clients");
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        return restTemplate
+                .exchange(
+                        "/api/clients?page=" + pageable.getPageNumber() + "&size=" + pageable.getPageSize(),
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        new ParameterizedTypeReference<Page<Client>>(){}).getBody();
+    }
+
+    @Override
+    public Client findByLogin(String login, Cookie jwtCookie) {
+        logger.info("Find client by login - " + login);
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        return restTemplate
+                .exchange(
+                        "/api/clients/byLogin/" + login,
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        Client.class).getBody();
+    }
+
+    @Override
+    public Client findByConfirmationCode(String confirmationCode, Cookie jwtCookie) {
+        logger.info("Find client by confirm code - " + confirmationCode);
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        return restTemplate
+                .exchange(
+                        "/api/clients/byConfirmCode/" + confirmationCode,
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        Client.class).getBody();
+    }
+
+    @Override
+    public List<ClientItem> findBasketItemsByClientId(Long clientId, Cookie jwtCookie) {
+        logger.info("Find basket items by client id - " + clientId);
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        return restTemplate
+                .exchange(
+                        "/api/clients/" + clientId + "/basket",
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        new ParameterizedTypeReference<List<ClientItem>>(){}).getBody();
+    }
+
+    @Override
+    public Page<Order> findOrdersByClientId(Long clientId, Pageable pageable, Cookie jwtCookie) {
+        logger.info("Find orders by client id - " + clientId);
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        return restTemplate
+                .exchange(
+                        "/api/clients/" + clientId + "/orders?page=" + pageable.getPageNumber() + "&size=" + pageable.getPageSize(),
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        new ParameterizedTypeReference<Page<Order>>(){}).getBody();
+    }
+
+    /* TODO: realize it */
     @Override
     public void authenticateClient(String rawPassword, String login, AuthenticationManager authManager) {
-        UserDetails userDetails = loadUserByUsername(login);
 
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                userDetails.getUsername(),
-                rawPassword,
-                userDetails.getAuthorities()
-        );
-
-        Authentication authentication = authManager.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Client findById(Long id) {
-        return clientRepo.findById(id).orElse(null);
-    }
+    public void save(Client client, Cookie jwtCookie) {
+        HttpHeaders headers = getJwtHeader(jwtCookie);
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Client> findAll(Pageable pageable) {
-        return clientRepo.findAll(pageable);
-    }
+        if (client.getId() != null) {
+            logger.info("Updating client with id - " + client.getId());
+            restTemplate
+                    .exchange(
+                            "/api/clients/" + client.getId(),
+                            HttpMethod.PUT,
+                            new HttpEntity<>(client, headers),
+                            Client.class);
 
-    @Override
-    @Transactional(readOnly = true)
-    public Client findByLogin(String login) {
-        return clientRepo.findByLogin(login);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Client findByConfirmationCode(String confirmationCode) {
-        return clientRepo.findByConfirmationCode(confirmationCode);
-    }
-
-    @Override
-    public void save(Client client) {
-        if (findByLogin(client.getLogin()) == null) {
-            logger.info("Saving client to database without confirmation");
-            if (client.getRoles().isEmpty()) {
-                client.setRoles(Collections.singleton(Role.USER));
-            }
-        } else {
-            logger.info("Update client");
-            if (client.getConfirmationCode() != null) {
-                String password = client.getPassword();
-                if (!password.startsWith("$2a$")) {
-                    client.setConfirmationCode(null);
-                    password = passwordEncoder.encode(password);
-                    client.setPassword(password);
-                }
-            }
+            return;
         }
 
-        clientRepo.save(client);
+        logger.info("Create new client with login - " + client.getLogin());
+        restTemplate
+                .exchange(
+                        "/api/clients",
+                        HttpMethod.POST,
+                        new HttpEntity<>(client),
+                        Client.class);
     }
 
     @Override
-    public void delete(Client client) {
-        logger.info("Deleting client with id = " + client.getId() + " from database");
-        clientRepo.delete(client);
+    public void delete(Client client, Cookie jwtCookie) {
+        logger.info("Deleting client with id - " + client.getId());
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        restTemplate
+                .exchange(
+                        "/api/clients/" + client.getId(),
+                        HttpMethod.DELETE,
+                        new HttpEntity<>(headers),
+                        Object.class);
     }
 
     @Override
-    public void deleteById(Long id) {
-        logger.info("Deleting client with id = " + id + " from database");
-        clientRepo.deleteById(id);
+    public void deleteBasketItems(Set<ClientItem> itemSet, Long clientId, Cookie jwtCookie) {
+        logger.info("Delete basket items with client id - " + clientId);
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        for (ClientItem ci : itemSet) {
+            restTemplate
+                    .exchange(
+                            "/api/clients/" + clientId + "/basket/" + ci.getId(),
+                            HttpMethod.DELETE,
+                            new HttpEntity<>(headers),
+                            Object.class);
+        }
     }
 
     @Override
-    public void deleteBasketItems(Set<ClientItem> itemSet, String login) {
-        Client client = clientRepo.findByLogin(login);
+    public void clearBasket(Long clientId, Cookie jwtCookie) {
+        logger.info("Clear basket with client id - " + clientId);
+        HttpHeaders headers = getJwtHeader(jwtCookie);
 
-        Set<ClientItem> basketItems = client.getBasket()
-                .stream().map(clientItem -> {
-            if (!itemSet.contains(clientItem)) {
-                return clientItem;
-            } else {
-                return null;
-            }
-        }).filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        client.setBasket(basketItems);
-        save(client);
+        restTemplate
+                .exchange(
+                        "/api/clients/" + clientId + "/basket",
+                        HttpMethod.DELETE,
+                        new HttpEntity<>(headers),
+                        Object.class);
     }
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        logger.info("LoadingUserByUsername called");
-        Client client = findByLogin(login);
-        if ( (client != null) && (client.getConfirmationCode() == null) ) {
-            return client;
-        } else {
-            logger.warn("Client null or not confirmed");
+        logger.info("Loading user by username");
+        Client client = clientRepo.findByLogin(login);
+
+        if (client == null) {
+            logger.warn("Client with login - " + login + " not found");
             return null;
         }
+
+        return client;
+    }
+
+    private HttpHeaders getJwtHeader(Cookie jwtCookie) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + jwtCookie.getValue());
+
+        return headers;
     }
 }

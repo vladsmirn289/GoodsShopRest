@@ -1,5 +1,6 @@
 package com.shop.GoodsShop.Config;
 
+import com.shop.GoodsShop.Config.JWT.JwtFilter;
 import com.shop.GoodsShop.Service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableWebSecurity
@@ -20,6 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
     private ClientService clientService;
     private AuthenticationSuccessHandler successHandler;
+    private RestTemplate restTemplate;
+    private JwtFilter jwtFilter;
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
@@ -36,10 +42,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.successHandler = successHandler;
     }
 
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    @Autowired
+    public void setJwtFilter(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
+
     @Bean
     @Override
     public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
+    }
+
+    @Bean
+    public CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
+        CustomAuthenticationFilter filter = new CustomAuthenticationFilter(restTemplate);
+        filter.setAuthenticationSuccessHandler(successHandler);
+        filter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
+        filter.setAuthenticationManager(authenticationManager());
+
+        return filter;
     }
 
     @Override
@@ -76,15 +102,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
 
-                    .formLogin()
-                    .loginPage("/login")
-                    .successHandler(successHandler)
-                    .permitAll()
-
-                .and()
-
                     .logout()
                     .permitAll();
+
+        http.addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(jwtFilter, customAuthenticationFilter().getClass());
     }
 
     @Override

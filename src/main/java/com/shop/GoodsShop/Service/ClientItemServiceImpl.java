@@ -1,70 +1,97 @@
 package com.shop.GoodsShop.Service;
 
-import com.shop.GoodsShop.Exception.NoItemException;
 import com.shop.GoodsShop.Model.ClientItem;
-import com.shop.GoodsShop.Repositories.ClientItemRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.Set;
+import javax.servlet.http.Cookie;
 
 @Service
 public class ClientItemServiceImpl implements ClientItemService {
     private static final Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
 
-    private ClientItemRepo clientItemRepo;
+    private RestTemplate restTemplate;
 
     @Autowired
-    public void setClientItemRepo(ClientItemRepo clientItemRepo) {
-        logger.debug("Setting clientItemRepo");
-        this.clientItemRepo = clientItemRepo;
+    public void setRestTemplate(RestTemplate restTemplate) {
+        logger.debug("Setting restTemplate");
+        this.restTemplate = restTemplate;
     }
 
     @Override
-    public double generalPrice(Set<ClientItem> basket) {
-        return basket.stream()
-                .map(item -> item.getItem().getPrice() * item.getQuantity())
-                .reduce(Double::sum).orElse(0D);
+    public double generalPrice(Long clientId, Cookie jwtCookie) {
+        logger.info("Count general price of basket items with client id - " + clientId);
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        return restTemplate
+                .exchange(
+                        "/api/clients/" + clientId + "/basket/generalPrice",
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        Double.class).getBody();
     }
 
     @Override
-    public double generalWeight(Set<ClientItem> basket) {
-        return basket.stream()
-                .map(item -> item.getItem().getWeight() * item.getQuantity())
-                .reduce(Double::sum).orElse(0D);
+    public double generalWeight(Long clientId, Cookie jwtCookie) {
+        logger.info("Count general weight of basket items with client id - " + clientId);
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        return restTemplate
+                .exchange(
+                        "/api/clients/" + clientId + "/basket/generalWeight",
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        Double.class).getBody();
     }
 
     @Override
-    public ClientItem findById(Long id) {
-        logger.info("Finding client item by id = " + id);
-        return clientItemRepo.findById(id).orElseThrow(NoItemException::new);
+    public ClientItem findById(Long clientId, Long itemId, Cookie jwtCookie) {
+        logger.info("Find item in basket with client id - " + clientId);
+        HttpHeaders headers = getJwtHeader(jwtCookie);
+
+        return restTemplate
+                .exchange(
+                        "/api/clients/" + clientId + "/basket/" + itemId,
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        ClientItem.class).getBody();
     }
 
     @Override
-    public void save(ClientItem clientItem) {
-        logger.info("Saving client item to database");
-        clientItemRepo.save(clientItem);
-    }
+    public void save(ClientItem clientItem, Long clientId, Cookie jwtCookie) {
+        HttpHeaders headers = getJwtHeader(jwtCookie);
 
-    @Override
-    public void delete(ClientItem clientItem) {
-        logger.info("Deleting client item with id = " + clientItem.getId() + " from database");
-        clientItemRepo.delete(clientItem);
-    }
+        if (clientItem.getId() != null) {
+            logger.info("Updating item in the basket with client id - " + clientId);
+            restTemplate
+                    .exchange(
+                            "/api/clients/" + clientId + "/basket/" + clientItem.getId(),
+                            HttpMethod.PUT,
+                            new HttpEntity<>(clientItem, headers),
+                            ClientItem.class);
 
-    @Override
-    public void deleteById(Long id) {
-        logger.info("Deleting client item with id = " + id + " from database");
-        clientItemRepo.deleteById(id);
-    }
-
-    @Override
-    public void deleteSetItems(Set<ClientItem> clientItemSet) {
-        logger.info("Deleting set of client items from database");
-        for (ClientItem clientItem : clientItemSet) {
-            delete(clientItem);
+            return;
         }
+
+        logger.info("Add new item in the basket with client id - " + clientId);
+        restTemplate
+                .exchange(
+                        "/api/clients/" + clientId + "/basket",
+                        HttpMethod.POST,
+                        new HttpEntity<>(clientItem, headers),
+                        ClientItem.class);
+    }
+
+    private HttpHeaders getJwtHeader(Cookie jwtCookie) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + jwtCookie.getValue());
+
+        return headers;
     }
 }

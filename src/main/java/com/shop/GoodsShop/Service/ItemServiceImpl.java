@@ -1,88 +1,124 @@
 package com.shop.GoodsShop.Service;
 
-import com.shop.GoodsShop.Exception.NoItemException;
-import com.shop.GoodsShop.Model.Category;
+import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.Item;
-import com.shop.GoodsShop.Repositories.ItemRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class ItemServiceImpl implements ItemService {
     private static final Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
 
-    private ItemRepo itemRepo;
+    private RestTemplate restTemplate;
 
     @Autowired
-    public void setItemRepo(ItemRepo itemRepo) {
-        logger.debug("Setting itemRepo");
-        this.itemRepo = itemRepo;
+    public void setRestTemplate(RestTemplate restTemplate) {
+        logger.debug("Setting restTemplate");
+        this.restTemplate = restTemplate;
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Item> findByName(String name) {
-        logger.info("findByName method called");
-        return itemRepo.findByName(name);
+        logger.info("Find item by name - " + name);
+
+        return restTemplate
+                .exchange(
+                        "/api/items/byName/" + name,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<Item>>(){}).getBody();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Item> findByPrice(Double price) {
-        logger.info("findByPrice method called for item price = " + price);
-        return itemRepo.findByPrice(price);
+        logger.info("Find item by price - " + price);
+
+        return restTemplate
+                .exchange(
+                        "/api/items/byPrice/" + price,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<Item>>(){}).getBody();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<Item> findByCategory(Category category, Pageable pageable) {
-        logger.info("findByCategory method called");
-        return itemRepo.findByCategory(category, pageable);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public Page<Item> findBySearch(String keyword, Pageable pageable) {
-        return itemRepo.findBySearch(keyword, pageable);
+        logger.info("Find item by keyword - " + keyword);
+
+        return restTemplate
+                .exchange(
+                        "/api/items/byKeyword/" + keyword,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<Page<Item>>(){}).getBody();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Item findById(Long id) {
-        logger.info("findById method called for item id = " + id);
-        return itemRepo.findById(id).orElseThrow(NoItemException::new);
+        logger.info("Find item by id - " + id);
+
+        return restTemplate
+                .exchange(
+                        "/api/items/" + id,
+                        HttpMethod.GET,
+                        null,
+                        Item.class).getBody();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Item findByCode(String code) {
-        logger.info("findByCode method called for item code = " + code);
-        return itemRepo.findByCode(code);
+        logger.info("Find item by code - " + code);
+
+        return restTemplate
+                .exchange(
+                        "/api/items/byCode/" + code,
+                         HttpMethod.GET,
+                        null,
+                        Item.class).getBody();
     }
 
     @Override
     public void save(Item item) {
-        logger.info("Saving item to database");
-        itemRepo.save(item);
+        if (item.getId() != null) {
+            logger.info("Updating item with id - " + item.getId());
+            restTemplate
+                    .exchange(
+                            "/api/items/" + item.getId(),
+                            HttpMethod.PUT,
+                            new HttpEntity<>(item),
+                            Item.class);
+
+            return;
+        }
+
+        logger.info("Create new item with name - " + item.getName());
+        restTemplate
+                .exchange(
+                        "/api/items",
+                        HttpMethod.POST,
+                        new HttpEntity<>(item),
+                        Item.class);
     }
 
     @Override
     public void delete(Item item) {
-        logger.info("Deleting item with id = " + item.getId() + " from database");
-        itemRepo.delete(item);
-    }
+        logger.info("Deleting item with id - " + item.getId());
 
-    @Override
-    public void deleteById(Long id) {
-        logger.info("Deleting item with id = " + id + " from database");
-        itemRepo.deleteById(id);
+        restTemplate
+                .exchange(
+                        "/api/items/" + item.getId(),
+                        HttpMethod.DELETE,
+                        null,
+                        Object.class);
     }
 }

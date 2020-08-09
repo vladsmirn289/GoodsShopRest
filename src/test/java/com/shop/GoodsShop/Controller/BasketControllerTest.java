@@ -2,7 +2,6 @@ package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.ClientItem;
-import com.shop.GoodsShop.Repositories.ClientItemRepo;
 import com.shop.GoodsShop.Service.ClientItemService;
 import com.shop.GoodsShop.Service.ClientService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,9 +43,6 @@ public class BasketControllerTest {
 
     @Autowired
     private ClientItemService clientItemService;
-
-    @Autowired
-    private ClientItemRepo clientItemRepo;
 
     @Autowired
     private ClientService clientService;
@@ -93,8 +88,6 @@ public class BasketControllerTest {
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[2]").string("Производные и интегралы"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]").string("1 шт."));
-
-        assertThat(clientItemRepo.findAll().size()).isEqualTo(4);
     }
 
     @Test
@@ -108,7 +101,5 @@ public class BasketControllerTest {
         mockMvc
                 .perform(get("/basket"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(0));
-
-        assertThat(clientItemRepo.findAll().size()).isEqualTo(2);
     }
 }

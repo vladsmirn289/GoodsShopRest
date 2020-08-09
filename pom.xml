@@ -20,6 +20,7 @@
 		<jacoco.plugin.version>0.8.5</jacoco.plugin.version>
 		<maven-surfire.plugin.version>3.0.0-M5</maven-surfire.plugin.version>
 		<jasypt.version>3.0.3</jasypt.version>
+		<jjwt.version>0.9.1</jjwt.version>
 	</properties>
 
 	<parent>
@@ -140,6 +141,14 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+
+		<!-- JWT -->
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>${jjwt.version}</version>
 		</dependency>
 
 		<!-- Utils -->

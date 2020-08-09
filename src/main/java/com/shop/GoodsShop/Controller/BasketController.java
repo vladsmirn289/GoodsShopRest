@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Collections;
 import java.util.Set;
 
 @Controller
@@ -63,7 +64,7 @@ public class BasketController {
         Client persistentClient = clientService.findByLogin(client.getLogin());
         ClientItem itemToDelete = clientItemService.findById(clientItemId);
         persistentClient.getBasket().remove(itemToDelete);
-        clientItemService.delete(itemToDelete);
+        clientService.deleteBasketItems(Collections.singleton(itemToDelete), client.getId());
 
         clientService.save(persistentClient);
 
@@ -76,7 +77,7 @@ public class BasketController {
         logger.info("Called deleteAllItemsFromBasket method");
         Client persistentClient = clientService.findByLogin(client.getLogin());
         Set<ClientItem> clientItemSet = persistentClient.getBasket();
-        clientItemService.deleteSetItems(clientItemSet);
+        clientService.deleteBasketItems(clientItemSet, client.getId());
         clientItemSet.clear();
 
         clientService.save(persistentClient);

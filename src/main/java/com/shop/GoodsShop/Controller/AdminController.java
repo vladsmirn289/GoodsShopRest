@@ -29,6 +29,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -162,7 +163,7 @@ public class AdminController {
     @GetMapping("/createCategory")
     public String createCategoryPage(Model model) {
         logger.info("Called createCategoryPage method");
-        model.addAttribute("parents", categoryService.getAllNamesOfCategories());
+        model.addAttribute("parents", categoryService.getAllNamesOfRootCategories());
 
         return "admin/createCategory";
     }
@@ -184,7 +185,7 @@ public class AdminController {
             }
 
             model.addAttribute("name", name);
-            model.addAttribute("parents", categoryService.getAllNamesOfCategories());
+            model.addAttribute("parents", categoryService.getAllNamesOfRootCategories());
             return "admin/createCategory";
         }
 
@@ -204,7 +205,7 @@ public class AdminController {
     @GetMapping("/createItem")
     public String createItemPage(Model model) {
         logger.info("Called createItemPage method");
-        Set<String> categories = categoryService.getAllNamesOfChildren();
+        List<String> categories = categoryService.getAllNamesOfChildren();
         model.addAttribute("categories", categories);
 
         return "admin/createItem";
@@ -214,7 +215,7 @@ public class AdminController {
     public String updateItemPage(@PathVariable("id") Long itemId,
                                  Model model) {
         logger.info("Called updateItemPage method");
-        Set<String> categories = categoryService.getAllNamesOfChildren();
+        List<String> categories = categoryService.getAllNamesOfChildren();
         model.addAttribute("categories", categories);
         model.addAttribute("item", itemService.findById(itemId));
 

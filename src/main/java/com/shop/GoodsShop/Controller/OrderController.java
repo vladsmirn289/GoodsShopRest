@@ -151,7 +151,7 @@ public class OrderController {
         }
 
         request.getSession().removeAttribute("orderedItems");
-        clientService.deleteBasketItems(items, client.getLogin());
+        clientService.deleteBasketItems(items, client.getId());
 
         Order newOrder = new Order(items, contacts, paymentMethod);
         newOrder.setOrderStatus(OrderStatus.NEW);

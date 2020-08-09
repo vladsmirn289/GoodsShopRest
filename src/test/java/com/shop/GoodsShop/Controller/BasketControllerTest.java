@@ -2,11 +2,13 @@ package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.ClientItem;
-import com.shop.GoodsShop.Service.ClientItemService;
+import com.shop.GoodsShop.Model.Item;
 import com.shop.GoodsShop.Service.ClientService;
+import com.shop.GoodsShop.Service.ItemService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,20 +44,27 @@ public class BasketControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ClientItemService clientItemService;
+    private ClientService clientService;
 
     @Autowired
-    private ClientService clientService;
+    private ItemService itemService;
+
+    @Value("${jwt.admin.long.term}")
+    private String longTermJwt;
 
     @BeforeEach
     public void init() {
-        Client client = clientService.findByLogin("simpleUser");
-        ClientItem item1 = clientItemService.findById(16L);
-        ClientItem item2 = clientItemService.findById(17L);
-        ClientItem item3 = clientItemService.findById(18L);
+        Client client = clientService.findByLogin("simpleUser", longTermJwt);
+        Item item1 = itemService.findById(6L);
+        Item item2 = itemService.findById(7L);
+        Item item3 = itemService.findById(8L);
 
-        client.setBasket(new HashSet<>(Arrays.asList(item1, item2, item3)));
-        clientService.save(client);
+        ClientItem cItem1 = new ClientItem(item1, 2);
+        ClientItem cItem2 = new ClientItem(item2, 1);
+        ClientItem cItem3 = new ClientItem(item3, 3);
+
+        client.setBasket(new HashSet<>(Arrays.asList(cItem1, cItem2, cItem3)));
+        clientService.save(client, longTermJwt);
     }
 
     @Test
@@ -87,7 +96,7 @@ public class BasketControllerTest {
                 .perform(get("/basket"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[2]").string("Производные и интегралы"))
-                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]").string("1 шт."));
+                .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]").string("3 шт."));
     }
 
     @Test

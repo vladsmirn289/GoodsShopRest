@@ -1,5 +1,6 @@
 package com.shop.GoodsShop.Service;
 
+import com.shop.GoodsShop.Config.JWT.JwtUtils;
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Model.Order;
@@ -13,12 +14,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.Cookie;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +30,7 @@ public class ClientServiceImpl implements ClientService {
 
     private RestTemplate restTemplate;
     private ClientRepo clientRepo;
+    private JwtUtils jwtUtils;
 
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
@@ -41,10 +44,15 @@ public class ClientServiceImpl implements ClientService {
         this.clientRepo = clientRepo;
     }
 
+    @Autowired
+    public void setJwtUtils(JwtUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
+
     @Override
-    public Client findById(Long clientId, Cookie jwtCookie) {
+    public Client findById(Long clientId, String jwt) {
         logger.info("Find client by id - " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -55,9 +63,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Page<Client> findAll(Pageable pageable, Cookie jwtCookie) {
+    public Page<Client> findAll(Pageable pageable, String jwt) {
         logger.info("Find all clients");
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -68,9 +76,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client findByLogin(String login, Cookie jwtCookie) {
+    public Client findByLogin(String login, String jwt) {
         logger.info("Find client by login - " + login);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -81,9 +89,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client findByConfirmationCode(String confirmationCode, Cookie jwtCookie) {
+    public Client findByConfirmationCode(String confirmationCode, String jwt) {
         logger.info("Find client by confirm code - " + confirmationCode);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -94,9 +102,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientItem> findBasketItemsByClientId(Long clientId, Cookie jwtCookie) {
+    public List<ClientItem> findBasketItemsByClientId(Long clientId, String jwt) {
         logger.info("Find basket items by client id - " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -107,9 +115,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Page<Order> findOrdersByClientId(Long clientId, Pageable pageable, Cookie jwtCookie) {
+    public Page<Order> findOrdersByClientId(Long clientId, Pageable pageable, String jwt) {
         logger.info("Find orders by client id - " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -119,15 +127,17 @@ public class ClientServiceImpl implements ClientService {
                         new ParameterizedTypeReference<Page<Order>>(){}).getBody();
     }
 
-    /* TODO: realize it */
     @Override
-    public void authenticateClient(String rawPassword, String login, AuthenticationManager authManager) {
-
+    public void authenticateClient(AuthenticationManager authManager, String login) {
+        UserDetails userDetails = clientRepo.findByLogin("CemenBukov");
+        UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(token);
     }
 
     @Override
-    public void save(Client client, Cookie jwtCookie) {
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+    public void save(Client client, String jwt) {
+        HttpHeaders headers = getJwtHeader(jwt);
 
         if (client.getId() != null) {
             logger.info("Updating client with id - " + client.getId());
@@ -151,9 +161,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void delete(Client client, Cookie jwtCookie) {
+    public void delete(Client client, String jwt) {
         logger.info("Deleting client with id - " + client.getId());
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         restTemplate
                 .exchange(
@@ -164,9 +174,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void deleteBasketItems(Set<ClientItem> itemSet, Long clientId, Cookie jwtCookie) {
+    public void deleteBasketItems(Set<ClientItem> itemSet, Long clientId, String jwt) {
         logger.info("Delete basket items with client id - " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         for (ClientItem ci : itemSet) {
             restTemplate
@@ -179,9 +189,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void clearBasket(Long clientId, Cookie jwtCookie) {
+    public void clearBasket(Long clientId, String jwt) {
         logger.info("Clear basket with client id - " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         restTemplate
                 .exchange(
@@ -204,9 +214,9 @@ public class ClientServiceImpl implements ClientService {
         return client;
     }
 
-    private HttpHeaders getJwtHeader(Cookie jwtCookie) {
+    private HttpHeaders getJwtHeader(String jwt) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtCookie.getValue());
+        headers.add("Authorization", "Bearer " + jwt);
 
         return headers;
     }

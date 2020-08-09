@@ -3,6 +3,7 @@ package com.shop.GoodsShop.Controller;
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Model.Item;
+import com.shop.GoodsShop.Service.ClientItemService;
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.ItemService;
 import com.shop.GoodsShop.Utils.URIUtils;
@@ -30,6 +31,7 @@ public class ItemController {
 
     private ItemService itemService;
     private ClientService clientService;
+    private ClientItemService clientItemService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -44,6 +46,11 @@ public class ItemController {
     public void setClientService(ClientService clientService) {
         logger.debug("Setting clientService");
         this.clientService = clientService;
+    }
+
+    @Autowired
+    public void setClientItemService(ClientItemService clientItemService) {
+        this.clientItemService = clientItemService;
     }
 
     @GetMapping
@@ -71,19 +78,16 @@ public class ItemController {
 
     @PostMapping("/{itemId}/addToBasket")
     @PreAuthorize("isAuthenticated()")
-    @Transactional
     public String addItemToBasket(@RequestParam("quantity") int quantity,
                                   @PathVariable("itemId") Long itemId,
                                   @AuthenticationPrincipal Client client,
                                   RedirectAttributes redirectAttributes,
-                                  @RequestHeader(required = false) String referer) {
+                                  @RequestHeader(required = false) String referer,
+                                  @CookieValue("jwtToken") String token) {
         logger.info("Called addItemToBasket method");
         Item item = itemService.findById(itemId);
-        Client persistentClient = entityManager.merge(client);
         ClientItem itemToBasket = new ClientItem(item, quantity);
-
-        persistentClient.getBasket().add(itemToBasket);
-        clientService.save(client);
+        clientItemService.save(itemToBasket, client.getId(), token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }

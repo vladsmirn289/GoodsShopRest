@@ -5,6 +5,7 @@ import com.shop.GoodsShop.Utils.MailSenderUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,6 +40,9 @@ public class RegistrationControllerTest {
     @MockBean
     private MailSenderUtil mailSenderUtil;
 
+    @Value("${jwt.admin.long.term}")
+    private String longTermToken;
+
     @Test
     public void showRegistrationPageTest() throws Exception {
         mockMvc
@@ -63,7 +67,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/needConfirmation"));
 
-        assertThat(clientService.findByLogin("tU").getConfirmationCode()).isNotNull();
+        assertThat(clientService.findByLogin("tU", longTermToken).getConfirmationCode()).isNotNull();
         assertThat(clientService.loadUserByUsername("tU")).isNull();
 
         Mockito
@@ -95,7 +99,7 @@ public class RegistrationControllerTest {
                 .andExpect(view().name("security/registration"))
                 .andExpect(model().attributeExists("mailError"));
 
-        assertThat(clientService.findByLogin("tU")).isNull();
+        assertThat(clientService.findByLogin("tU", longTermToken)).isNull();
 
         Mockito
                 .verify(mailSenderUtil, Mockito.times(1))

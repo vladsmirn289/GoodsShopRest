@@ -2,13 +2,11 @@ package com.shop.GoodsShop.Service;
 
 import com.shop.GoodsShop.Model.ClientItem;
 
-import javax.servlet.http.Cookie;
-
 public interface ClientItemService {
-    double generalPrice(Long clientId, Cookie jwtCookie);
-    double generalWeight(Long clientId, Cookie jwtCookie);
+    double generalPrice(Long clientId, String jwt);
+    double generalWeight(Long clientId, String jwt);
 
-    ClientItem findById(Long clientId, Long itemId, Cookie jwtCookie);
+    ClientItem findById(Long clientId, Long itemId, String jwt);
 
-    void save(ClientItem clientItem, Long clientId, Cookie jwtCookie);
+    void save(ClientItem clientItem, Long clientId, String jwt);
 }

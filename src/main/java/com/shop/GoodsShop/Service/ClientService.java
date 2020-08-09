@@ -8,23 +8,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import javax.servlet.http.Cookie;
 import java.util.List;
 import java.util.Set;
 
 public interface ClientService extends UserDetailsService {
-    Client findById(Long clientId, Cookie jwtCookie);
-    Page<Client> findAll(Pageable pageable, Cookie jwtCookie);
-    Client findByLogin(String login, Cookie jwtCookie);
-    Client findByConfirmationCode(String confirmationCode, Cookie jwtCookie);
-    List<ClientItem> findBasketItemsByClientId(Long clientId, Cookie jwtCookie);
-    Page<Order> findOrdersByClientId(Long clientId, Pageable pageable, Cookie jwtCookie);
+    Client findById(Long clientId, String jwt);
+    Page<Client> findAll(Pageable pageable, String jwt);
+    Client findByLogin(String login, String jwt);
+    Client findByConfirmationCode(String confirmationCode, String jwt);
+    List<ClientItem> findBasketItemsByClientId(Long clientId, String jwt);
+    Page<Order> findOrdersByClientId(Long clientId, Pageable pageable, String jwt);
 
-    void authenticateClient(String rawPassword, String login, AuthenticationManager authManager);
+    void authenticateClient(AuthenticationManager authManager, String login);
 
-    void save(Client client, Cookie jwtCookie);
+    void save(Client client, String jwt);
 
-    void delete(Client client, Cookie jwtCookie);
-    void deleteBasketItems(Set<ClientItem> itemSet, Long clientId, Cookie jwtCookie);
-    void clearBasket(Long clientId, Cookie jwtCookie);
+    void delete(Client client, String jwt);
+    void deleteBasketItems(Set<ClientItem> itemSet, Long clientId, String jwt);
+    void clearBasket(Long clientId, String jwt);
 }

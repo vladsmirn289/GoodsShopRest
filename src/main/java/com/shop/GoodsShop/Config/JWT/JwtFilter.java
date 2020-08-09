@@ -3,10 +3,8 @@ package com.shop.GoodsShop.Config.JWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -22,12 +20,10 @@ import java.util.Arrays;
 public class JwtFilter extends GenericFilterBean {
     private final static Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
-    private JwtUtils jwtUtils;
-    private RestTemplate restTemplate;
+    private final JwtUtils jwtUtils;
 
-    public JwtFilter(@Autowired JwtUtils jwtUtils, @Autowired RestTemplate restTemplate) {
+    public JwtFilter(@Autowired JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
-        this.restTemplate = restTemplate;
     }
 
     @Override

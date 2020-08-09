@@ -3,7 +3,6 @@ package com.shop.GoodsShop.Controller;
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.Order;
 import com.shop.GoodsShop.Model.OrderStatus;
-import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.OrderService;
 import com.shop.GoodsShop.Utils.URIUtils;
 import org.slf4j.Logger;
@@ -30,14 +29,7 @@ import java.util.stream.Collectors;
 public class ManagerController {
     private static final Logger logger = LoggerFactory.getLogger(ManagerController.class);
 
-    private ClientService clientService;
     private OrderService orderService;
-
-    @Autowired
-    public void setClientService(ClientService clientService) {
-        logger.debug("Setting clientService");
-        this.clientService = clientService;
-    }
 
     @Autowired
     public void setOrderService(OrderService orderService) {
@@ -48,9 +40,10 @@ public class ManagerController {
     @GetMapping("/manager")
     public String customOrders(@AuthenticationPrincipal Client manager,
                                Model model,
-                               @PageableDefault(sort = {"createdOn"}, direction = Sort.Direction.DESC) Pageable pageable) {
+                               @PageableDefault(sort = {"createdOn"}, direction = Sort.Direction.DESC) Pageable pageable,
+                               @CookieValue("jwtToken") String token) {
         logger.info("Called customOrders method");
-        Page<Order> orders = orderService.findOrdersForManagers(pageable);
+        Page<Order> orders = orderService.findOrdersForManagers(pageable, token);
 
         model.addAttribute("url", "/order/manager?");
         model.addAttribute("orders", orders);
@@ -64,12 +57,13 @@ public class ManagerController {
                                     @PathVariable("id") Long orderId,
                                     Model model,
                                     RedirectAttributes redirectAttributes,
-                                    @RequestHeader(required = false) String referer) {
+                                    @RequestHeader(required = false) String referer,
+                                    @CookieValue("jwtToken") String token) {
         logger.info("Called setManagerToOrder method");
-        Order order = orderService.findById(orderId);
+        Order order = orderService.findByIdForManagers(orderId, token);
         if (order.getManager() == null) {
             order.setManager(manager);
-            orderService.save(order);
+            orderService.save(order, 0L, token);
         } else {
             logger.info("Conflict, another manager has already set himself to manager");
             model.addAttribute("conflictError", "Другой менеджер уже назначил себя менеджером!");
@@ -80,9 +74,10 @@ public class ManagerController {
 
     @GetMapping("/editOrder/{id}")
     public String editOrder(@PathVariable("id") Long orderId,
-                            Model model) {
+                            Model model,
+                            @CookieValue("jwtToken") String token) {
         logger.info("Called editOrder method");
-        Order order = orderService.findById(orderId);
+        Order order = orderService.findByIdForManagers(orderId, token);
         model.addAttribute("order", order);
 
         Set<OrderStatus> statuses = Arrays.stream(OrderStatus.values())
@@ -97,11 +92,12 @@ public class ManagerController {
     public String changeOrderStatus(@PathVariable("id") Long orderId,
                                     @RequestParam("orderStatus") String status,
                                     RedirectAttributes redirectAttributes,
-                                    @RequestHeader(required = false) String referer) {
+                                    @RequestHeader(required = false) String referer,
+                                    @CookieValue("jwtToken") String token) {
         logger.info("Called changeOrderStatus method");
-        Order order = orderService.findById(orderId);
+        Order order = orderService.findByIdForManagers(orderId, token);
         order.setOrderStatus(OrderStatus.valueOf(status));
-        orderService.save(order);
+        orderService.save(order, 0L, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }
@@ -109,11 +105,12 @@ public class ManagerController {
     @GetMapping("/unpinHimself/{id}")
     public String unpinHimself(@PathVariable("id") Long orderId,
                                RedirectAttributes redirectAttributes,
-                               @RequestHeader(required = false) String referer) {
+                               @RequestHeader(required = false) String referer,
+                               @CookieValue("jwtToken") String token) {
         logger.info("Called unpinHimself method");
-        Order order = orderService.findById(orderId);
+        Order order = orderService.findByIdForManagers(orderId, token);
         order.setManager(null);
-        orderService.save(order);
+        orderService.save(order, 0L, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }

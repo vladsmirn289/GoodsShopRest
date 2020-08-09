@@ -6,6 +6,7 @@ import com.shop.GoodsShop.Utils.MailSenderUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -48,13 +49,16 @@ public class ClientControllerTest {
     @MockBean
     private MailSenderUtil mailSenderUtil;
 
+    @Value("${jwt.admin.long.term}")
+    private String longTermToken;
+
     @Test
     @SuppressWarnings("deprecation")
     public void shouldActivateClient() throws Exception {
         Mockito
                 .doNothing()
                 .when(clientService)
-                .authenticateClient(eq("01112"), eq("userWithCode"), anyObject());
+                .authenticateClient(anyObject(), eq("userWithCode"));
 
         mockMvc
                 .perform(get("/client/activate/123"))
@@ -62,14 +66,14 @@ public class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/successConfirmation"));
 
-        Client client = clientService.findByLogin("userWithCode");
+        Client client = clientService.findByLogin("userWithCode", longTermToken);
         String password = client.getPassword();
         assertThat(client.getConfirmationCode()).isNull();
         assertThat(passwordEncoder.matches("01112", password));
 
         Mockito
                 .verify(clientService, Mockito.times(1))
-                    .authenticateClient(eq("01112"), eq("userWithCode"), any());
+                    .authenticateClient(any(), eq("userWithCode"));
     }
 
     @Test
@@ -89,7 +93,7 @@ public class ClientControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("client/personalRoom"))
-                .andExpect(model().attribute("client", clientService.findByLogin("simpleUser")));
+                .andExpect(model().attribute("client", clientService.findByLogin("simpleUser", longTermToken)));
     }
 
     @Test
@@ -109,7 +113,7 @@ public class ClientControllerTest {
                 .andExpect(view().name("client/personalRoom"))
                 .andExpect(model().attributeExists("client"));
 
-        Client client = clientService.findByLogin("simpleUser");
+        Client client = clientService.findByLogin("simpleUser", longTermToken);
         assertThat(client).isNotNull();
         assertThat(client.getId()).isEqualTo(12L);
     }
@@ -131,7 +135,7 @@ public class ClientControllerTest {
                 .andExpect(redirectedUrl(""))
                 .andExpect(model().attributeDoesNotExist("client"));
 
-        Client client = clientService.findByLogin("user");
+        Client client = clientService.findByLogin("user", longTermToken);
         assertThat(client).isNotNull();
         assertThat(client.getId()).isEqualTo(12L);
     }
@@ -246,7 +250,7 @@ public class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("client/changePassword"));
 
-        Client client = clientService.findByLogin("manager");
+        Client client = clientService.findByLogin("manager", longTermToken);
         assertThat(passwordEncoder.matches("12345", client.getPassword()));
     }
 
@@ -259,7 +263,7 @@ public class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/sessionExpired"));
 
-        Client client = clientService.findByLogin("manager");
+        Client client = clientService.findByLogin("manager", longTermToken);
         assertThat(passwordEncoder.matches("67891", client.getPassword()));
     }
 
@@ -275,7 +279,7 @@ public class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/passwordSuccessfulChanged"));
 
-        Client client = clientService.findByLogin("manager");
+        Client client = clientService.findByLogin("manager", longTermToken);
         assertThat(passwordEncoder.matches("helloWorld", client.getPassword()));
     }
 
@@ -293,7 +297,7 @@ public class ClientControllerTest {
                 .andExpect(model().attribute("lengthPasswordError", "Пароль должен состоять из как минимум 5 символов"))
                 .andExpect(model().attribute("retypePasswordError", "Пароли не совпадают!"));
 
-        Client client = clientService.findByLogin("manager");
+        Client client = clientService.findByLogin("manager", longTermToken);
         assertThat(passwordEncoder.matches("67891", client.getPassword()));
     }
 
@@ -318,7 +322,7 @@ public class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/setNewEmailMessage"));
 
-        Client client = clientService.findByLogin("simpleUser");
+        Client client = clientService.findByLogin("simpleUser", longTermToken);
         String password = client.getPassword();
         assertThat(client.getConfirmationCode()).isNotNull();
         assertThat(client.getEmail()).isEqualTo("vladsmirn289@gmail.com");
@@ -349,7 +353,7 @@ public class ClientControllerTest {
                 .andExpect(view().name("client/changeEmailPage"))
                 .andExpect(model().attributeExists("mailError"));
 
-        Client client = clientService.findByLogin("simpleUser");
+        Client client = clientService.findByLogin("simpleUser", longTermToken);
         String password = client.getPassword();
         assertThat(client.getConfirmationCode()).isNull();
         assertThat(client.getEmail()).isEqualTo("vladsmirn289@gmail.com");
@@ -370,7 +374,7 @@ public class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/successfulNewEmail"));
 
-        Client client = clientService.findByLogin("userWithCode");
+        Client client = clientService.findByLogin("userWithCode", longTermToken);
 
         assertThat(client.getConfirmationCode()).isNull();
         assertThat(client.getEmail()).isEqualTo("m@m");

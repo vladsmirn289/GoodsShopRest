@@ -1,6 +1,7 @@
 package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Model.Client;
+import com.shop.GoodsShop.Model.Order;
 import com.shop.GoodsShop.Service.ClientItemService;
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.ItemService;
@@ -8,6 +9,7 @@ import com.shop.GoodsShop.Service.OrderService;
 import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -57,6 +59,9 @@ public class OrderControllerTest {
     @Autowired
     private ItemService itemService;
 
+    @Value("${jwt.admin.long.term}")
+    private String longTermToken;
+
     @Test
     public void showOrdersListTest() throws Exception {
         mockMvc
@@ -86,7 +91,7 @@ public class OrderControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("order/concreteOrder"))
-                .andExpect(model().attribute("order", orderService.findById(19L)))
+                .andExpect(model().attribute("order", orderService.findById(19L, 12L, longTermToken)))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(1))
                 .andExpect(xpath("/html/body/div/table/tbody/tr/td[3]")
                         .string("Spring 5 для профессионалов"));
@@ -126,7 +131,7 @@ public class OrderControllerTest {
     @Test
     @Transactional
     public void checkoutSuccessfulOrderTest() throws Exception {
-        Client client = clientService.findByLogin("simpleUser");
+        Client client = clientService.findByLogin("simpleUser", longTermToken);
         Hibernate.initialize(client.getBasket());
 
         MvcResult mvcResult = mockMvc
@@ -152,15 +157,16 @@ public class OrderControllerTest {
         assertThat(attribute).isNull();
 
         assertThat(client.getBasket()).isEmpty();
-        assertThat(clientItemService.findById(30L).getOrder()).isNotNull();
-        assertThat(clientItemService.findById(31L).getOrder()).isNotNull();
+
+        Order order = orderService.findByIdForManagers(100L, longTermToken);
+        assertThat(order.getClientItems().size()).isEqualTo(2);
         assertThat(itemService.findById(11L).getCount()).isEqualTo(197);
     }
 
     @Test
     @Transactional
     public void shouldErrorShowWhenCheckoutOrderWithWrongData() throws Exception {
-        Client client = clientService.findByLogin("simpleUser");
+        Client client = clientService.findByLogin("simpleUser", longTermToken);
         Hibernate.initialize(client.getBasket());
 
         mockMvc

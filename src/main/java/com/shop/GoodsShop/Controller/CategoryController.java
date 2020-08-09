@@ -3,7 +3,6 @@ package com.shop.GoodsShop.Controller;
 import com.shop.GoodsShop.Model.Category;
 import com.shop.GoodsShop.Model.Item;
 import com.shop.GoodsShop.Service.CategoryService;
-import com.shop.GoodsShop.Service.ItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +21,11 @@ public class CategoryController {
     private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
 
     private CategoryService categoryService;
-    private ItemService itemService;
 
     @Autowired
     public void setCategoryService(CategoryService categoryService) {
         logger.debug("Setting categoryService");
         this.categoryService = categoryService;
-    }
-
-    @Autowired
-    public void setItemService(ItemService itemService) {
-        logger.debug("Setting itemService");
-        this.itemService = itemService;
     }
 
     @GetMapping("/{id}")

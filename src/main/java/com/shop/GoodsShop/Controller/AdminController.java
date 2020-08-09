@@ -82,9 +82,10 @@ public class AdminController {
 
     @GetMapping("/listOfUsers")
     public String showListUsers(Model model,
-                                @PageableDefault(sort = {"firstName"}) Pageable pageable) {
+                                @PageableDefault(sort = {"firstName"}) Pageable pageable,
+                                @CookieValue("jwtToken") String token) {
         logger.info("Called showListUsers method");
-        Page<Client> clients = clientService.findAll(pageable);
+        Page<Client> clients = clientService.findAll(pageable, token);
         model.addAttribute("url", "/admin/listOfUsers?");
         model.addAttribute("users", clients);
 
@@ -94,14 +95,15 @@ public class AdminController {
     @GetMapping("/addManager/{id}")
     public String addManager(@PathVariable("id") Long userId,
                              RedirectAttributes redirectAttributes,
-                             @RequestHeader(required = false) String referer) {
+                             @RequestHeader(required = false) String referer,
+                             @CookieValue("jwtToken") String token) {
         logger.info("Called addManager method");
-        Client client = clientService.findById(userId);
+        Client client = clientService.findById(userId, token);
 
         Set<Role> roles = client.getRoles();
         roles.add(Role.MANAGER);
         client.setRoles(roles);
-        clientService.save(client);
+        clientService.save(client, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }
@@ -109,14 +111,15 @@ public class AdminController {
     @GetMapping("/addAdmin/{id}")
     public String addAdmin(@PathVariable("id") Long userId,
                            RedirectAttributes redirectAttributes,
-                           @RequestHeader(required = false) String referer) {
+                           @RequestHeader(required = false) String referer,
+                           @CookieValue("jwtToken") String token) {
         logger.info("Called addAdmin method");
-        Client client = clientService.findById(userId);
+        Client client = clientService.findById(userId, token);
 
         Set<Role> roles = client.getRoles();
         roles.add(Role.ADMIN);
         client.setRoles(roles);
-        clientService.save(client);
+        clientService.save(client, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }
@@ -124,14 +127,15 @@ public class AdminController {
     @GetMapping("/removeManager/{id}")
     public String removeManager(@PathVariable("id") Long userId,
                                 RedirectAttributes redirectAttributes,
-                                @RequestHeader(required = false) String referer) {
+                                @RequestHeader(required = false) String referer,
+                                @CookieValue("jwtToken") String token) {
         logger.info("Called removeManager method");
-        Client client = clientService.findById(userId);
+        Client client = clientService.findById(userId, token);
 
         Set<Role> roles = client.getRoles();
         roles.remove(Role.MANAGER);
         client.setRoles(roles);
-        clientService.save(client);
+        clientService.save(client, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }
@@ -139,11 +143,12 @@ public class AdminController {
     @GetMapping("/lockAccount/{id}")
     public String lockAccount(@PathVariable("id") Long userId,
                               RedirectAttributes redirectAttributes,
-                              @RequestHeader(required = false) String referer) {
+                              @RequestHeader(required = false) String referer,
+                              @CookieValue("jwtToken") String token) {
         logger.info("Called lockAccount method");
-        Client client = clientService.findById(userId);
+        Client client = clientService.findById(userId, token);
         client.setNonLocked(false);
-        clientService.save(client);
+        clientService.save(client, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }
@@ -151,11 +156,12 @@ public class AdminController {
     @GetMapping("/unlockAccount/{id}")
     public String unlockAccount(@PathVariable("id") Long userId,
                                 RedirectAttributes redirectAttributes,
-                                @RequestHeader(required = false) String referer) {
+                                @RequestHeader(required = false) String referer,
+                                @CookieValue("jwtToken") String token) {
         logger.info("Called unlockAccount method");
-        Client client = clientService.findById(userId);
+        Client client = clientService.findById(userId, token);
         client.setNonLocked(true);
-        clientService.save(client);
+        clientService.save(client, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }

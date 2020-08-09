@@ -10,8 +10,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.Cookie;
-
 @Service
 public class ClientItemServiceImpl implements ClientItemService {
     private static final Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
@@ -25,9 +23,9 @@ public class ClientItemServiceImpl implements ClientItemService {
     }
 
     @Override
-    public double generalPrice(Long clientId, Cookie jwtCookie) {
+    public double generalPrice(Long clientId, String jwt) {
         logger.info("Count general price of basket items with client id - " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -38,9 +36,9 @@ public class ClientItemServiceImpl implements ClientItemService {
     }
 
     @Override
-    public double generalWeight(Long clientId, Cookie jwtCookie) {
+    public double generalWeight(Long clientId, String jwt) {
         logger.info("Count general weight of basket items with client id - " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -51,9 +49,9 @@ public class ClientItemServiceImpl implements ClientItemService {
     }
 
     @Override
-    public ClientItem findById(Long clientId, Long itemId, Cookie jwtCookie) {
+    public ClientItem findById(Long clientId, Long itemId, String jwt) {
         logger.info("Find item in basket with client id - " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -64,8 +62,8 @@ public class ClientItemServiceImpl implements ClientItemService {
     }
 
     @Override
-    public void save(ClientItem clientItem, Long clientId, Cookie jwtCookie) {
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+    public void save(ClientItem clientItem, Long clientId, String jwt) {
+        HttpHeaders headers = getJwtHeader(jwt);
 
         if (clientItem.getId() != null) {
             logger.info("Updating item in the basket with client id - " + clientId);
@@ -88,9 +86,9 @@ public class ClientItemServiceImpl implements ClientItemService {
                         ClientItem.class);
     }
 
-    private HttpHeaders getJwtHeader(Cookie jwtCookie) {
+    private HttpHeaders getJwtHeader(String jwt) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtCookie.getValue());
+        headers.add("Authorization", "Bearer " + jwt);
 
         return headers;
     }

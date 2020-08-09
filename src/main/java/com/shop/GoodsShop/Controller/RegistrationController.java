@@ -7,6 +7,7 @@ import com.shop.GoodsShop.Utils.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +23,7 @@ public class RegistrationController {
 
     private ClientService clientService;
     private MailSenderUtil mailSenderUtil;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public void setClientService(ClientService clientService) {
@@ -35,9 +37,14 @@ public class RegistrationController {
         this.mailSenderUtil = mailSenderUtil;
     }
 
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @GetMapping
     public String showRegistrationPage() {
-        logger.debug("Called showRegistrationPage method");
+        logger.info("Called showRegistrationPage method");
         return "security/registration";
     }
 
@@ -48,7 +55,7 @@ public class RegistrationController {
                                  Model model) {
         logger.info("Called registerClient method");
         boolean passwordsIsMatch = passwordRepeat.equals(client.getPassword());
-        boolean clientExists = clientService.findByLogin(client.getLogin()) != null;
+        boolean clientExists = clientService.loadUserByUsername(client.getLogin()) != null;
 
         if ( bindingResult.hasErrors() || !passwordsIsMatch || clientExists ) {
             logger.warn("Registration page has errors!");
@@ -86,7 +93,9 @@ public class RegistrationController {
             return "security/registration";
         }
 
-        clientService.save(client);
+        client.setPassword(passwordEncoder.encode(client.getPassword()));
+        client.setNonLocked(false);
+        clientService.save(client, null);
         return "messages/needConfirmation";
     }
 }

@@ -7,6 +7,7 @@ import com.shop.GoodsShop.Utils.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,6 +31,9 @@ public class ClientController {
     private AuthenticationManager authenticationManager;
     private PasswordEncoder passwordEncoder;
     private MailSenderUtil mailSenderUtil;
+
+    @Value("${jwt.admin.long.term}")
+    private String longTermJwt;
 
     @Autowired
     public void setClientService(ClientService clientService) {
@@ -56,14 +60,15 @@ public class ClientController {
     }
 
     @GetMapping("/activate/{code}")
-    public String activateClient(@PathVariable("code") String activationCode) {
+    public String activateClient(@PathVariable("code") String activationCode,
+                                 @CookieValue("jwtToken") String token) {
         logger.info("Called activateClient method");
-        Client foundByActivationCode = clientService.findByConfirmationCode(activationCode);
-        String rawPassword = foundByActivationCode.getPassword();
-        clientService.save(foundByActivationCode);
+        Client foundByActivationCode = clientService.findByConfirmationCode(activationCode, longTermJwt);
+        foundByActivationCode.setNonLocked(true);
+        clientService.save(foundByActivationCode, null);
 
         logger.info("Authenticate client...");
-        clientService.authenticateClient(rawPassword, foundByActivationCode.getLogin(), authenticationManager);
+        clientService.authenticateClient(authenticationManager, foundByActivationCode.getLogin());
 
         return "messages/successConfirmation";
     }
@@ -84,10 +89,11 @@ public class ClientController {
                                      @Valid @ModelAttribute("changedPerson") Client client,
                                      BindingResult bindingResult,
                                      Model model,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request,
+                                     @CookieValue("jwtToken") String token) {
         logger.info("Called changePersonalInfo method");
         boolean clientExists = !originalClient.getLogin().equals(client.getLogin())
-                && clientService.findByLogin(client.getLogin()) != null;
+                && clientService.findByLogin(client.getLogin(), token) != null;
 
         if ( bindingResult.hasErrors() || clientExists ) {
             logger.warn("Personal room page has errors!");
@@ -105,11 +111,11 @@ public class ClientController {
         if (!originalClient.getLogin().equals(client.getLogin())) {
             SecurityContextHolder.getContext().setAuthentication(null);
             request.getSession().removeAttribute("SPRING_SECURITY_CONTEXT");
-            clientService.save(client);
+            clientService.save(client, token);
             return "redirect:";
         }
 
-        clientService.save(client);
+        clientService.save(client, token);
         logger.info("Change info successful");
 
         model.addAttribute("client", client);
@@ -155,11 +161,12 @@ public class ClientController {
     @GetMapping("/setNewPassword/{login}")
     @PreAuthorize("isAuthenticated()")
     public String changePasswordPage(@PathVariable("login") String login,
-                                     @AuthenticationPrincipal Client client) {
+                                     @AuthenticationPrincipal Client client,
+                                     @CookieValue("jwtToken") String token) {
         logger.info("Called changePasswordPage method");
         if (login.equals(client.getLogin())) {
             client.setPassword(passwordEncoder.encode("12345"));
-            clientService.save(client);
+            clientService.save(client, token);
         } else {
             return "messages/sessionExpired";
         }
@@ -172,7 +179,8 @@ public class ClientController {
     public String changePassword(@AuthenticationPrincipal Client client,
                                  @RequestParam("newPassword") String newPassword,
                                  @RequestParam("retypePassword") String retypePassword,
-                                 Model model) {
+                                 Model model,
+                                 @CookieValue("jwtToken") String token) {
         logger.info("Called changePassword method");
         boolean hasErrors = false;
 
@@ -193,7 +201,7 @@ public class ClientController {
         }
 
         client.setPassword(passwordEncoder.encode(newPassword));
-        clientService.save(client);
+        clientService.save(client, token);
 
         return "messages/passwordSuccessfulChanged";
     }
@@ -210,10 +218,12 @@ public class ClientController {
     @PreAuthorize("isAuthenticated()")
     public String sendCodeForSetNewEmail(@AuthenticationPrincipal Client client,
                                          @RequestParam("email") String email,
-                                         Model model) {
+                                         Model model,
+                                         @CookieValue("jwtToken") String token) {
         logger.info("Called changeEmail method");
         String code = UUID.randomUUID().toString();
         client.setConfirmationCode(code);
+        client.setNonLocked(false);
 
         try {
             mailSenderUtil.sendTemplateMessage(
@@ -227,7 +237,7 @@ public class ClientController {
             return "client/changeEmailPage";
         }
 
-        clientService.save(client);
+        clientService.save(client, token);
         return "messages/setNewEmailMessage";
     }
 
@@ -235,10 +245,11 @@ public class ClientController {
     public String changeEmail(@PathVariable("email") String email,
                               @PathVariable("code") String code) {
         logger.info("Called changeEmail method");
-        Client foundByCode = clientService.findByConfirmationCode(code);
+        Client foundByCode = clientService.findByConfirmationCode(code, longTermJwt);
         foundByCode.setConfirmationCode(null);
+        foundByCode.setNonLocked(true);
         foundByCode.setEmail(email);
-        clientService.save(foundByCode);
+        clientService.save(foundByCode, longTermJwt);
 
         return "messages/successfulNewEmail";
     }

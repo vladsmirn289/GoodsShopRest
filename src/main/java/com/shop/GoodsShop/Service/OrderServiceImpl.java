@@ -13,8 +13,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.Cookie;
-
 @Service
 public class OrderServiceImpl implements OrderService {
     private static final Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
@@ -28,9 +26,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> findOrdersForManagers(Pageable pageable, Cookie jwtCookie) {
+    public Page<Order> findOrdersForManagers(Pageable pageable, String jwt) {
         logger.info("Find orders for managers");
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -41,9 +39,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findById(Long orderId, Long clientId, Cookie jwtCookie) {
+    public Order findById(Long orderId, Long clientId, String jwt) {
         logger.info("Find order by id - " + orderId + " and client id - " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -54,9 +52,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findByIdForManagers(Long orderId, Cookie jwtCookie) {
+    public Order findByIdForManagers(Long orderId, String jwt) {
         logger.info("Find order by id - " + orderId + " for managers");
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         return restTemplate
                 .exchange(
@@ -67,8 +65,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void save(Order order, Long clientId, Cookie jwtCookie) {
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+    public void save(Order order, Long clientId, String jwt) {
+        HttpHeaders headers = getJwtHeader(jwt);
 
         if (order.getId() != null) {
             logger.info("Updating order with id - " + order.getId());
@@ -92,9 +90,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void delete(Order order, Long clientId, Cookie jwtCookie) {
+    public void delete(Order order, Long clientId, String jwt) {
         logger.info("Deleting order with id - " + order.getId() + " and client id - " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         restTemplate
                 .exchange(
@@ -105,9 +103,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void clearOrders(Long clientId, Cookie jwtCookie) {
+    public void clearOrders(Long clientId, String jwt) {
         logger.info("Clear orders with client id " + clientId);
-        HttpHeaders headers = getJwtHeader(jwtCookie);
+        HttpHeaders headers = getJwtHeader(jwt);
 
         restTemplate
                 .exchange(
@@ -117,9 +115,9 @@ public class OrderServiceImpl implements OrderService {
                         Object.class);
     }
 
-    private HttpHeaders getJwtHeader(Cookie jwtCookie) {
+    private HttpHeaders getJwtHeader(String jwt) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwtCookie.getValue());
+        headers.add("Authorization", "Bearer " + jwt);
 
         return headers;
     }

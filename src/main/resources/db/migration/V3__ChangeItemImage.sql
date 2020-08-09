@@ -1,5 +1,5 @@
 ALTER TABLE item
-    ALTER COLUMN image TYPE varchar(255);
+    ALTER COLUMN image TYPE text;
 
 UPDATE item
 SET image = 'InitBooks/callOfCthulhu.jpg' WHERE id = 11;

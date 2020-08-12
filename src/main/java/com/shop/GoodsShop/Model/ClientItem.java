@@ -1,5 +1,7 @@
 package com.shop.GoodsShop.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -19,6 +21,7 @@ public class ClientItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
+    @JsonIgnore
     private Order order;
 
     @Positive(message = "Количество должно быть положительным числом")

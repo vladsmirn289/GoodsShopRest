@@ -1,6 +1,7 @@
 package com.shop.GoodsShop.Service;
 
-import com.shop.GoodsShop.Config.JWT.JwtUtils;
+import com.shop.GoodsShop.DTO.PageResponse;
+import com.shop.GoodsShop.Exception.BadRequestException;
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Model.Order;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -30,7 +32,7 @@ public class ClientServiceImpl implements ClientService {
 
     private RestTemplate restTemplate;
     private ClientRepo clientRepo;
-    private JwtUtils jwtUtils;
+    private String rootPath = "http://localhost/api/clients";
 
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
@@ -44,22 +46,22 @@ public class ClientServiceImpl implements ClientService {
         this.clientRepo = clientRepo;
     }
 
-    @Autowired
-    public void setJwtUtils(JwtUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
-    }
-
     @Override
     public Client findById(Long clientId, String jwt) {
         logger.info("Find client by id - " + clientId);
         HttpHeaders headers = getJwtHeader(jwt);
 
-        return restTemplate
-                .exchange(
-                        "/api/clients/" + clientId,
-                        HttpMethod.GET,
-                        new HttpEntity<>(headers),
-                        Client.class).getBody();
+        try {
+            return restTemplate
+                    .exchange(
+                            rootPath + "/" + clientId,
+                            HttpMethod.GET,
+                            new HttpEntity<>(headers),
+                            Client.class).getBody();
+        } catch (BadRequestException | HttpClientErrorException ex) {
+            logger.warn(ex.toString());
+            return null;
+        }
     }
 
     @Override
@@ -67,12 +69,14 @@ public class ClientServiceImpl implements ClientService {
         logger.info("Find all clients");
         HttpHeaders headers = getJwtHeader(jwt);
 
-        return restTemplate
+        PageResponse<Client> response = restTemplate
                 .exchange(
-                        "/api/clients?page=" + pageable.getPageNumber() + "&size=" + pageable.getPageSize(),
+                        rootPath + "?page=" + pageable.getPageNumber() + "&size=" + pageable.getPageSize(),
                         HttpMethod.GET,
                         new HttpEntity<>(headers),
-                        new ParameterizedTypeReference<Page<Client>>(){}).getBody();
+                        new ParameterizedTypeReference<PageResponse<Client>>(){}).getBody();
+
+        return response.toPageImpl();
     }
 
     @Override
@@ -80,12 +84,17 @@ public class ClientServiceImpl implements ClientService {
         logger.info("Find client by login - " + login);
         HttpHeaders headers = getJwtHeader(jwt);
 
-        return restTemplate
-                .exchange(
-                        "/api/clients/byLogin/" + login,
-                        HttpMethod.GET,
-                        new HttpEntity<>(headers),
-                        Client.class).getBody();
+        try {
+            return restTemplate
+                    .exchange(
+                            rootPath + "/byLogin/" + login,
+                            HttpMethod.GET,
+                            new HttpEntity<>(headers),
+                            Client.class).getBody();
+        } catch (Exception ex) {
+            logger.warn(ex.toString());
+            return null;
+        }
     }
 
     @Override
@@ -93,12 +102,17 @@ public class ClientServiceImpl implements ClientService {
         logger.info("Find client by confirm code - " + confirmationCode);
         HttpHeaders headers = getJwtHeader(jwt);
 
-        return restTemplate
-                .exchange(
-                        "/api/clients/byConfirmCode/" + confirmationCode,
-                        HttpMethod.GET,
-                        new HttpEntity<>(headers),
-                        Client.class).getBody();
+        try {
+            return restTemplate
+                    .exchange(
+                            rootPath + "/byConfirmCode/" + confirmationCode,
+                            HttpMethod.GET,
+                            new HttpEntity<>(headers),
+                            Client.class).getBody();
+        } catch (Exception ex) {
+            logger.warn(ex.toString());
+            return null;
+        }
     }
 
     @Override
@@ -108,7 +122,7 @@ public class ClientServiceImpl implements ClientService {
 
         return restTemplate
                 .exchange(
-                        "/api/clients/" + clientId + "/basket",
+                        rootPath + "/" + clientId + "/basket",
                         HttpMethod.GET,
                         new HttpEntity<>(headers),
                         new ParameterizedTypeReference<List<ClientItem>>(){}).getBody();
@@ -119,12 +133,14 @@ public class ClientServiceImpl implements ClientService {
         logger.info("Find orders by client id - " + clientId);
         HttpHeaders headers = getJwtHeader(jwt);
 
-        return restTemplate
+        PageResponse<Order> response = restTemplate
                 .exchange(
-                        "/api/clients/" + clientId + "/orders?page=" + pageable.getPageNumber() + "&size=" + pageable.getPageSize(),
+                        rootPath + "/" + clientId + "/orders?page=" + pageable.getPageNumber() + "&size=" + pageable.getPageSize(),
                         HttpMethod.GET,
                         new HttpEntity<>(headers),
-                        new ParameterizedTypeReference<Page<Order>>(){}).getBody();
+                        new ParameterizedTypeReference<PageResponse<Order>>(){}).getBody();
+
+        return response.toPageImpl();
     }
 
     @Override
@@ -143,7 +159,7 @@ public class ClientServiceImpl implements ClientService {
             logger.info("Updating client with id - " + client.getId());
             restTemplate
                     .exchange(
-                            "/api/clients/" + client.getId(),
+                            rootPath + "/" + client.getId(),
                             HttpMethod.PUT,
                             new HttpEntity<>(client, headers),
                             Client.class);
@@ -154,7 +170,7 @@ public class ClientServiceImpl implements ClientService {
         logger.info("Create new client with login - " + client.getLogin());
         restTemplate
                 .exchange(
-                        "/api/clients",
+                        rootPath,
                         HttpMethod.POST,
                         new HttpEntity<>(client),
                         Client.class);
@@ -167,7 +183,7 @@ public class ClientServiceImpl implements ClientService {
 
         restTemplate
                 .exchange(
-                        "/api/clients/" + client.getId(),
+                        rootPath + "/" + client.getId(),
                         HttpMethod.DELETE,
                         new HttpEntity<>(headers),
                         Object.class);
@@ -181,7 +197,7 @@ public class ClientServiceImpl implements ClientService {
         for (ClientItem ci : itemSet) {
             restTemplate
                     .exchange(
-                            "/api/clients/" + clientId + "/basket/" + ci.getId(),
+                            rootPath + "/" + clientId + "/basket/" + ci.getId(),
                             HttpMethod.DELETE,
                             new HttpEntity<>(headers),
                             Object.class);
@@ -195,7 +211,7 @@ public class ClientServiceImpl implements ClientService {
 
         restTemplate
                 .exchange(
-                        "/api/clients/" + clientId + "/basket",
+                        rootPath + "/" + clientId + "/basket",
                         HttpMethod.DELETE,
                         new HttpEntity<>(headers),
                         Object.class);
@@ -208,7 +224,7 @@ public class ClientServiceImpl implements ClientService {
 
         if (client == null) {
             logger.warn("Client with login - " + login + " not found");
-            return null;
+            throw new UsernameNotFoundException("Client with login - " + login + " not found");
         }
 
         return client;

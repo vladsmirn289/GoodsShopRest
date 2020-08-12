@@ -1,5 +1,7 @@
 package com.shop.GoodsShop.Model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.shop.GoodsShop.Jackson.ItemDeserializer;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -10,6 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@JsonDeserialize(using = ItemDeserializer.class)
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

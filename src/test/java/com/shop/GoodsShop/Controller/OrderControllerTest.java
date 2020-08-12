@@ -1,25 +1,29 @@
 package com.shop.GoodsShop.Controller;
 
 import com.shop.GoodsShop.Model.Client;
+import com.shop.GoodsShop.Model.ClientItem;
 import com.shop.GoodsShop.Model.Order;
-import com.shop.GoodsShop.Service.ClientItemService;
 import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.ItemService;
 import com.shop.GoodsShop.Service.OrderService;
-import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.Cookie;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
@@ -32,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @PropertySource(value = "classpath:application.properties")
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @Sql(value = {
         "classpath:db/H2/after-test.sql",
         "classpath:db/H2/category-test.sql",
@@ -54,18 +57,18 @@ public class OrderControllerTest {
     private ClientService clientService;
 
     @Autowired
-    private ClientItemService clientItemService;
-
-    @Autowired
     private ItemService itemService;
 
     @Value("${jwt.admin.long.term}")
-    private String longTermToken;
+    private String adminToken;
+
+    @Value("${jwt.user.long.term}")
+    private String userToken;
 
     @Test
     public void showOrdersListTest() throws Exception {
         mockMvc
-                .perform(get("/order")
+                .perform(get("/order").cookie(new Cookie("jwtToken", userToken))
                          .param("size", "1")
                          .param("page", "0"))
                 .andDo(print())
@@ -77,7 +80,7 @@ public class OrderControllerTest {
                         .string(containsString("8,000")));
 
         mockMvc
-                .perform(get("/order")
+                .perform(get("/order").cookie(new Cookie("jwtToken", userToken))
                         .param("size", "1")
                         .param("page", "1"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[3]")
@@ -87,21 +90,20 @@ public class OrderControllerTest {
     @Test
     public void showConcreteClientOrderTest() throws Exception {
         mockMvc
-                .perform(get("/order/19"))
+                .perform(get("/order/19").cookie(new Cookie("jwtToken", userToken)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("order/concreteOrder"))
-                .andExpect(model().attribute("order", orderService.findById(19L, 12L, longTermToken)))
+                .andExpect(model().attribute("order", orderService.findById(19L, 12L, userToken)))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(1))
                 .andExpect(xpath("/html/body/div/table/tbody/tr/td[3]")
                         .string("Spring 5 для профессионалов"));
     }
 
     @Test
-    @Transactional
     public void checkoutAllItemsTest() throws Exception {
         MvcResult mvcResult = mockMvc
-                .perform(get("/order/checkout"))
+                .perform(get("/order/checkout").cookie(new Cookie("jwtToken", userToken)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("order/checkoutPage"))
@@ -116,7 +118,7 @@ public class OrderControllerTest {
     @Test
     public void checkoutItemTest() throws Exception {
         MvcResult mvcResult = mockMvc
-                .perform(get("/order/checkout/16"))
+                .perform(get("/order/checkout/16").cookie(new Cookie("jwtToken", adminToken)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("order/checkoutPage"))
@@ -129,15 +131,14 @@ public class OrderControllerTest {
     }
 
     @Test
-    @Transactional
     public void checkoutSuccessfulOrderTest() throws Exception {
-        Client client = clientService.findByLogin("simpleUser", longTermToken);
-        Hibernate.initialize(client.getBasket());
+        Client client = clientService.findByLogin("simpleUser", userToken);
+        Set<ClientItem> basket = new HashSet<>(clientService.findBasketItemsByClientId(client.getId(), userToken));
 
         MvcResult mvcResult = mockMvc
-                .perform(post("/order/checkout")
+                .perform(post("/order/checkout").cookie(new Cookie("jwtToken", userToken))
                          .with(csrf())
-                         .sessionAttr("orderedItems", client.getBasket())
+                         .sessionAttr("orderedItems", basket)
                          .param("generalWeight", "11")
                          .param("generalPrice", "221980")
                          .param("city", "Moscow")
@@ -158,21 +159,22 @@ public class OrderControllerTest {
 
         assertThat(client.getBasket()).isEmpty();
 
-        Order order = orderService.findByIdForManagers(100L, longTermToken);
-        assertThat(order.getClientItems().size()).isEqualTo(2);
+        Pageable pageable = PageRequest.of(2, 1, Sort.by("id"));
+        List<Order> orders = clientService.findOrdersByClientId(12L, pageable, userToken).getContent();
+
+        assertThat(orders.get(0).getClientItems().size()).isEqualTo(2);
         assertThat(itemService.findById(11L).getCount()).isEqualTo(197);
     }
 
     @Test
-    @Transactional
     public void shouldErrorShowWhenCheckoutOrderWithWrongData() throws Exception {
-        Client client = clientService.findByLogin("simpleUser", longTermToken);
-        Hibernate.initialize(client.getBasket());
+        Client client = clientService.findByLogin("simpleUser", userToken);
+        Set<ClientItem> basket = new HashSet<>(clientService.findBasketItemsByClientId(client.getId(), userToken));
 
         mockMvc
-                .perform(post("/order/checkout")
+                .perform(post("/order/checkout").cookie(new Cookie("jwtToken", userToken))
                         .with(csrf())
-                        .sessionAttr("orderedItems", client.getBasket())
+                        .sessionAttr("orderedItems", basket)
                         .param("city", "")
                         .param("zipCode", "")
                         .param("country", "Russia")
@@ -198,7 +200,7 @@ public class OrderControllerTest {
     @Test
     public void showCustomOrdersAccessDeniedTest() throws Exception {
         mockMvc
-                .perform(get("/order/manager"))
+                .perform(get("/order/manager").cookie(new Cookie("jwtToken", userToken)))
                 .andDo(print())
                 .andExpect(status().is(403));
     }

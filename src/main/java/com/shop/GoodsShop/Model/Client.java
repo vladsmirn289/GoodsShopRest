@@ -1,5 +1,8 @@
 package com.shop.GoodsShop.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.shop.GoodsShop.Jackson.ClientDeserializer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,6 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@JsonDeserialize(using = ClientDeserializer.class)
 public class Client implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -40,9 +44,11 @@ public class Client implements UserDetails {
     @JoinTable(name = "basket_items",
                joinColumns = @JoinColumn(name = "user_id"),
                inverseJoinColumns = @JoinColumn(name = "item_id"))
+    @JsonIgnore
     private Set<ClientItem> basket = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "client", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private Set<Order> orders = new HashSet<>();
 
     @Enumerated(EnumType.STRING)

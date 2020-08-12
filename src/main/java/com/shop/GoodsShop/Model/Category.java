@@ -1,5 +1,9 @@
 package com.shop.GoodsShop.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.shop.GoodsShop.Jackson.CategoryDeserializer;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
@@ -7,6 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@JsonDeserialize(using = CategoryDeserializer.class)
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -22,6 +27,7 @@ public class Category {
     @OneToMany(fetch = FetchType.LAZY,
                cascade = { CascadeType.PERSIST, CascadeType.REMOVE },
                mappedBy = "category")
+    @JsonIgnore
     private Set<Item> items = new HashSet<>();
 
 

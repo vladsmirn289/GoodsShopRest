@@ -8,5 +8,5 @@ public interface ClientItemService {
 
     ClientItem findById(Long clientId, Long itemId, String jwt);
 
-    void save(ClientItem clientItem, Long clientId, String jwt);
+    void addToBasketOrUpdate(ClientItem clientItem, Long clientId, String jwt);
 }

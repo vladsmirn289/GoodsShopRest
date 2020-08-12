@@ -5,6 +5,7 @@ import com.shop.GoodsShop.Service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -24,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
     private ClientService clientService;
     private AuthenticationSuccessHandler successHandler;
+    private AuthenticationFailureHandler failureHandler;
     private RestTemplate restTemplate;
     private JwtFilter jwtFilter;
 
@@ -40,6 +43,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void setSuccessHandler(AuthenticationSuccessHandler successHandler) {
         this.successHandler = successHandler;
+    }
+
+    @Autowired
+    public void setFailureHandler(AuthenticationFailureHandler failureHandler) {
+        this.failureHandler = failureHandler;
     }
 
     @Autowired
@@ -62,6 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
         CustomAuthenticationFilter filter = new CustomAuthenticationFilter(restTemplate);
         filter.setAuthenticationSuccessHandler(successHandler);
+        filter.setAuthenticationFailureHandler(failureHandler);
         filter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
         filter.setAuthenticationManager(authenticationManager());
 
@@ -75,6 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                     .antMatchers(
                         "/",
+                        "/login",
                         "/category/*",
                         "/item",
                         "/item/*",
@@ -107,6 +117,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(jwtFilter, customAuthenticationFilter().getClass());
+        http.exceptionHandling().authenticationEntryPoint((request, response, e) -> {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.sendRedirect("http://localhost/login");
+        });
     }
 
     @Override

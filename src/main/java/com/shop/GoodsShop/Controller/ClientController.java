@@ -25,7 +25,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/client")
 public class ClientController {
-    private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 
     private ClientService clientService;
     private AuthenticationManager authenticationManager;
@@ -60,12 +60,12 @@ public class ClientController {
     }
 
     @GetMapping("/activate/{code}")
-    public String activateClient(@PathVariable("code") String activationCode,
-                                 @CookieValue("jwtToken") String token) {
+    public String activateClient(@PathVariable("code") String activationCode) {
         logger.info("Called activateClient method");
         Client foundByActivationCode = clientService.findByConfirmationCode(activationCode, longTermJwt);
         foundByActivationCode.setNonLocked(true);
-        clientService.save(foundByActivationCode, null);
+        foundByActivationCode.setConfirmationCode(null);
+        clientService.save(foundByActivationCode, longTermJwt);
 
         logger.info("Authenticate client...");
         clientService.authenticateClient(authenticationManager, foundByActivationCode.getLogin());
@@ -93,7 +93,7 @@ public class ClientController {
                                      @CookieValue("jwtToken") String token) {
         logger.info("Called changePersonalInfo method");
         boolean clientExists = !originalClient.getLogin().equals(client.getLogin())
-                && clientService.findByLogin(client.getLogin(), token) != null;
+                && clientService.findByLogin(client.getLogin(), longTermJwt) != null;
 
         if ( bindingResult.hasErrors() || clientExists ) {
             logger.warn("Personal room page has errors!");
@@ -111,10 +111,12 @@ public class ClientController {
         if (!originalClient.getLogin().equals(client.getLogin())) {
             SecurityContextHolder.getContext().setAuthentication(null);
             request.getSession().removeAttribute("SPRING_SECURITY_CONTEXT");
+            client.setPassword(originalClient.getPassword());
             clientService.save(client, token);
             return "redirect:";
         }
 
+        client.setPassword(originalClient.getPassword());
         clientService.save(client, token);
         logger.info("Change info successful");
 

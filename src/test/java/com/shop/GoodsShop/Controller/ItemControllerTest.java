@@ -6,16 +6,18 @@ import com.shop.GoodsShop.Utils.FileUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import javax.servlet.http.Cookie;
 import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @PropertySource(value = "classpath:application.properties")
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @Sql(value = {
         "classpath:db/H2/after-test.sql",
         "classpath:db/H2/category-test.sql",
@@ -41,6 +42,9 @@ public class ItemControllerTest {
 
     @Autowired
     private ItemService itemService;
+
+    @Value("${jwt.user.long.term}")
+    private String userToken;
 
     @BeforeEach
     public void init() {
@@ -58,7 +62,7 @@ public class ItemControllerTest {
                 .perform(get("/item")
                         .param("keyword", "фес")
                         .param("size", "1")
-                        .param("page", "1"))
+                        .param("page", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("item/categoryItems"))
@@ -91,14 +95,14 @@ public class ItemControllerTest {
 
         Exception exception = mvcResult.getResolvedException();
         assertThat(exception).isNotNull();
-        assertThat(exception.getMessage()).isEqualTo("Такого предмета не существует!");
+        assertThat(exception.getMessage()).isEqualTo("Данный ресурс не найден");
     }
 
     @Test
     @WithUserDetails(value = "simpleUser")
     public void testAddItemsToBasket() throws Exception {
         mockMvc
-                .perform(post("/item/6/addToBasket")
+                .perform(post("/item/6/addToBasket").cookie(new Cookie("jwtToken", userToken))
                             .with(csrf())
                             .param("quantity", "2")
                             .param("item_id", "6"))
@@ -107,7 +111,7 @@ public class ItemControllerTest {
                 .andExpect(redirectedUrl("/"));
 
         mockMvc
-                .perform(get("/basket"))
+                .perform(get("/basket").cookie(new Cookie("jwtToken", userToken)))
                 .andExpect(status().isOk())
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(1));
     }

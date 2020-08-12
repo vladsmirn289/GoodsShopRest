@@ -7,6 +7,7 @@ import com.shop.GoodsShop.Utils.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,7 +56,15 @@ public class RegistrationController {
                                  Model model) {
         logger.info("Called registerClient method");
         boolean passwordsIsMatch = passwordRepeat.equals(client.getPassword());
-        boolean clientExists = clientService.loadUserByUsername(client.getLogin()) != null;
+        boolean clientExists;
+
+        try {
+            clientService.loadUserByUsername(client.getLogin());
+            clientExists = true;
+        } catch (UsernameNotFoundException ex) {
+            logger.warn(ex.toString());
+            clientExists = false;
+        }
 
         if ( bindingResult.hasErrors() || !passwordsIsMatch || clientExists ) {
             logger.warn("Registration page has errors!");

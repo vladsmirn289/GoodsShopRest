@@ -1,5 +1,7 @@
 package com.shop.GoodsShop.Config.RestTemplate;
 
+import com.shop.GoodsShop.Exception.BadRequestException;
+import com.shop.GoodsShop.Exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
@@ -22,9 +24,9 @@ public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
     public void handleError(ClientHttpResponse httpResponse) throws IOException {
         if (httpResponse.getStatusCode().is4xxClientError()) {
             if (httpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new NoSuchElementException("Такого элемента не существует");
+                throw new NotFoundException();
             } else if (httpResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                throw new IllegalStateException("Неверно задано состояние объекта");
+                throw new BadRequestException();
             } else {
                 throw new HttpClientErrorException(httpResponse.getStatusCode(),
                         httpResponse.getStatusText());

@@ -35,7 +35,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         logger.info("Getting jwt token");
         AuthRequest authRequest = new AuthRequest(username, password);
         AuthResponse authResponse = restTemplate.exchange(
-                "/api/authentication",
+                "http://localhost/api/authentication",
                 HttpMethod.POST,
                 new HttpEntity<>(authRequest),
                 AuthResponse.class).getBody();

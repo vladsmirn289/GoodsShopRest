@@ -16,7 +16,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -133,7 +132,6 @@ public class OrderController {
 
     @PostMapping("/checkout")
     @PreAuthorize("isAuthenticated()")
-    @Transactional
     public String checkoutOrder(@AuthenticationPrincipal Client client,
                                 @RequestParam("payment") String paymentMethod,
                                 @Valid @ModelAttribute("orderContacts") Contacts contacts,
@@ -163,13 +161,11 @@ public class OrderController {
         Order newOrder = new Order(items, contacts, paymentMethod);
         newOrder.setOrderStatus(OrderStatus.NEW);
         newOrder.setClient(client);
-        orderService.save(newOrder, client.getId(), token);
+        orderService.createNewOrderOrUpdate(newOrder, client.getId(), token);
 
         items.forEach(i -> {
-            i.setOrder(newOrder);
             i.getItem().setCount(i.getItem().getCount()-i.getQuantity());
             itemService.save(i.getItem());
-            clientItemService.save(i, client.getId(), token);
         });
 
         if (paymentMethod.equals("Наложенный платёж")) {

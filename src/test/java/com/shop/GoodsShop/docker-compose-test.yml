@@ -2,27 +2,16 @@ version: '3'
 services:
   db:
     image: postgres:11.4-alpine
-    container_name: postgres
+    container_name: postgres-test
     ports:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: shop_db
-      PGDATA: /var/lib/postgresql/data/pgdata
-    volumes:
-      - ./pg-data:/var/lib/postgresql/data
     restart: always
-  flyway:
-    image: flyway/flyway
-    container_name: flyway
-    command: -url=jdbc:postgresql://db:5432/shop_db -user=postgres -password=postgres -connectRetries=60 migrate
-    volumes:
-      - ./src/main/resources/db/migration:/flyway/sql
-    links:
-      - db
-  AuthService:
+  testAuthService:
     image: vladsmirn289/authentication_service
-    container_name: AuthService
+    container_name: testAuthService
     ports:
       - 8081:8081
     environment:
@@ -30,9 +19,9 @@ services:
       db_host: localhost
     restart: always
     network_mode: "host"
-  ClientService:
+  testClientService:
     image: vladsmirn289/client_service_rest
-    container_name: ClientService
+    container_name: testClientService
     ports:
       - 8082:8082
     environment:
@@ -40,9 +29,9 @@ services:
       db_host: localhost
     restart: always
     network_mode: "host"
-  ItemService:
+  testItemService:
     image: vladsmirn289/item_service_rest
-    container_name: ItemService
+    container_name: testItemService
     ports:
       - 8083:8083
     environment:
@@ -50,9 +39,9 @@ services:
       db_host: localhost
     restart: always
     network_mode: "host"
-  CategoryService:
+  testCategoryService:
     image: vladsmirn289/category_service_rest
-    container_name: CategoryService
+    container_name: testCategoryService
     ports:
       - 8084:8084
     environment:
@@ -62,7 +51,7 @@ services:
     network_mode: "host"
   restApp:
     image: vladsmirn289/goods_shop_rest
-    container_name: GoodsShopRest
+    container_name: testGoodsShopRest
     ports:
       - 8080:8080
     environment:
@@ -72,10 +61,10 @@ services:
     network_mode: "host"
   nginx:
     image: nginx:1.19.1-alpine
-    container_name: nginx
+    container_name: nginx-test
     ports:
       - 80:80
     restart: always
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx-test.conf:/etc/nginx/conf.d/default.conf
     network_mode: "host"

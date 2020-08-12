@@ -8,8 +8,6 @@ import com.shop.GoodsShop.Utils.FileUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
@@ -19,6 +17,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import javax.servlet.http.Cookie;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @PropertySource(value = "classpath:application.properties")
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @Sql(value = {
         "classpath:db/H2/after-test.sql",
         "classpath:db/H2/category-test.sql",
@@ -58,11 +56,17 @@ public class AdminControllerTest {
     @Value("${uploadPath}")
     private String path;
 
+    @Value("${jwt.user.long.term}")
+    private String userJwt;
+
+    @Value("${jwt.admin.long.term}")
+    private String adminJwt;
+
     @Test
     @WithUserDetails("simpleUser")
     public void accessDeniedTest() throws Exception {
         mockMvc
-                .perform(get("/admin"))
+                .perform(get("/admin").cookie(new Cookie("jwtToken", userJwt)))
                 .andDo(print())
                 .andExpect(status().is(403));
     }
@@ -70,7 +74,7 @@ public class AdminControllerTest {
     @Test
     public void showAdminFunctionsTest() throws Exception {
         mockMvc
-                .perform(get("/admin"))
+                .perform(get("/admin").cookie(new Cookie("jwtToken", adminJwt)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/adminFunctions"));
@@ -79,7 +83,7 @@ public class AdminControllerTest {
     @Test
     public void showListOfUsersTest() throws Exception {
         mockMvc
-                .perform(get("/admin/listOfUsers")
+                .perform(get("/admin/listOfUsers").cookie(new Cookie("jwtToken", adminJwt))
                          .param("size", "2")
                          .param("page", "0"))
                 .andDo(print())
@@ -89,7 +93,7 @@ public class AdminControllerTest {
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2));
 
         mockMvc
-                .perform(get("/admin/listOfUsers")
+                .perform(get("/admin/listOfUsers").cookie(new Cookie("jwtToken", adminJwt))
                          .param("size", "2")
                          .param("page", "1"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr").nodeCount(2));
@@ -98,14 +102,14 @@ public class AdminControllerTest {
     @Test
     public void addManagerTest() throws Exception {
         mockMvc
-                .perform(get("/admin/addManager/12")
+                .perform(get("/admin/addManager/12").cookie(new Cookie("jwtToken", adminJwt))
                          .header("referer", "http://localhost/admin/listOfUsers"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/listOfUsers"));
 
         mockMvc
-                .perform(get("/admin/listOfUsers"))
+                .perform(get("/admin/listOfUsers").cookie(new Cookie("jwtToken", adminJwt)))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]")
                         .string("simpleUser"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[7]")
@@ -115,14 +119,14 @@ public class AdminControllerTest {
     @Test
     public void addAdminTest() throws Exception {
         mockMvc
-                .perform(get("/admin/addAdmin/12")
+                .perform(get("/admin/addAdmin/12").cookie(new Cookie("jwtToken", adminJwt))
                         .header("referer", "http://localhost/admin/listOfUsers"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/listOfUsers"));
 
         mockMvc
-                .perform(get("/admin/listOfUsers"))
+                .perform(get("/admin/listOfUsers").cookie(new Cookie("jwtToken", adminJwt)))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]")
                         .string("simpleUser"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[7]/a")
@@ -132,14 +136,14 @@ public class AdminControllerTest {
     @Test
     public void removeManagerTest() throws Exception {
         mockMvc
-                .perform(get("/admin/removeManager/13")
+                .perform(get("/admin/removeManager/13").cookie(new Cookie("jwtToken", adminJwt))
                         .header("referer", "http://localhost/admin/listOfUsers"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/listOfUsers"));
 
         mockMvc
-                .perform(get("/admin/listOfUsers"))
+                .perform(get("/admin/listOfUsers").cookie(new Cookie("jwtToken", adminJwt)))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[2]/td[4]")
                         .string("manager"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[2]/td[7]/a")
@@ -149,28 +153,28 @@ public class AdminControllerTest {
     @Test
     public void lockUnlockAccountTest() throws Exception {
         mockMvc
-                .perform(get("/admin/lockAccount/12")
+                .perform(get("/admin/lockAccount/12").cookie(new Cookie("jwtToken", adminJwt))
                         .header("referer", "http://localhost/admin/listOfUsers"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/listOfUsers"));
 
         mockMvc
-                .perform(get("/admin/listOfUsers"))
+                .perform(get("/admin/listOfUsers").cookie(new Cookie("jwtToken", adminJwt)))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]")
                         .string("simpleUser"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[7]")
                         .string(containsString("Разблокировать пользователя")));
 
         mockMvc
-                .perform(get("/admin/unlockAccount/12")
+                .perform(get("/admin/unlockAccount/12").cookie(new Cookie("jwtToken", adminJwt))
                         .header("referer", "http://localhost/admin/listOfUsers"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/listOfUsers"));
 
         mockMvc
-                .perform(get("/admin/listOfUsers"))
+                .perform(get("/admin/listOfUsers").cookie(new Cookie("jwtToken", adminJwt)))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[4]")
                         .string("simpleUser"))
                 .andExpect(xpath("/html/body/div/table/tbody/tr[1]/td[7]")
@@ -180,7 +184,7 @@ public class AdminControllerTest {
     @Test
     public void showCreateCategoryPageTest() throws Exception {
         mockMvc
-                .perform(get("/admin/createCategory"))
+                .perform(get("/admin/createCategory").cookie(new Cookie("jwtToken", adminJwt)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/createCategory"))
@@ -190,7 +194,7 @@ public class AdminControllerTest {
     @Test
     public void successCreateNewParentCategoryTest() throws Exception {
         mockMvc
-                .perform(post("/admin/createCategory")
+                .perform(post("/admin/createCategory").cookie(new Cookie("jwtToken", adminJwt))
                          .with(csrf())
                          .param("category", "Родительская категория")
                          .param("name", "Канцелярия"))
@@ -206,7 +210,7 @@ public class AdminControllerTest {
     @Test
     public void successCreateNewChildCategoryTest() throws Exception {
         mockMvc
-                .perform(post("/admin/createCategory")
+                .perform(post("/admin/createCategory").cookie(new Cookie("jwtToken", adminJwt))
                         .with(csrf())
                         .param("category", "Электроника")
                         .param("name", "Телефоны"))
@@ -223,7 +227,7 @@ public class AdminControllerTest {
     @Test
     public void shouldShowErrorWhenTryCreateCategoryWithBlankNameTest() throws Exception {
         mockMvc
-                .perform(post("/admin/createCategory")
+                .perform(post("/admin/createCategory").cookie(new Cookie("jwtToken", adminJwt))
                         .with(csrf())
                         .param("category", "Электроника")
                         .param("name", ""))
@@ -237,7 +241,7 @@ public class AdminControllerTest {
     @Test
     public void shouldShowErrorWhenTryCreateCategoryWithExistsNameTest() throws Exception {
         mockMvc
-                .perform(post("/admin/createCategory")
+                .perform(post("/admin/createCategory").cookie(new Cookie("jwtToken", adminJwt))
                         .with(csrf())
                         .param("category", "Родительская категория")
                         .param("name", "Программирование"))
@@ -251,7 +255,7 @@ public class AdminControllerTest {
     @Test
     public void showCreateItemPageTest() throws Exception {
         mockMvc
-                .perform(get("/admin/createItem"))
+                .perform(get("/admin/createItem").cookie(new Cookie("jwtToken", adminJwt)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/createItem"))
@@ -261,7 +265,7 @@ public class AdminControllerTest {
     @Test
     public void showUpdateItemPageTest() throws Exception {
         mockMvc
-                .perform(get("/admin/updateItem/6"))
+                .perform(get("/admin/updateItem/6").cookie(new Cookie("jwtToken", adminJwt)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/createItem"))
@@ -279,6 +283,7 @@ public class AdminControllerTest {
         MockHttpServletRequestBuilder builder = multipart("/admin/createOrUpdateItem")
                 .file(multipartFile)
                 .with(csrf())
+                .cookie(new Cookie("jwtToken", adminJwt))
                 .param("name", "newItem")
                 .param("count", "30")
                 .param("weight", "0.4")
@@ -294,7 +299,7 @@ public class AdminControllerTest {
                 .andExpect(view().name("messages/successfulItemCreated"));
 
         mockMvc
-                .perform(get("/category/3"))
+                .perform(get("/category/3").cookie(new Cookie("jwtToken", adminJwt)))
                 .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(3));
 
         String originalName = itemService.findByName("newItem").get(0).getImage();
@@ -311,6 +316,7 @@ public class AdminControllerTest {
         MockHttpServletRequestBuilder builder = multipart("/admin/createOrUpdateItem")
                 .file(multipartFile)
                 .with(csrf())
+                .cookie(new Cookie("jwtToken", adminJwt))
                 .param("name", "")
                 .param("count", "0")
                 .param("weight", "1")
@@ -342,6 +348,7 @@ public class AdminControllerTest {
         MockHttpServletRequestBuilder builder = multipart("/admin/createOrUpdateItem")
                 .file(multipartFile)
                 .with(csrf())
+                .cookie(new Cookie("jwtToken", adminJwt))
                 .param("id", "6")
                 .param("name", "newItem")
                 .param("count", "30")
@@ -359,11 +366,11 @@ public class AdminControllerTest {
                 .andExpect(view().name("messages/successfulItemUpdated"));
 
         mockMvc
-                .perform(get("/category/3"))
+                .perform(get("/category/3").cookie(new Cookie("jwtToken", adminJwt)))
                 .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(1));
 
         mockMvc
-                .perform(get("/category/2"))
+                .perform(get("/category/2").cookie(new Cookie("jwtToken", adminJwt)))
                 .andExpect(xpath("//div[@id='itemsBlock']/div").nodeCount(3));
 
         Item item = itemService.findById(6L);

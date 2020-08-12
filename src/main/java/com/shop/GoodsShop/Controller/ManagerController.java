@@ -3,6 +3,7 @@ package com.shop.GoodsShop.Controller;
 import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.Order;
 import com.shop.GoodsShop.Model.OrderStatus;
+import com.shop.GoodsShop.Service.ClientService;
 import com.shop.GoodsShop.Service.OrderService;
 import com.shop.GoodsShop.Utils.URIUtils;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -30,11 +32,17 @@ public class ManagerController {
     private static final Logger logger = LoggerFactory.getLogger(ManagerController.class);
 
     private OrderService orderService;
+    private ClientService clientService;
 
     @Autowired
     public void setOrderService(OrderService orderService) {
         logger.debug("Setting orderService");
         this.orderService = orderService;
+    }
+
+    @Autowired
+    public void setClientService(ClientService clientService) {
+        this.clientService = clientService;
     }
 
     @GetMapping("/manager")
@@ -63,7 +71,7 @@ public class ManagerController {
         Order order = orderService.findByIdForManagers(orderId, token);
         if (order.getManager() == null) {
             order.setManager(manager);
-            orderService.save(order, 0L, token);
+            orderService.createNewOrderOrUpdate(order, 0L, token);
         } else {
             logger.info("Conflict, another manager has already set himself to manager");
             model.addAttribute("conflictError", "Другой менеджер уже назначил себя менеджером!");
@@ -78,6 +86,8 @@ public class ManagerController {
                             @CookieValue("jwtToken") String token) {
         logger.info("Called editOrder method");
         Order order = orderService.findByIdForManagers(orderId, token);
+        Client client = orderService.findClientByOrderId(orderId, token);
+        order.setClient(client);
         model.addAttribute("order", order);
 
         Set<OrderStatus> statuses = Arrays.stream(OrderStatus.values())
@@ -89,6 +99,7 @@ public class ManagerController {
     }
 
     @PostMapping("/changeOrderStatus/{id}")
+    @Transactional
     public String changeOrderStatus(@PathVariable("id") Long orderId,
                                     @RequestParam("orderStatus") String status,
                                     RedirectAttributes redirectAttributes,
@@ -97,7 +108,7 @@ public class ManagerController {
         logger.info("Called changeOrderStatus method");
         Order order = orderService.findByIdForManagers(orderId, token);
         order.setOrderStatus(OrderStatus.valueOf(status));
-        orderService.save(order, 0L, token);
+        orderService.createNewOrderOrUpdate(order, 0L, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }
@@ -110,7 +121,7 @@ public class ManagerController {
         logger.info("Called unpinHimself method");
         Order order = orderService.findByIdForManagers(orderId, token);
         order.setManager(null);
-        orderService.save(order, 0L, token);
+        orderService.createNewOrderOrUpdate(order, 0L, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }

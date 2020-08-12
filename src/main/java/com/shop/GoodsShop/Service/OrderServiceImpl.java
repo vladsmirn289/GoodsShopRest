@@ -1,5 +1,8 @@
 package com.shop.GoodsShop.Service;
 
+import com.shop.GoodsShop.DTO.PageResponse;
+import com.shop.GoodsShop.Exception.BadRequestException;
+import com.shop.GoodsShop.Model.Client;
 import com.shop.GoodsShop.Model.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,13 +14,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-    private static final Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     private RestTemplate restTemplate;
+    private String rootPath = "http://localhost/api/clients";
 
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
@@ -30,12 +35,14 @@ public class OrderServiceImpl implements OrderService {
         logger.info("Find orders for managers");
         HttpHeaders headers = getJwtHeader(jwt);
 
-        return restTemplate
+        PageResponse<Order> response = restTemplate
                 .exchange(
-                        "/api/clients/managerOrders",
+                        rootPath + "/managerOrders?page=" + pageable.getPageNumber() + "&size=" + pageable.getPageSize(),
                         HttpMethod.GET,
                         new HttpEntity<>(headers),
-                        new ParameterizedTypeReference<Page<Order>>(){}).getBody();
+                        new ParameterizedTypeReference<PageResponse<Order>>(){}).getBody();
+
+        return response.toPageImpl();
     }
 
     @Override
@@ -43,12 +50,17 @@ public class OrderServiceImpl implements OrderService {
         logger.info("Find order by id - " + orderId + " and client id - " + clientId);
         HttpHeaders headers = getJwtHeader(jwt);
 
-        return restTemplate
-                .exchange(
-                        "/api/clients/" + clientId + "/orders/" + orderId,
-                        HttpMethod.GET,
-                        new HttpEntity<>(headers),
-                        Order.class).getBody();
+        try {
+            return restTemplate
+                    .exchange(
+                            rootPath + "/" + clientId + "/orders/" + orderId,
+                            HttpMethod.GET,
+                            new HttpEntity<>(headers),
+                            Order.class).getBody();
+        } catch (BadRequestException | HttpClientErrorException ex) {
+            logger.warn(ex.toString());
+            return null;
+        }
     }
 
     @Override
@@ -56,23 +68,41 @@ public class OrderServiceImpl implements OrderService {
         logger.info("Find order by id - " + orderId + " for managers");
         HttpHeaders headers = getJwtHeader(jwt);
 
-        return restTemplate
-                .exchange(
-                        "/api/clients/orders/" + orderId,
-                        HttpMethod.GET,
-                        new HttpEntity<>(headers),
-                        Order.class).getBody();
+        try {
+            return restTemplate
+                    .exchange(
+                            rootPath + "/orders/" + orderId,
+                            HttpMethod.GET,
+                            new HttpEntity<>(headers),
+                            Order.class).getBody();
+        } catch (BadRequestException | HttpClientErrorException ex) {
+            logger.warn(ex.toString());
+            return null;
+        }
     }
 
     @Override
-    public void save(Order order, Long clientId, String jwt) {
+    public Client findClientByOrderId(Long orderId, String jwt) {
+        logger.info("Find client by order id - " + orderId);
+        HttpHeaders headers = getJwtHeader(jwt);
+
+        return restTemplate
+                .exchange(
+                        rootPath + "/orders/" + orderId + "/client",
+                        HttpMethod.GET,
+                        new HttpEntity<>(headers),
+                        Client.class).getBody();
+    }
+
+    @Override
+    public void createNewOrderOrUpdate(Order order, Long clientId, String jwt) {
         HttpHeaders headers = getJwtHeader(jwt);
 
         if (order.getId() != null) {
             logger.info("Updating order with id - " + order.getId());
             restTemplate
                     .exchange(
-                            "/api/clients/" + clientId + "/orders/" + order.getId(),
+                            rootPath + "/" + clientId + "/orders/" + order.getId(),
                             HttpMethod.PUT,
                             new HttpEntity<>(order, headers),
                             Order.class);
@@ -83,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
         logger.info("Create new order with client id - " + clientId);
         restTemplate
                 .exchange(
-                        "/api/clients/" + clientId + "/orders",
+                        rootPath + "/" + clientId + "/orders",
                         HttpMethod.POST,
                         new HttpEntity<>(order, headers),
                         Order.class);
@@ -96,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
 
         restTemplate
                 .exchange(
-                        "/api/clients/" + clientId + "/orders/" + order.getId(),
+                        rootPath + "/" + clientId + "/orders/" + order.getId(),
                         HttpMethod.DELETE,
                         new HttpEntity<>(headers),
                         Object.class);
@@ -109,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
 
         restTemplate
                 .exchange(
-                        "/api/clients/" + clientId + "/orders",
+                        rootPath + "/" + clientId + "/orders",
                         HttpMethod.DELETE,
                         new HttpEntity<>(headers),
                         Object.class);

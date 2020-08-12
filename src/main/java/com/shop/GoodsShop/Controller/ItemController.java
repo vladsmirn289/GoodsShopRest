@@ -87,7 +87,7 @@ public class ItemController {
         logger.info("Called addItemToBasket method");
         Item item = itemService.findById(itemId);
         ClientItem itemToBasket = new ClientItem(item, quantity);
-        clientItemService.save(itemToBasket, client.getId(), token);
+        clientItemService.addToBasketOrUpdate(itemToBasket, client.getId(), token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }

@@ -30,6 +30,13 @@ public class JwtFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         logger.info("DoFilter method called");
         HttpServletRequest request = (HttpServletRequest) servletRequest;
+
+        if (request.getCookies() == null) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
         Cookie cookie = Arrays.stream(request.getCookies())
                 .filter(c -> c.getName().equals("jwtToken"))
                 .findAny().orElse(null);

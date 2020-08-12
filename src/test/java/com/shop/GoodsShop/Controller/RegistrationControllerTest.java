@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,10 +25,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @PropertySource(value = "classpath:application.properties")
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @Sql(value = {
-        "classpath:db/H2/after-test.sql"},
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+        "classpath:db/H2/after-test.sql",
+        "classpath:db/H2/user-test.sql"},
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class RegistrationControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -41,7 +40,7 @@ public class RegistrationControllerTest {
     private MailSenderUtil mailSenderUtil;
 
     @Value("${jwt.admin.long.term}")
-    private String longTermToken;
+    private String adminToken;
 
     @Test
     public void showRegistrationPageTest() throws Exception {
@@ -67,8 +66,12 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/needConfirmation"));
 
-        assertThat(clientService.findByLogin("tU", longTermToken).getConfirmationCode()).isNotNull();
-        assertThat(clientService.loadUserByUsername("tU")).isNull();
+        assertThat(clientService.findByLogin("tU", adminToken).getConfirmationCode()).isNotNull();
+
+        mockMvc
+                .perform(formLogin().user("tU").password("12345"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error=true"));
 
         Mockito
                 .verify(mailSenderUtil, Mockito.times(1))
@@ -99,7 +102,7 @@ public class RegistrationControllerTest {
                 .andExpect(view().name("security/registration"))
                 .andExpect(model().attributeExists("mailError"));
 
-        assertThat(clientService.findByLogin("tU", longTermToken)).isNull();
+        assertThat(clientService.findByLogin("tU", adminToken)).isNull();
 
         Mockito
                 .verify(mailSenderUtil, Mockito.times(1))
@@ -137,9 +140,6 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    @Sql(value = {
-            "classpath:db/H2/user-test.sql"},
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void shouldErrorUserExists() throws Exception {
         mockMvc
                 .perform(post("/registration")

@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+
+import javax.servlet.http.Cookie;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @PropertySource(value = "classpath:application.properties")
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @Sql(value = {
         "classpath:db/H2/after-test.sql",
         "classpath:db/H2/user-test.sql"},
@@ -50,7 +49,13 @@ public class ClientControllerTest {
     private MailSenderUtil mailSenderUtil;
 
     @Value("${jwt.admin.long.term}")
-    private String longTermToken;
+    private String adminToken;
+
+    @Value("${jwt.manager.long.term}")
+    private String managerToken;
+
+    @Value("${jwt.user.long.term}")
+    private String userToken;
 
     @Test
     @SuppressWarnings("deprecation")
@@ -61,15 +66,15 @@ public class ClientControllerTest {
                 .authenticateClient(anyObject(), eq("userWithCode"));
 
         mockMvc
-                .perform(get("/client/activate/123"))
+                .perform(get("/client/activate/123").cookie(new Cookie("jwtToken", adminToken)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/successConfirmation"));
 
-        Client client = clientService.findByLogin("userWithCode", longTermToken);
+        Client client = clientService.findByLogin("userWithCode", adminToken);
         String password = client.getPassword();
         assertThat(client.getConfirmationCode()).isNull();
-        assertThat(passwordEncoder.matches("01112", password));
+        assertThat("01112").isEqualTo(password);
 
         Mockito
                 .verify(clientService, Mockito.times(1))
@@ -89,18 +94,18 @@ public class ClientControllerTest {
     @WithUserDetails("simpleUser")
     public void showPersonalRoomPageTest() throws Exception {
         mockMvc
-                .perform(get("/client/personalRoom"))
+                .perform(get("/client/personalRoom").cookie(new Cookie("jwtToken", userToken)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("client/personalRoom"))
-                .andExpect(model().attribute("client", clientService.findByLogin("simpleUser", longTermToken)));
+                .andExpect(model().attribute("client", clientService.findByLogin("simpleUser", userToken)));
     }
 
     @Test
     @WithUserDetails("simpleUser")
     public void shouldSuccessChangingClientInfo() throws Exception {
         mockMvc
-                .perform(post("/client/personalRoom")
+                .perform(post("/client/personalRoom").cookie(new Cookie("jwtToken", userToken))
                         .with(csrf())
                         .param("id", "12")
                         .param("firstName", "firstName")
@@ -113,7 +118,7 @@ public class ClientControllerTest {
                 .andExpect(view().name("client/personalRoom"))
                 .andExpect(model().attributeExists("client"));
 
-        Client client = clientService.findByLogin("simpleUser", longTermToken);
+        Client client = clientService.findByLogin("simpleUser", userToken);
         assertThat(client).isNotNull();
         assertThat(client.getId()).isEqualTo(12L);
     }
@@ -122,7 +127,7 @@ public class ClientControllerTest {
     @WithUserDetails("simpleUser")
     public void shouldSuccessChangingLogin() throws Exception {
         mockMvc
-                .perform(post("/client/personalRoom")
+                .perform(post("/client/personalRoom").cookie(new Cookie("jwtToken", userToken))
                         .with(csrf())
                         .param("id", "12")
                         .param("firstName", "ABC")
@@ -135,7 +140,7 @@ public class ClientControllerTest {
                 .andExpect(redirectedUrl(""))
                 .andExpect(model().attributeDoesNotExist("client"));
 
-        Client client = clientService.findByLogin("user", longTermToken);
+        Client client = clientService.findByLogin("user", adminToken);
         assertThat(client).isNotNull();
         assertThat(client.getId()).isEqualTo(12L);
     }
@@ -144,7 +149,7 @@ public class ClientControllerTest {
     @WithUserDetails("simpleUser")
     public void shouldErrorShowWhenChangingPersonalInfoWithWrongData() throws Exception {
         mockMvc
-                .perform(post("/client/personalRoom")
+                .perform(post("/client/personalRoom").cookie(new Cookie("jwtToken", userToken))
                         .with(csrf())
                         .param("id", "12")
                         .param("firstName", "")
@@ -171,7 +176,7 @@ public class ClientControllerTest {
     @WithUserDetails("simpleUser")
     public void shouldErrorUserExistsWhenTryingChangePersonalInfo() throws Exception {
         mockMvc
-                .perform(post("/client/personalRoom")
+                .perform(post("/client/personalRoom").cookie(new Cookie("jwtToken", userToken))
                         .with(csrf())
                         .param("id", "12")
                         .param("firstName", "test")
@@ -189,7 +194,7 @@ public class ClientControllerTest {
     @WithUserDetails("manager")
     public void showResetPasswordPage() throws Exception {
         mockMvc
-                .perform(get("/client/resetPasswordRequest"))
+                .perform(get("/client/resetPasswordRequest").cookie(new Cookie("jwtToken", managerToken)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("client/resetPassword"));
@@ -199,7 +204,7 @@ public class ClientControllerTest {
     @WithUserDetails("manager")
     public void shouldSuccessSendResetPasswordRequest() throws Exception {
         mockMvc
-                .perform(post("/client/resetPassword")
+                .perform(post("/client/resetPassword").cookie(new Cookie("jwtToken", managerToken))
                         .with(csrf())
                         .param("email", "g@g")
                         .header("referer", "http://localhost/personalRoom"))
@@ -224,7 +229,7 @@ public class ClientControllerTest {
                 .sendMessage(eq("g@g"), eq("Сброс пароля"), anyObject());
 
         mockMvc
-                .perform(post("/client/resetPassword")
+                .perform(post("/client/resetPassword").cookie(new Cookie("jwtToken", managerToken))
                         .with(csrf())
                         .param("email", "g@g")
                         .header("referer", "http://localhost/personalRoom"))
@@ -245,12 +250,12 @@ public class ClientControllerTest {
     @WithUserDetails("manager")
     public void showChangePasswordPageTest() throws Exception {
         mockMvc
-                .perform(get("/client/setNewPassword/manager"))
+                .perform(get("/client/setNewPassword/manager").cookie(new Cookie("jwtToken", managerToken)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("client/changePassword"));
 
-        Client client = clientService.findByLogin("manager", longTermToken);
+        Client client = clientService.findByLogin("manager", managerToken);
         assertThat(passwordEncoder.matches("12345", client.getPassword()));
     }
 
@@ -258,12 +263,12 @@ public class ClientControllerTest {
     @WithUserDetails("manager")
     public void shouldShowErrorWhenTryChangePassword() throws Exception {
         mockMvc
-                .perform(get("/client/setNewPassword/simpleUser"))
+                .perform(get("/client/setNewPassword/simpleUser").cookie(new Cookie("jwtToken", managerToken)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/sessionExpired"));
 
-        Client client = clientService.findByLogin("manager", longTermToken);
+        Client client = clientService.findByLogin("manager", managerToken);
         assertThat(passwordEncoder.matches("67891", client.getPassword()));
     }
 
@@ -271,7 +276,7 @@ public class ClientControllerTest {
     @WithUserDetails("manager")
     public void shouldSuccessfulChangePassword() throws Exception {
         mockMvc
-                .perform(post("/client/changePassword")
+                .perform(post("/client/changePassword").cookie(new Cookie("jwtToken", managerToken))
                         .with(csrf())
                         .param("newPassword", "helloWorld")
                         .param("retypePassword", "helloWorld"))
@@ -279,7 +284,7 @@ public class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/passwordSuccessfulChanged"));
 
-        Client client = clientService.findByLogin("manager", longTermToken);
+        Client client = clientService.findByLogin("manager", managerToken);
         assertThat(passwordEncoder.matches("helloWorld", client.getPassword()));
     }
 
@@ -287,7 +292,7 @@ public class ClientControllerTest {
     @WithUserDetails("manager")
     public void shouldShowErrorsWhenTryChangePasswordWithIncorrectData() throws Exception {
         mockMvc
-                .perform(post("/client/changePassword")
+                .perform(post("/client/changePassword").cookie(new Cookie("jwtToken", managerToken))
                          .with(csrf())
                          .param("newPassword", "1")
                          .param("retypePassword", "2"))
@@ -297,7 +302,7 @@ public class ClientControllerTest {
                 .andExpect(model().attribute("lengthPasswordError", "Пароль должен состоять из как минимум 5 символов"))
                 .andExpect(model().attribute("retypePasswordError", "Пароли не совпадают!"));
 
-        Client client = clientService.findByLogin("manager", longTermToken);
+        Client client = clientService.findByLogin("manager", managerToken);
         assertThat(passwordEncoder.matches("67891", client.getPassword()));
     }
 
@@ -305,7 +310,7 @@ public class ClientControllerTest {
     @WithUserDetails("simpleUser")
     public void showChangeEmailPageTest() throws Exception {
         mockMvc
-                .perform(get("/client/changeEmail"))
+                .perform(get("/client/changeEmail").cookie(new Cookie("jwtToken", userToken)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("client/changeEmailPage"));
@@ -315,14 +320,14 @@ public class ClientControllerTest {
     @WithUserDetails("simpleUser")
     public void shouldSendCodeForActivationEmail() throws Exception {
         mockMvc
-                .perform(post("/client/changeEmail")
+                .perform(post("/client/changeEmail").cookie(new Cookie("jwtToken", userToken))
                          .with(csrf())
                          .param("email", "g@g"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/setNewEmailMessage"));
 
-        Client client = clientService.findByLogin("simpleUser", longTermToken);
+        Client client = clientService.findByLogin("simpleUser", userToken);
         String password = client.getPassword();
         assertThat(client.getConfirmationCode()).isNotNull();
         assertThat(client.getEmail()).isEqualTo("vladsmirn289@gmail.com");
@@ -345,7 +350,7 @@ public class ClientControllerTest {
                 .sendTemplateMessage(eq("g@g"), eq("simpleUser"), anyObject());
 
         mockMvc
-                .perform(post("/client/changeEmail")
+                .perform(post("/client/changeEmail").cookie(new Cookie("jwtToken", userToken))
                         .with(csrf())
                         .param("email", "g@g"))
                 .andDo(print())
@@ -353,7 +358,7 @@ public class ClientControllerTest {
                 .andExpect(view().name("client/changeEmailPage"))
                 .andExpect(model().attributeExists("mailError"));
 
-        Client client = clientService.findByLogin("simpleUser", longTermToken);
+        Client client = clientService.findByLogin("simpleUser", userToken);
         String password = client.getPassword();
         assertThat(client.getConfirmationCode()).isNull();
         assertThat(client.getEmail()).isEqualTo("vladsmirn289@gmail.com");
@@ -369,12 +374,12 @@ public class ClientControllerTest {
     @Test
     public void shouldConfirmChangeEmail() throws Exception {
         mockMvc
-                .perform(get("/client/setNewEmail/m@m/123"))
+                .perform(get("/client/setNewEmail/m@m/123").cookie(new Cookie("jwtToken", userToken)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages/successfulNewEmail"));
 
-        Client client = clientService.findByLogin("userWithCode", longTermToken);
+        Client client = clientService.findByLogin("userWithCode", adminToken);
 
         assertThat(client.getConfirmationCode()).isNull();
         assertThat(client.getEmail()).isEqualTo("m@m");

@@ -10,7 +10,6 @@ public class RestTemplateConfig {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder
-                .rootUri("http://localhost")
                 .errorHandler(new RestTemplateResponseErrorHandler())
                 .build();
     }

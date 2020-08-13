@@ -95,26 +95,27 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void createNewOrderOrUpdate(Order order, Long clientId, String jwt) {
+    public void createNewOrder(Order order, Long clientId, String jwt) {
         HttpHeaders headers = getJwtHeader(jwt);
-
-        if (order.getId() != null) {
-            logger.info("Updating order with id - " + order.getId());
-            restTemplate
-                    .exchange(
-                            rootPath + "/" + clientId + "/orders/" + order.getId(),
-                            HttpMethod.PUT,
-                            new HttpEntity<>(order, headers),
-                            Order.class);
-
-            return;
-        }
 
         logger.info("Create new order with client id - " + clientId);
         restTemplate
                 .exchange(
                         rootPath + "/" + clientId + "/orders",
                         HttpMethod.POST,
+                        new HttpEntity<>(order, headers),
+                        Order.class);
+    }
+
+    @Override
+    public void update(Order order, String jwt) {
+        logger.info("Updating order with id - " + order.getId());
+        HttpHeaders headers = getJwtHeader(jwt);
+
+        restTemplate
+                .exchange(
+                        rootPath + "/" + 0 + "/orders/" + order.getId(),
+                        HttpMethod.PUT,
                         new HttpEntity<>(order, headers),
                         Order.class);
     }

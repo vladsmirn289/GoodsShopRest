@@ -11,7 +11,8 @@ public interface OrderService {
     Order findByIdForManagers(Long orderId, String jwt);
     Client findClientByOrderId(Long orderId, String jwt);
 
-    void createNewOrderOrUpdate(Order order, Long clientId, String jwt);
+    void createNewOrder(Order order, Long clientId, String jwt);
+    void update(Order order, String jwt);
 
     void delete(Order order, Long clientId, String jwt);
     void clearOrders(Long clientId, String jwt);

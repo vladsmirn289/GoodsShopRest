@@ -71,7 +71,7 @@ public class ManagerController {
         Order order = orderService.findByIdForManagers(orderId, token);
         if (order.getManager() == null) {
             order.setManager(manager);
-            orderService.createNewOrderOrUpdate(order, 0L, token);
+            orderService.update(order, token);
         } else {
             logger.info("Conflict, another manager has already set himself to manager");
             model.addAttribute("conflictError", "Другой менеджер уже назначил себя менеджером!");
@@ -108,7 +108,7 @@ public class ManagerController {
         logger.info("Called changeOrderStatus method");
         Order order = orderService.findByIdForManagers(orderId, token);
         order.setOrderStatus(OrderStatus.valueOf(status));
-        orderService.createNewOrderOrUpdate(order, 0L, token);
+        orderService.update(order, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }
@@ -121,7 +121,7 @@ public class ManagerController {
         logger.info("Called unpinHimself method");
         Order order = orderService.findByIdForManagers(orderId, token);
         order.setManager(null);
-        orderService.createNewOrderOrUpdate(order, 0L, token);
+        orderService.update(order, token);
 
         return "redirect:" + URIUtils.toPriorPage(referer, redirectAttributes);
     }

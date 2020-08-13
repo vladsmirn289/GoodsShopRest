@@ -161,7 +161,7 @@ public class OrderController {
         Order newOrder = new Order(items, contacts, paymentMethod);
         newOrder.setOrderStatus(OrderStatus.NEW);
         newOrder.setClient(client);
-        orderService.createNewOrderOrUpdate(newOrder, client.getId(), token);
+        orderService.createNewOrder(newOrder, client.getId(), token);
 
         items.forEach(i -> {
             i.getItem().setCount(i.getItem().getCount()-i.getQuantity());

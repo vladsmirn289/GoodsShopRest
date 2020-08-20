@@ -25,8 +25,7 @@ To run this project, you can use docker-compose that run all needed microservice
 *   Nginx will be listening 80 port.
 
 Nginx was added with purpose you don't need to write ports when you want to access the main application or any microservice.
-Nginx will be automatically redirects on needed microservices if you write *http://localhost/api/{name of service (
-**authentication**, **clients**, **items**, **categories**)}*, also if you write *http://localhost* you will be redirected on 8080 port automatically.
+Nginx will be automatically redirects on needed microservices if you write *http://localhost/api/{name of service (**authentication**, **clients**, **items**, **categories**)}*, also if you write *http://localhost* you will be redirected on 8080 port automatically.
 
 ## Package structure
 The diagram of the package structure:
